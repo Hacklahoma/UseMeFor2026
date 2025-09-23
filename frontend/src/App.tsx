@@ -1,11 +1,8 @@
 import React from 'react';
+import LandingPage from './ui/pages/landing';
 
 const App: React.FC = () => {
-  return (
-    <div>
-        <h1>Hacklahoma 2026</h1>
-    </div>
-  );
+  return <LandingPage />;
 };
 
 export default App;
