@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import BeeLogo from '../../../common/assets/BeeLogo.png';
 import MLHBanner2026 from '../../../common/assets/MLHBanner2026.png';
+import Postcard from '../../../common/assets/Postcard.png';
 
 const LandingView: React.FC = () => {
   const [displayedText, setDisplayedText] = useState('');
@@ -37,7 +38,7 @@ const LandingView: React.FC = () => {
   }, []);
 
   return (
-    <div className="h-screen w-full min-w-[380px] bg-[#F5F5DC] relative overflow-hidden">
+    <div id="top" className="h-screen w-full min-w-[380px] bg-[#F5F5DC] relative overflow-hidden">
       {/* Header - appears when final elements show */}
       <header className={`fixed top-0 left-0 h-20 w-full bg-gradient-to-b from-[#F5F5DC] via-[#F5F5DC] to-transparent z-50 transition-opacity duration-1000 ease-in-out ${
         showFinalElements ? 'opacity-100' : 'opacity-0'
@@ -46,8 +47,8 @@ const LandingView: React.FC = () => {
           {/* Desktop Navigation - centered */}
           <nav className="hidden min-[600px]:flex items-center">
             <div className="flex items-center space-x-8">
-              <a href="#" className="text-[#3D472C] hover:text-[#2a3a1f] transition-colors">Home</a>
-              <a href="#" className="text-[#3D472C] hover:text-[#2a3a1f] transition-colors">About</a>
+              <a href="#top" className="text-[#3D472C] hover:text-[#2a3a1f] transition-colors">Home</a>
+              <a href="#about" className="text-[#3D472C] hover:text-[#2a3a1f] transition-colors">About</a>
               <a href="#" className="text-[#3D472C] hover:text-[#2a3a1f] transition-colors">FAQ</a>
               <a href="#" className="text-[#3D472C] hover:text-[#2a3a1f] transition-colors">Sponsors</a>
             </div>
@@ -79,8 +80,8 @@ const LandingView: React.FC = () => {
           isMobileMenuOpen ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-4 pointer-events-none'
         }`}>
           <nav className="flex flex-col py-4 items-center">
-            <a href="#" className="px-6 py-3 text-[#3D472C] hover:bg-[#e8e8c7] transition-colors">Home</a>
-            <a href="#" className="px-6 py-3 text-[#3D472C] hover:bg-[#e8e8c7] transition-colors">About</a>
+            <a href="#top" className="px-6 py-3 text-[#3D472C] hover:bg-[#e8e8c7] transition-colors">Home</a>
+            <a href="#about" className="px-6 py-3 text-[#3D472C] hover:bg-[#e8e8c7] transition-colors">About</a>
             <a href="#" className="px-6 py-3 text-[#3D472C] hover:bg-[#e8e8c7] transition-colors">FAQ</a>
             <a href="#" className="px-6 py-3 text-[#3D472C] hover:bg-[#e8e8c7] transition-colors">Sponsors</a>
             <a href="#" className="px-6 py-3 text-[#3D472C] hover:bg-[#e8e8c7] transition-colors font-medium">Login</a>
@@ -178,6 +179,17 @@ const LandingView: React.FC = () => {
             </button>
           </div>
         </div>
+      </div>
+
+      {/* Large postcard on the right side - fades in */}
+      <div className={`absolute top-1/2 right-8 lg:right-12 -translate-y-1/2 transition-opacity duration-1000 ease-in-out ${
+        showFinalElements ? 'opacity-100' : 'opacity-0'
+      }`}>
+        <img
+          src={Postcard}
+          alt="Vintage postcard"
+          className="w-[40.56rem] md:w-[47.32rem] lg:w-[54.08rem] xl:w-[60.84rem] rotate-[-1deg] drop-shadow-2xl select-none pointer-events-none"
+        />
       </div>
 
       {/* Register Now button - bottom right on larger screens */}
