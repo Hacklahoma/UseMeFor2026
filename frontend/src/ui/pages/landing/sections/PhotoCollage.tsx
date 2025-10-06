@@ -1,7 +1,6 @@
 import React from 'react';
 import Postcard from '../../../common/assets/Postcard.png';
-import MapOutline from '../../../common/assets/OK_Norman_706465_1936_625002.png';
-import Equation from '../../../common/assets/eq.png';
+
 
 const PhotoCollage: React.FC = () => {
   return (

@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import BeeLogo from '../../../common/assets/BeeLogo.png';
 import MLHBanner2026 from '../../../common/assets/MLHBanner2026.png';
 import Postcard from '../../../common/assets/Postcard.png';
-import MapOutline from '../../../common/assets/OK_Norman_706465_1936_625001.png';
 import Compass from '../../../common/assets/eq2.png';
 import Mountain from '../../../common/assets/mountains.png';
 const LandingView: React.FC = () => {
@@ -45,7 +44,7 @@ const LandingView: React.FC = () => {
     {/* Uses global background from page wrapper */}
     
 
-  {/* NEW: compass bottom-left */}
+  {/* compass bottom-left */}
   <img
     src={Compass}
     alt="" // decorative
@@ -56,7 +55,7 @@ const LandingView: React.FC = () => {
                opacity-80"
   />
 
-  {/* NEW: mountains bottom-right */}
+  {/* mountains bottom-right */}
   <img
     src={Mountain}
     alt="" // decorative
