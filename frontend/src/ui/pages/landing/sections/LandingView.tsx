@@ -2,7 +2,9 @@ import React, { useState, useEffect } from "react";
 import BeeLogo from "../../../common/assets/BeeLogo.png";
 import MLHBanner2026 from "../../../common/assets/MLHBanner2026.png";
 import Postcard from "../../../common/assets/Postcard.png";
-
+import MapOutline from "../../../common/assets/OK_Norman_706465_1936_625001.png";
+import Compass from "../../../common/assets/eq2.png";
+import Mountain from "../../../common/assets/mountains.png";
 const LandingView: React.FC = () => {
   const [displayedText, setDisplayedText] = useState("");
   const [showElements, setShowElements] = useState(false);
@@ -38,13 +40,38 @@ const LandingView: React.FC = () => {
   }, []);
 
   return (
+    // <div id="top" className="h-screen w-full min-w-[380px] bg-[#F5F5DC] relative overflow-hidden">
     <div
       id="top"
-      className="h-screen w-full min-w-[380px] bg-[#F5F5DC] relative overflow-hidden"
+      className="relative min-h-[100svh] w-full min-w-[380px] overflow-hidden m-0"
     >
+      {/* Uses global background from page wrapper */}
+
+      {/* NEW: compass bottom-left */}
+      <img
+        src={Compass}
+        alt="" // decorative
+        aria-hidden
+        className="pointer-events-none select-none
+               absolute -bottom-8 -left-10
+               w-[14rem] sm:w-[18rem] md:w-[22rem]
+               opacity-80"
+      />
+
+      {/* NEW: mountains bottom-right */}
+      <img
+        src={Mountain}
+        alt="" // decorative
+        aria-hidden
+        className="pointer-events-none select-none
+               absolute -bottom-2 -right-4
+               w-[18rem] sm:w-[24rem] md:w-[30rem]
+               opacity-85"
+      />
+
       {/* Header - appears when final elements show */}
       <header
-        className={`fixed top-0 left-0 h-20 w-full bg-gradient-to-b from-[#F5F5DC] via-[#F5F5DC] to-transparent z-50 transition-opacity duration-1000 ease-in-out ${
+        className={`fixed top-0 left-0 h-20 w-full bg-gradient-to-b from-[#FFFCF5] via-[#FFFCF5] to-transparent z-50 transition-opacity duration-1000 ease-in-out ${
           showFinalElements ? "opacity-100" : "opacity-0"
         }`}
       >
@@ -113,7 +140,7 @@ const LandingView: React.FC = () => {
 
         {/* Mobile Menu Dropdown */}
         <div
-          className={`min-[600px]:hidden absolute top-20 left-0 w-full bg-[#F5F5DC] transition-all duration-300 ${
+          className={`min-[600px]:hidden absolute top-20 left-0 w-full bg-[#FFFCF5] transition-all duration-300 ${
             isMobileMenuOpen
               ? "opacity-100 translate-y-0"
               : "opacity-0 -translate-y-4 pointer-events-none"
@@ -156,11 +183,11 @@ const LandingView: React.FC = () => {
 
       {/* Centered content - fades out */}
       <div
-        className={`h-screen flex items-center justify-center transition-opacity duration-1000 ease-in-out ${
+        className={`min-h-[100svh] flex items-center justify-center transition-opacity duration-1000 ease-in-out ${
           moveToFinal ? "opacity-0" : "opacity-100"
         }`}
       >
-        <div className="text-center">
+        <div className="text-center px-6 py-16">
           {/* Bee logo - with placeholder */}
           <div className="mb-8 flex justify-center">
             {showElements ? (

@@ -1,9 +1,11 @@
 import React from "react";
 import Postcard from "../../../common/assets/Postcard.png";
+import MapOutline from "../../../common/assets/OK_Norman_706465_1936_625002.png";
+import Equation from "../../../common/assets/eq.png";
 
 const PhotoCollage: React.FC = () => {
   return (
-    <section className="relative h-[150vh] w-full min-w-[380px] bg-[#F5F5DC] overflow-hidden">
+    <section className="relative min-h-[150svh] w-full min-w-[380px] overflow-hidden m-0 py-16">
       {/* Centered quote above postcards */}
       <div className="absolute top-8 sm:top-5 md:top-10 lg:top-20 xl:top-25 2xl:top-30 left-1/2 -translate-x-1/2 px-4 sm:px-6 z-10">
         <p className="text-center text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl font-medium text-[#3D472C] max-w-xs sm:max-w-sm md:max-w-2xl lg:max-w-4xl leading-relaxed">
@@ -13,7 +15,7 @@ const PhotoCollage: React.FC = () => {
       </div>
 
       {/* Centered postcard cluster */}
-      <div className="absolute inset-0 flex items-center justify-center">
+      <div className="absolute inset-0 z-10 flex items-center justify-center">
         {/* Central cluster of scattered postcards */}
         <div className="relative w-full max-w-[60%]">
           {/* Main center postcard */}
