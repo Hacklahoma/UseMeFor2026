@@ -2,8 +2,19 @@
 @tailwind components;
 @tailwind utilities;
 
-html, body {
+html,
+body {
   min-width: 380px;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 0;
+}
+
+/* Ensure smooth scrolling to sections */
+section[id] {
+  scroll-margin-top: 0;
 }
 
 @keyframes fadeIn {
