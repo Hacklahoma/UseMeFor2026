@@ -1,13 +1,24 @@
 import React from 'react';
 import Postcard from '../../../common/assets/Postcard.png';
-import MapOutline from '../../../common/assets/OK_Norman_706465_1936_625002.png';
-import Equation from '../../../common/assets/eq.png';
 
 const PhotoCollage: React.FC = () => {
+  const postcards = [
+    // Main center postcard
+    { widthClass: 'w-80 md:w-[32rem] lg:w-[40rem]', rotate: 5, top: '50%', left: '50%', opacity: 100, shadow: '2xl', zIndex: 5 },
+    // Top left of cluster
+    { widthClass: 'w-64 md:w-[26rem] lg:w-[32rem]', rotate: -15, top: '35%', left: '35%', opacity: 90, shadow: 'lg', zIndex: 4 },
+    // Top right of cluster
+    { widthClass: 'w-[17rem] md:w-[28rem] lg:w-[34rem]', rotate: 20, top: '38%', left: '63%', opacity: 85, shadow: 'lg', zIndex: 3 },
+    // Bottom left of cluster
+    { widthClass: 'w-[16.5rem] md:w-[27rem] lg:w-[33rem]', rotate: -8, top: '60%', left: '38%', opacity: 88, shadow: 'lg', zIndex: 2 },
+    // Bottom right of cluster
+    { widthClass: 'w-[17.5rem] md:w-[29rem] lg:w-[35rem]', rotate: 12, top: '62%', left: '60%', opacity: 92, shadow: 'lg', zIndex: 1 },
+  ];
+
   return (
     <section className="relative min-h-[150svh] w-full min-w-[380px] overflow-hidden m-0 py-16">
       {/* Centered quote above postcards */}
-      <div className="absolute top-8 sm:top-5 md:top-10 lg:top-20 xl:top-25 2xl:top-30 left-1/2 -translate-x-1/2 px-4 sm:px-6 z-10">
+      <div className="absolute top-8 sm:top-5 md:top-10 lg:top-20 xl:top-25 2xl:top-30 left-1/2 -translate-x-1/2 px-4 sm:px-6 z-20">
         <p className="text-center text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl font-medium text-[#3D472C] max-w-xs sm:max-w-sm md:max-w-2xl lg:max-w-4xl leading-relaxed">
           That's why we're giving you free food, merch, and 24 hours in Norman, Oklahoma to make something cool!
         </p>
@@ -15,49 +26,22 @@ const PhotoCollage: React.FC = () => {
 
       {/* Centered postcard cluster */}
       <div className="absolute inset-0 z-10 flex items-center justify-center">
-        {/* Central cluster of scattered postcards */}
-        <div className="relative w-full max-w-[60%]">
-          {/* Main center postcard */}
-          {/* Previous w value: w-80 */}
-          <img
-            src={Postcard}
-            alt="Vintage postcard"
-            className="w-[20rem] md:w-96 lg:w-[28rem] rotate-[5deg] drop-shadow-2xl select-none pointer-events-none"
-          />
-          
-          {/* Top left of cluster */}
-          {/* Previous w value: w-64 */}
-          <img
-            src={Postcard}
-            alt="Vintage postcard"
-            className="absolute -top-20 -left-24 w-[16rem] md:w-72 rotate-[-15deg] drop-shadow-lg opacity-90 select-none pointer-events-none"
-          />
-          
-          {/* Top right of cluster */}
-          {/* Previous w value: w-68 */}
-          <img
-            src={Postcard}
-            alt="Vintage postcard"
-            className="absolute -top-16 -right-20 w-[17rem] md:w-76 rotate-[20deg] drop-shadow-lg opacity-85 select-none pointer-events-none"
-          />
-          
-          {/* Bottom left of cluster */}
-          {/* Previous w value: w-66 */}
-          <img
-            src={Postcard}
-            alt="Vintage postcard"
-            className="absolute -bottom-16 -left-18 w-[16.5rem] md:w-74 rotate-[-8deg] drop-shadow-lg opacity-88 select-none pointer-events-none"
-          />
-          
-          {/* Bottom right of cluster */}
-          {/* Previous w value: w-70 */}
-          <img
-            src={Postcard}
-            alt="Vintage postcard"
-            className="absolute -bottom-12 -right-16 w-[17.5rem] md:w-78 rotate-[12deg] drop-shadow-lg opacity-92 select-none pointer-events-none"
-          />
-          
-          
+        <div className="relative w-full max-w-5xl h-96">
+          {postcards.map((card, index) => (
+            <img
+              key={index}
+              src={Postcard}
+              alt="Vintage postcard"
+              className={`absolute ${card.widthClass} drop-shadow-${card.shadow} select-none pointer-events-none`}
+              style={{
+                top: card.top,
+                left: card.left,
+                transform: `translate(-50%, -50%) rotate(${card.rotate}deg)`,
+                opacity: card.opacity / 100,
+                zIndex: card.zIndex,
+              }}
+            />
+          ))}
         </div>
       </div>
     </section>
