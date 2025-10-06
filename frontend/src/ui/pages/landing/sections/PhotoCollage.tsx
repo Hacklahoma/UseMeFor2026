@@ -18,38 +18,43 @@ const PhotoCollage: React.FC = () => {
         {/* Central cluster of scattered postcards */}
         <div className="relative w-full max-w-[60%]">
           {/* Main center postcard */}
+          {/* Previous w value: w-80 */}
           <img
             src={Postcard}
             alt="Vintage postcard"
-            className="w-80 md:w-96 lg:w-[28rem] rotate-[5deg] drop-shadow-2xl select-none pointer-events-none"
+            className="w-[20rem] md:w-96 lg:w-[28rem] rotate-[5deg] drop-shadow-2xl select-none pointer-events-none"
           />
           
           {/* Top left of cluster */}
+          {/* Previous w value: w-64 */}
           <img
             src={Postcard}
             alt="Vintage postcard"
-            className="absolute -top-20 -left-24 w-64 md:w-72 rotate-[-15deg] drop-shadow-lg opacity-90 select-none pointer-events-none"
+            className="absolute -top-20 -left-24 w-[16rem] md:w-72 rotate-[-15deg] drop-shadow-lg opacity-90 select-none pointer-events-none"
           />
           
           {/* Top right of cluster */}
+          {/* Previous w value: w-68 */}
           <img
             src={Postcard}
             alt="Vintage postcard"
-            className="absolute -top-16 -right-20 w-68 md:w-76 rotate-[20deg] drop-shadow-lg opacity-85 select-none pointer-events-none"
+            className="absolute -top-16 -right-20 w-[17rem] md:w-76 rotate-[20deg] drop-shadow-lg opacity-85 select-none pointer-events-none"
           />
           
           {/* Bottom left of cluster */}
+          {/* Previous w value: w-66 */}
           <img
             src={Postcard}
             alt="Vintage postcard"
-            className="absolute -bottom-16 -left-18 w-66 md:w-74 rotate-[-8deg] drop-shadow-lg opacity-88 select-none pointer-events-none"
+            className="absolute -bottom-16 -left-18 w-[16.5rem] md:w-74 rotate-[-8deg] drop-shadow-lg opacity-88 select-none pointer-events-none"
           />
           
           {/* Bottom right of cluster */}
+          {/* Previous w value: w-70 */}
           <img
             src={Postcard}
             alt="Vintage postcard"
-            className="absolute -bottom-12 -right-16 w-70 md:w-78 rotate-[12deg] drop-shadow-lg opacity-92 select-none pointer-events-none"
+            className="absolute -bottom-12 -right-16 w-[17.5rem] md:w-78 rotate-[12deg] drop-shadow-lg opacity-92 select-none pointer-events-none"
           />
           
           
