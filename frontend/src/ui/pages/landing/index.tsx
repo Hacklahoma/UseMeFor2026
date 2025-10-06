@@ -5,7 +5,6 @@ import SplashQuote from "./sections/SplashQuote";
 import PhotoCollage from "./sections/PhotoCollage";
 import About from "../about/sections/About";
 import Sponsors from "./sections/Sponsors";
-
 const LandingPage: React.FC = () => {
   return (
     <div className="relative min-h-[100svh] w-full overflow-x-hidden">
@@ -18,7 +17,6 @@ const LandingPage: React.FC = () => {
         />
         <div className="absolute inset-0 bg-[#FFFCF5]/15" aria-hidden />
       </div>
-
       <LandingView />
       <SplashQuote />
       <PhotoCollage />
