@@ -1,10 +1,17 @@
 import React from 'react';
+import Logo1 from '../../../common/assets/LOGO1.png';
 
 const About: React.FC = () => {
   return (
-    <section id="about" className="h-screen w-full min-w-[380px] bg-[#F5F5DC] flex items-center justify-center px-6">
+    <section id="about" className="relative min-h-[100svh] w-full min-w-[380px] m-0 py-16 px-6 overflow-hidden flex items-center justify-center">
       <div className="max-w-5xl mx-auto">
-        <h2 className="text-4xl md:text-5xl font-bold text-[#3D472C] text-center">Hacklahoma</h2>
+        <div className="flex justify-center">
+          <img
+            src={Logo1}
+            alt="Hacklahoma Logo"
+            className="w-40 md:w-56 lg:w-64 h-auto object-contain"
+          />
+        </div>
         <p className="mt-3 text-lg md:text-xl text-[#3D472C] text-center opacity-90">Oklahoma's Largest Hackathon</p>
 
         <div className="mt-10 md:mt-12 text-[#3D472C] text-lg leading-relaxed space-y-4 max-w-3xl mx-auto text-center">
