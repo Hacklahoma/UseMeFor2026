@@ -4,6 +4,7 @@ import LandingView from './sections/LandingView';
 import SplashQuote from './sections/SplashQuote';
 import PhotoCollage from './sections/PhotoCollage';
 import About from '../about/sections/About';
+import Testing from './sections/Testing';
 
 const LandingPage: React.FC = () => {
   return (
@@ -22,6 +23,7 @@ const LandingPage: React.FC = () => {
       <SplashQuote />
       <PhotoCollage />
       <About />
+      <Testing />
     </div>
   );
 };
