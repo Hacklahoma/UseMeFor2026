@@ -4,11 +4,8 @@ import LandingView from './sections/LandingView';
 import SplashQuote from './sections/SplashQuote';
 import PhotoCollage from './sections/PhotoCollage';
 import About from '../about/sections/About';
-import Testing from './sections/Testing';
 
 const LandingPage: React.FC = () => {
-  // Toggle to enable/disable the fruits section at the bottom
-  const showFruitsSection = false;
 
   return (
     <div className="relative min-h-[100svh] w-full overflow-x-hidden">
@@ -26,7 +23,6 @@ const LandingPage: React.FC = () => {
       <SplashQuote />
       <PhotoCollage />
       <About />
-      {showFruitsSection && <Testing />}
     </div>
   );
 };
