@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import BeeLogo from '../../../common/assets/BeeLogo.png';
+import BeeLogo from '../../../common/assets/bee.svg';
 import { useOriginTarget } from './OriginContext';
+import BeeFlightOverlay from './BeeFlightOverlay';
 import MLHBanner2026 from '../../../common/assets/MLHBanner2026.png';
 import Postcard from '../../../common/assets/Postcard.png';
 import MapOutline from '../../../common/assets/OK_Norman_706465_1936_625001.png';
@@ -12,6 +13,7 @@ const LandingView: React.FC = () => {
   const [moveToFinal, setMoveToFinal] = useState(false);
   const [showFinalElements, setShowFinalElements] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [startBeeAnimation, setStartBeeAnimation] = useState(false);
   const fullText = "You are invited to";
   
   // Register the final logo position as an origin target
@@ -42,6 +44,17 @@ const LandingView: React.FC = () => {
 
     return () => clearInterval(interval);
   }, []);
+
+  // Trigger bee animation after final elements are shown
+  useEffect(() => {
+    if (showFinalElements) {
+      // Small delay to ensure final logo is rendered and measurable
+      const timer = setTimeout(() => {
+        setStartBeeAnimation(true);
+      }, 800);
+      return () => clearTimeout(timer);
+    }
+  }, [showFinalElements]);
 
   return (
     // <div id="top" className="h-screen w-full min-w-[380px] bg-[#F5F5DC] relative overflow-hidden">
@@ -132,7 +145,9 @@ const LandingView: React.FC = () => {
               <img 
                 src={BeeLogo} 
                 alt="Hacklahoma Bee Logo" 
-                className="w-16 h-16 object-contain animate-fade-in"
+                className={`w-16 h-16 object-contain animate-fade-in transition-opacity duration-300 ${
+                  startBeeAnimation ? 'opacity-0' : 'opacity-100'
+                }`}
               />
             ) : (
               <div className="w-16 h-16"></div>
@@ -235,6 +250,9 @@ const LandingView: React.FC = () => {
           Register Now
         </button>
       </div>
+
+      {/* Bee Flight Animation Overlay - Completely Isolated */}
+      {startBeeAnimation && <BeeFlightOverlay />}
     </div>
   );
 };
