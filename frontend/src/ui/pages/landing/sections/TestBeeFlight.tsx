@@ -124,8 +124,7 @@ function BeeAnimation() {
 
     return {
       x: [
-        initialPosition.x,           // start at logo position (invisible)
-        centerX,                     // move to center
+        centerX,                     // start at center (visible immediately)
         centerX + loopRadius * 1.5,  // move right
         centerX + loopRadius * 2,    // top right of loop
         centerX + loopRadius * 1.5,  // right side going down
@@ -136,8 +135,7 @@ function BeeAnimation() {
         initialPosition.x,           // back to logo position
       ],
       y: [
-        initialPosition.y,           // start at logo position (invisible)
-        centerY,                     // move to center
+        centerY,                     // start at center (visible immediately)
         centerY - loopRadius * 0.5,  // move up slightly
         centerY - loopRadius * 1.5,  // top of loop
         centerY - loopRadius * 0.5,  // coming down
@@ -148,8 +146,7 @@ function BeeAnimation() {
         initialPosition.y,           // back to logo position
       ],
       rotate: [
-        0,      // start
-        0,      // center (face forward)
+        0,      // start at center (face forward)
         -20,    // tilt right
         -90,    // top of loop (upside down)
         -160,   // coming down right
@@ -160,8 +157,7 @@ function BeeAnimation() {
         -360,   // back to start orientation
       ],
       scale: [
-        1,      // start normal (invisible)
-        1.5,    // big at center
+        1.5,    // start big at center
         1.3,    // 
         1.2,    // smaller at top
         1.2,    //
@@ -172,8 +168,7 @@ function BeeAnimation() {
         1.0,    // final
       ],
       opacity: [
-        0,      // invisible at start
-        1,      // fade in at center
+        1,      // visible immediately at center
         1,      // visible throughout loop
         1,      //
         1,      //
@@ -212,17 +207,8 @@ function BeeAnimation() {
 
     if (editMode === 'setOrigin') {
       setCustomOrigin({ x, y });
-      // Auto-apply to existing waypoints if any exist
-      if (customWaypoints.length >= 2) {
-        const updatedWaypoints = replaceStartEndPosition(customWaypoints, { x, y });
-        const updatedNormalized = replaceStartEndNormalized(normalizedWaypoints, { 
-          x: x / window.innerWidth, 
-          y: y / window.innerHeight, 
-          id: 0 // ID doesn't matter for origin replacement
-        });
-        setCustomWaypoints(updatedWaypoints);
-        setNormalizedWaypoints(updatedNormalized);
-      }
+      // Origin is set but waypoints remain independent
+      // User can manually connect waypoints to origin if desired
     }
   };
 
@@ -376,18 +362,8 @@ function BeeAnimation() {
         y: parsed.y * window.innerHeight
       };
       
-      // Apply the origin to existing waypoints
-      if (customWaypoints.length >= 2) {
-        const updatedWaypoints = replaceStartEndPosition(customWaypoints, absoluteOrigin);
-        const normalizedOrigin = {
-          ...parsed,
-          id: 0 // ID doesn't matter for origin replacement
-        };
-        const updatedNormalized = replaceStartEndNormalized(normalizedWaypoints, normalizedOrigin);
-        
-        setCustomWaypoints(updatedWaypoints);
-        setNormalizedWaypoints(updatedNormalized);
-      }
+      // Origin is imported but waypoints remain independent
+      // User can manually connect waypoints to origin using snapping if desired
       
       setCustomOrigin(absoluteOrigin);
       setShowOriginDialog(false);
@@ -402,8 +378,14 @@ function BeeAnimation() {
   };
 
 
-  // Generate custom path, using custom origin if set
+  // Generate custom path - waypoints are independent, no auto-origin connection
   const getEffectiveWaypoints = () => {
+    // Return waypoints as-is, no automatic origin connection
+    return customWaypoints;
+  };
+
+  // Get waypoints with custom origin applied (only when explicitly needed)
+  const getWaypointsWithOrigin = () => {
     if (customWaypoints.length < 2) return customWaypoints;
     
     if (customOrigin) {
@@ -413,7 +395,7 @@ function BeeAnimation() {
     return customWaypoints;
   };
 
-  // Generate smooth or linear path based on toggle
+  // Generate smooth or linear path based on toggle (waypoints are independent)
   const generateEffectivePath = () => {
     const waypoints = getEffectiveWaypoints();
     
@@ -1208,7 +1190,7 @@ function BeeAnimation() {
             ease: [0.43, 0.13, 0.23, 0.96],
             times: useCustomPath && customPath 
               ? generateLinearTiming(customPath.x.length)
-              : [0, 0.08, 0.16, 0.24, 0.32, 0.4, 0.48, 0.56, 0.68, 0.8],
+              : [0, 0.15, 0.25, 0.35, 0.45, 0.55, 0.65, 0.75, 1.0],
           }}
           onAnimationComplete={() => {
             if (isAnimating) {

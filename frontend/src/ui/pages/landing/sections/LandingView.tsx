@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import BeeLogo from '../../../common/assets/BeeLogo.png';
+import { useOriginTarget } from './OriginContext';
 import MLHBanner2026 from '../../../common/assets/MLHBanner2026.png';
 import Postcard from '../../../common/assets/Postcard.png';
 import MapOutline from '../../../common/assets/OK_Norman_706465_1936_625001.png';
@@ -12,6 +13,9 @@ const LandingView: React.FC = () => {
   const [showFinalElements, setShowFinalElements] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const fullText = "You are invited to";
+  
+  // Register the final logo position as an origin target
+  const logoOriginRef = useOriginTarget('final-logo');
 
   useEffect(() => {
     let currentIndex = 0;
@@ -158,9 +162,12 @@ const LandingView: React.FC = () => {
       </div>
 
       {/* Bee logo in final header position - fades in */}
-      <div className={`fixed top-6 left-6 z-[60] transition-opacity duration-1000 ease-in-out ${
-        showFinalElements ? 'opacity-100' : 'opacity-0'
-      }`}>
+      <div 
+        ref={logoOriginRef as React.RefObject<HTMLDivElement>}
+        className={`fixed top-6 left-6 z-[60] transition-opacity duration-1000 ease-in-out ${
+          showFinalElements ? 'opacity-100' : 'opacity-0'
+        }`}
+      >
         <a href="https://hacklahoma.org" target="_blank" rel="noopener noreferrer" className="block">
           <img 
             src={BeeLogo} 

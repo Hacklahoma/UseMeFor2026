@@ -8,12 +8,14 @@ Professional-grade animation path editor with Bézier curves, normalized coordin
 
 ### File Structure
 ```
-TestBeeFlight.tsx (1060+ lines) - Main component
+TestBeeFlight.tsx (1295+ lines) - Main component
 ├── beeFlight.types.ts - All TypeScript interfaces
 ├── beeFlight.utils.ts - Mathematical functions & utilities  
 ├── hooks/
 │   ├── usePathState.ts - Waypoint & control point state management
 │   └── usePathGeneration.ts - Path calculation & animation logic
+├── OriginContext.tsx - Dynamic origin detection system
+├── FindOriginButton.tsx - Reusable origin detection component
 └── TestBeeFlight.md - This documentation
 ```
 
@@ -22,8 +24,10 @@ TestBeeFlight.tsx (1060+ lines) - Main component
 - ✅ **Normalized Coordinates** - Resolution-independent paths (0-1 scale)
 - ✅ **Dual Storage System** - Absolute + normalized for perfect replotting
 - ✅ **Visual Debug Mode** - Grid, waypoints, control points, direction arrows
-- ✅ **Export/Import System** - Portable JSON format
-- ✅ **Custom Origin Points** - Reusable paths across different logo positions
+- ✅ **Complete Export/Import** - Waypoints + control points + settings in JSON
+- ✅ **Independent Waypoints** - No forced origin connections, full creative freedom
+- ✅ **Origin Snapping** - Optional manual connection via drag-to-snap
+- ✅ **Dynamic Origin Detection** - Components register themselves as origin targets
 - ✅ **Smart Replotting** - Maintains curve shape across screen size changes
 
 ## Architecture Pattern
@@ -242,6 +246,102 @@ const replotFromNormalized = () => {
 - ✅ Maintains exact curve shape even with extreme stretching
 - ✅ Control point adjustments persist through resize cycles
 
+## 🆓 Independent Waypoint System
+
+### Design Philosophy
+Waypoints are completely independent - no automatic origin connections:
+
+```tsx
+const getEffectiveWaypoints = () => {
+  // Return waypoints as-is, no automatic origin connection
+  return customWaypoints; // INDEPENDENT!
+};
+```
+
+### Benefits
+- **🎨 Creative Freedom**: Create any path shape - open paths, spirals, artistic curves
+- **🎯 Precise Control**: Waypoints go exactly where you place them
+- **🔄 Optional Loops**: Manual connection via origin snapping when desired
+- **📍 True WYSIWYG**: Animation follows exact waypoint path
+
+### Origin Snapping
+- **Manual Connection**: Drag waypoints near origin (15px range) to snap
+- **Visual Feedback**: Green pulsing circle shows snap zone
+- **User Choice**: Connect only when intentionally desired
+
+## 🎯 Dynamic Origin Detection System
+
+### Architecture Overview
+The origin detection system uses React Context to allow any component to register itself as an origin target:
+
+```tsx
+// OriginContext.tsx - Core system
+export const OriginProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+  const originsRef = useRef<Map<string, HTMLElement>>(new Map());
+  
+  const registerOrigin = (element: HTMLElement, id: string) => {
+    originsRef.current.set(id, element);
+  };
+  
+  const getOriginCenter = (id?: string) => {
+    const element = originsRef.current.get(id);
+    const rect = element.getBoundingClientRect();
+    return {
+      x: (rect.left + rect.width / 2) / window.innerWidth,   // Normalized
+      y: (rect.top + rect.height / 2) / window.innerHeight   // Normalized
+    };
+  };
+};
+```
+
+### Component Registration
+Any component can register itself as an origin target:
+
+```tsx
+// In LandingView.tsx
+const logoOriginRef = useOriginTarget('final-logo');
+
+<div ref={logoOriginRef}>
+  <img src={BeeLogo} alt="Logo" />
+</div>
+```
+
+### Dynamic Detection
+FindOriginButton automatically discovers registered origins:
+
+```tsx
+// In FindOriginButton.tsx
+const { getOriginCenter, getAllOrigins } = useOriginDetection();
+
+const handleFindOrigin = () => {
+  const origins = getAllOrigins();
+  const bounds = targetOrigin.element.getBoundingClientRect();
+  // Dynamic crosshair positioning based on real element bounds
+};
+```
+
+### Benefits
+- **🎯 No Hardcoding**: Works with any element size/position
+- **🔄 Responsive**: Adapts to CSS changes automatically  
+- **🎨 Reusable**: Same system works across different pages/components
+- **📍 Accurate**: Uses real DOM measurements via getBoundingClientRect()
+- **🛡️ Error Handling**: Graceful fallbacks when no origins registered
+
+### Usage Pattern
+```tsx
+// 1. Wrap page with OriginProvider
+<OriginProvider>
+  <YourPage />
+</OriginProvider>
+
+// 2. Register origin targets in components
+const logoRef = useOriginTarget('my-logo');
+<div ref={logoRef}>Logo</div>
+
+// 3. Use FindOriginButton anywhere
+<FindOriginButton />
+```
+
 ## 🎨 Bézier Curve System
 
 ### Interactive Control Points
@@ -310,12 +410,13 @@ type EditMode = 'none' | 'add' | 'move' | 'remove' | 'center' | 'setOrigin';
 ```
 
 ### Visual Elements
-- **🔵 Blue waypoints**: User-placed points
+- **🔵 Blue waypoints**: User-placed points (independent positioning)
 - **⚪ Gray control points**: Draggable curve handles (Bézier controls)
-- **🟢 Green path**: Animation route (linear or curved)
-- **🔺 Green arrows**: Direction indicators
-- **📍 Pink origin**: Custom start/end point
+- **🟢 Green path**: Animation route (follows exact waypoints)
+- **🔺 Green arrows**: Direction indicators along path
+- **📍 Pink origin**: Optional reference point with snapping
 - **🎯 Yellow crosshair**: True center indicator
+- **🟢 Snap zone**: Pulsing green circle when dragging near origin
 
 ## 📁 TypeScript Interfaces
 
@@ -383,12 +484,15 @@ interface ExportablePathData {
 1. **Main entry point**: `TestBeeFlight.tsx` - Core animation component
 2. **State management**: `hooks/usePathState.ts` - Contains the replot fix
 3. **Path calculations**: `hooks/usePathGeneration.ts` - Math & curve generation
-4. **Type definitions**: `beeFlight.types.ts` - All interfaces
-5. **Utilities**: `beeFlight.utils.ts` - Pure functions
+4. **Origin system**: `OriginContext.tsx` - Dynamic origin detection
+5. **Origin UI**: `FindOriginButton.tsx` - Reusable origin detection component
+6. **Type definitions**: `beeFlight.types.ts` - All interfaces
+7. **Utilities**: `beeFlight.utils.ts` - Pure functions
 
 ### Key Architectural Decisions
 - **Dual storage pattern**: Always store both absolute + normalized coordinates
 - **Hook-based state**: Separated concerns for maintainability  
+- **Context-based origin detection**: Components register themselves dynamically
 - **Immutable updates**: All state changes create new objects/maps
 - **Type safety**: Comprehensive TypeScript coverage
 
@@ -401,6 +505,8 @@ interface ExportablePathData {
 ## ⚠️ Don't Do This
 ❌ Mix viewport units in waypoints (causes teleporting)
 ❌ Modify control points without updating normalized storage
+❌ Force automatic origin connections (breaks creative freedom)
+❌ Hardcode origin positions (use dynamic detection instead)
 ❌ Use `localStorage` (not supported in Claude artifacts)  
 ❌ Forget to set `pointer-events-none` on overlays
 ❌ Use `absolute` positioning for animated element (use `fixed`)
@@ -410,6 +516,11 @@ interface ExportablePathData {
 ## ✅ Best Practices
 ✅ Always update both absolute and normalized coordinates together
 ✅ Use the `replotFromNormalized()` function for window resize handling
+✅ Let waypoints be independent - no forced origin connections
+✅ Use origin snapping for manual connections when desired
+✅ Register components as origin targets with `useOriginTarget(id)`
+✅ Wrap pages with `<OriginProvider>` for origin detection
+✅ Export complete data (waypoints + control points + settings)
 ✅ Leverage TypeScript interfaces for type safety
 ✅ Keep mathematical functions pure (no side effects)
 ✅ Use hooks for state management separation
