@@ -20,31 +20,34 @@ const PhotoCollage: React.FC = () => {
   ];
 
   return (
-    <section className="relative min-h-[150svh] w-full min-w-[380px] overflow-hidden m-0 py-16">
-      {/* Centered quote above postcards */}
-      <div className="absolute top-8 sm:top-5 md:top-10 lg:top-20 xl:top-25 2xl:top-30 left-1/2 -translate-x-1/2 px-4 sm:px-6 z-20">
-        <p className="text-center text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl font-medium text-[#3D472C] max-w-xs sm:max-w-sm md:max-w-2xl lg:max-w-4xl leading-relaxed">
-          That's why we're giving you free food, merch, and 24 hours in Norman, Oklahoma to make something cool!
-        </p>
-      </div>
+    <section className="root-containerrelative min-h-screen w-full min-w-[380px] overflow-hidden m-0 py-16">
+      {/* Proper flexbox container for centering content */}
+      <div className="flexbox-container flex flex-col justify-center items-center h-full min-h-[calc(100vh-8rem)] gap-8 md:gap-12 lg:gap-[8rem]">
+        {/* Quote section - now properly positioned in flex layout */}
+        <div className="px-4 sm:px-6 z-20 max-w-xs sm:max-w-sm md:max-w-2xl lg:max-w-4xl">
+          <p className="text-center text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl font-medium text-[#3D472C] leading-relaxed">
+            That's why we're giving you free food, merch, and 24 hours in Norman, Oklahoma to make something cool!
+          </p>
+        </div>
 
-      {/* Centered photo collage cluster */}
-      <div className="absolute inset-0 z-10 flex items-center justify-center">
-        <motion.div 
-          className="photo-collage-container relative w-full h-96"
-          onViewportEnter={() => setIsInView(true)}
-          onViewportLeave={() => setIsInView(false)}
-          viewport={{ amount: 0.8 }}
-        >
-          {photoItems.map((item, index) => (
-            <PhotoCollageItem
-              key={index}
-              item={item}
-              index={index}
-              isInView={isInView}
-            />
-          ))}
-        </motion.div>
+        {/* Photo collage section - now properly positioned in flex layout */}
+        <div className="photo-collage-parent-container relative w-full z-10 flex items-center justify-center">
+          <motion.div 
+            className="photo-collage-container relative w-full h-96"
+            onViewportEnter={() => setIsInView(true)}
+            onViewportLeave={() => setIsInView(false)}
+            viewport={{ amount: 0.8 }}
+          >
+            {photoItems.map((item, index) => (
+              <PhotoCollageItem
+                key={index}
+                item={item}
+                index={index}
+                isInView={isInView}
+              />
+            ))}
+          </motion.div>
+        </div>
       </div>
     </section>
   );
