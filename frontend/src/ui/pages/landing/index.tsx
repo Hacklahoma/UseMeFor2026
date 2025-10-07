@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import MapOutline from '../../common/assets/OK_Norman_706465_1936_625001.png';
 import LandingView from './sections/LandingView';
 import SplashQuote from './sections/SplashQuote';
@@ -6,6 +7,8 @@ import PhotoCollage from './sections/PhotoCollage';
 import About from '../about/sections/About';
 
 const LandingPage: React.FC = () => {
+  const navigate = useNavigate();
+
   return (
     <div className="relative min-h-[100svh] w-full overflow-x-hidden">
       {/* Global fixed background so sections share the same image */}
@@ -22,6 +25,16 @@ const LandingPage: React.FC = () => {
       <SplashQuote />
       <PhotoCollage />
       <About />
+      
+      {/* Bee Animation Button */}
+      <div className="fixed bottom-8 right-8 z-50">
+        <button 
+          onClick={() => navigate('/bee')}
+          className="px-6 py-3 bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-semibold rounded-lg shadow-lg transition-colors flex items-center gap-2"
+        >
+          🐝 Bee Animation
+        </button>
+      </div>
     </div>
   );
 };

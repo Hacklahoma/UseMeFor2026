@@ -123,7 +123,7 @@ const LandingView: React.FC = () => {
       }`}>
         <div className="text-center px-6 py-16">
           {/* Bee logo - with placeholder */}
-          <div className="mb-8 flex justify-center">
+          <div className="initial-bee-location mb-8 flex justify-center">
             {showElements ? (
               <img 
                 src={BeeLogo} 
