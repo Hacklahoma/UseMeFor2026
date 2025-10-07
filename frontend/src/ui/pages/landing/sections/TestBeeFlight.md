@@ -1,8 +1,30 @@
 ```markdown
-# Framer Motion Logo Flight Animation - Technical Specification
+# Bee Flight Animation System - Complete Technical Specification
 
 ## Core Concept
-Animate element from initial DOM position → path → back to exact starting position. Uses getBoundingClientRect() to capture real pixel coordinates, eliminating unit conversion issues.
+Professional-grade animation path editor with Bézier curves, normalized coordinates, and Figma-style interactions. Animate element from initial DOM position → custom curved/linear path → back to exact starting position. Uses getBoundingClientRect() to capture real pixel coordinates, eliminating unit conversion issues.
+
+## 🏗️ Architecture Overview (2024 Refactor)
+
+### File Structure
+```
+TestBeeFlight.tsx (1060+ lines) - Main component
+├── beeFlight.types.ts - All TypeScript interfaces
+├── beeFlight.utils.ts - Mathematical functions & utilities  
+├── hooks/
+│   ├── usePathState.ts - Waypoint & control point state management
+│   └── usePathGeneration.ts - Path calculation & animation logic
+└── TestBeeFlight.md - This documentation
+```
+
+### Key Features
+- ✅ **Bézier Curve Editor** - Drag control points like Figma/Photoshop
+- ✅ **Normalized Coordinates** - Resolution-independent paths (0-1 scale)
+- ✅ **Dual Storage System** - Absolute + normalized for perfect replotting
+- ✅ **Visual Debug Mode** - Grid, waypoints, control points, direction arrows
+- ✅ **Export/Import System** - Portable JSON format
+- ✅ **Custom Origin Points** - Reusable paths across different logo positions
+- ✅ **Smart Replotting** - Maintains curve shape across screen size changes
 
 ## Architecture Pattern
 
@@ -187,7 +209,117 @@ const absolute = normalized.map(w => ({
 }));
 ```
 
-## TypeScript Interfaces
+## 🔧 The Normalized Control Point Fix
+
+### Problem: Curve Replotting
+When resizing windows and clicking replot, curves would distort because:
+- ❌ Control points stored in absolute pixels only
+- ❌ Interpolated curve points regenerated from wrong control points
+- ❌ Lost curve shape after resize
+
+### Solution: Dual Storage System
+```tsx
+// Store BOTH absolute and normalized control points
+const [customControlPoints, setCustomControlPoints] = useState<Map<string, ControlPointPair>>(new Map());
+const [normalizedControlPoints, setNormalizedControlPoints] = useState<Map<string, NormalizedControlPointPair>>(new Map());
+
+// Replot using normalized data (THE FIX!)
+const replotFromNormalized = () => {
+  // Replot control points from normalized data
+  const newControlPoints = new Map<string, ControlPointPair>();
+  for (const [key, normalizedPair] of normalizedControlPoints) {
+    newControlPoints.set(key, {
+      cp1: denormalizePosition(normalizedPair.cp1),
+      cp2: denormalizePosition(normalizedPair.cp2)
+    });
+  }
+  setCustomControlPoints(newControlPoints);
+};
+```
+
+### Result
+- ✅ Perfect curve preservation across any screen size/ratio
+- ✅ Maintains exact curve shape even with extreme stretching
+- ✅ Control point adjustments persist through resize cycles
+
+## 🎨 Bézier Curve System
+
+### Interactive Control Points
+```tsx
+// Figma-style control point dragging
+const updateControlPoint = (segmentKey: string, controlPoint: 'cp1' | 'cp2', newPosition: Position) => {
+  // Update absolute control points
+  setCustomControlPoints(/* absolute position */);
+  
+  // Update normalized control points (for replotting)
+  const normalized = normalizePosition(newPosition);
+  setNormalizedControlPoints(/* normalized position */);
+};
+```
+
+### Curve Generation
+- **Auto-generated**: Control points at 1/3 distance along segments
+- **User-adjustable**: Drag gray dots to reshape curves
+- **Real-time updates**: Curves redraw as you drag
+- **Persistent storage**: Custom adjustments survive resize/replot
+
+## 📊 State Management Architecture
+
+### usePathState Hook
+```tsx
+const {
+  customWaypoints,           // Absolute pixel coordinates
+  normalizedWaypoints,       // 0-1 scale coordinates
+  customControlPoints,       // Absolute control points
+  normalizedControlPoints,   // 0-1 scale control points
+  replotFromNormalized,      // THE KEY FIX FUNCTION
+  addWaypoint,
+  updateControlPoint,
+  // ... other actions
+} = usePathState();
+```
+
+### usePathGeneration Hook
+```tsx
+const {
+  animationPath,      // Final animation coordinates
+  animationTiming,    // Timing array for Framer Motion
+  directionArrows,    // Arrow positions and angles
+  svgPathString,      // SVG path for visualization
+  pathStats          // Path analytics
+} = usePathGeneration({
+  waypoints,
+  customControlPoints,
+  useSmoothPath,
+  showDirectionArrows
+});
+```
+
+## 🎛️ UI Control System
+
+### Edit Modes
+```tsx
+type EditMode = 'none' | 'add' | 'move' | 'remove' | 'center' | 'setOrigin';
+```
+
+### Control Layout (2x3 Grid)
+```
+[🎯 Custom] [📋 Export]
+[📥 Import] [🔄 Replot]  
+[🌊 Smooth] [➡️ Show Dir]
+```
+
+### Visual Elements
+- **🔵 Blue waypoints**: User-placed points
+- **⚪ Gray control points**: Draggable curve handles (Bézier controls)
+- **🟢 Green path**: Animation route (linear or curved)
+- **🔺 Green arrows**: Direction indicators
+- **📍 Pink origin**: Custom start/end point
+- **🎯 Yellow crosshair**: True center indicator
+
+## 📁 TypeScript Interfaces
+
+### Core Types (beeFlight.types.ts)
 ```tsx
 interface Position {
   x: number;
@@ -198,7 +330,46 @@ interface Waypoint extends Position {
   id: number;
 }
 
-type EditMode = 'none' | 'add' | 'move' | 'remove';
+interface NormalizedWaypoint {
+  x: number; // 0-1 scale
+  y: number; // 0-1 scale  
+  id: number;
+}
+
+interface ControlPointPair {
+  cp1: Position;
+  cp2: Position;
+}
+
+interface NormalizedControlPointPair {
+  cp1: Position; // 0-1 scale
+  cp2: Position; // 0-1 scale
+}
+
+interface CurveSegment {
+  start: Waypoint;
+  end: Waypoint;
+  controlPoint1: Position;
+  controlPoint2: Position;
+  isSmooth: boolean;
+}
+
+interface DirectionArrow {
+  position: Position;
+  angle: number; // in degrees
+}
+
+interface ExportablePathData {
+  waypoints: NormalizedWaypoint[];
+  controlPoints: Map<string, NormalizedControlPointPair>;
+  customOrigin: Position | null;
+  useSmoothPath: boolean;
+  metadata: {
+    version: string;
+    created: Date;
+    totalPoints: number;
+  };
+}
 ```
 
 ## Critical Dependencies
@@ -206,10 +377,42 @@ type EditMode = 'none' | 'add' | 'move' | 'remove';
 - `react`: State + refs + effects
 - `tailwindcss`: Styling (no custom CSS needed)
 
-## Don't Do This
+## 🚀 Future Development Notes
+
+### When Returning to This Project
+1. **Main entry point**: `TestBeeFlight.tsx` - Core animation component
+2. **State management**: `hooks/usePathState.ts` - Contains the replot fix
+3. **Path calculations**: `hooks/usePathGeneration.ts` - Math & curve generation
+4. **Type definitions**: `beeFlight.types.ts` - All interfaces
+5. **Utilities**: `beeFlight.utils.ts` - Pure functions
+
+### Key Architectural Decisions
+- **Dual storage pattern**: Always store both absolute + normalized coordinates
+- **Hook-based state**: Separated concerns for maintainability  
+- **Immutable updates**: All state changes create new objects/maps
+- **Type safety**: Comprehensive TypeScript coverage
+
+### Performance Considerations
+- **Memoized calculations**: `useMemo` for expensive path generation
+- **Efficient re-renders**: Only update when dependencies change
+- **GPU acceleration**: Use `transform` properties for animations
+- **Event delegation**: Single SVG handles all mouse events
+
+## ⚠️ Don't Do This
 ❌ Mix viewport units in waypoints (causes teleporting)
-❌ Use `localStorage` (not supported in Claude artifacts)
+❌ Modify control points without updating normalized storage
+❌ Use `localStorage` (not supported in Claude artifacts)  
 ❌ Forget to set `pointer-events-none` on overlays
 ❌ Use `absolute` positioning for animated element (use `fixed`)
 ❌ Modify waypoints during animation (causes jank)
+❌ Skip the dual storage system (breaks replotting)
+
+## ✅ Best Practices
+✅ Always update both absolute and normalized coordinates together
+✅ Use the `replotFromNormalized()` function for window resize handling
+✅ Leverage TypeScript interfaces for type safety
+✅ Keep mathematical functions pure (no side effects)
+✅ Use hooks for state management separation
+✅ Test curve replotting across different screen sizes
+✅ Maintain backwards compatibility with existing path exports
 ```
