@@ -1,9 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import * as motion from "motion/react-client"
 import type { Variants } from "motion/react"
 import PhotoImage from '../../../common/assets/Postcard.png';
 
 const PhotoCollage: React.FC = () => {
+  const [isInView, setIsInView] = useState(false);
+  
   const photoItems = [
     // Main center photo
     { widthClass: 'w-80 md:w-[32rem] lg:w-[40rem]', rotate: 5, top: '50%', left: '50%', opacity: 100, shadow: '2xl', zIndex: 5 },
@@ -30,40 +32,65 @@ const PhotoCollage: React.FC = () => {
       <div className="absolute inset-0 z-10 flex items-center justify-center">
         <motion.div 
           className="photo-collage-container relative w-full h-96"
-          initial="offscreen"
-          whileInView="onscreen"
-          viewport={{ amount: 0.3 }}
+          onViewportEnter={() => setIsInView(true)}
+          onViewportLeave={() => setIsInView(false)}
+          viewport={{ amount: 0.8 }}
         >
-          {photoItems.map((item, index) => {
-            // Determine if photo is on the right side (top right and bottom right)
-            const isRightSide = index === 2 || index === 4; // Top right and bottom right photos
-            
-            // Calculate delay based on z-index (lower z-index = earlier animation)
-            // Lower z-index should have less delay (animate first)
-            const animationDelay = (item.zIndex - 1) * 0.15;
-            
-            return (
-              <motion.img
-                key={index}
-                src={PhotoImage}
-                alt="Photo collage item"
-                className={`absolute ${item.widthClass} drop-shadow-${item.shadow} select-none pointer-events-none`}
-                style={{
-                  top: item.top,
-                  left: item.left,
-                  opacity: item.opacity / 100,
-                  zIndex: item.zIndex,
-                }}
-                variants={photoItemVariants}
-                custom={{ rotate: item.rotate, delay: animationDelay, fromRight: isRightSide }}
-              />
-            );
-          })}
+          {photoItems.map((item, index) => (
+            <PhotoCollageItem
+              key={index}
+              item={item}
+              index={index}
+              isInView={isInView}
+            />
+          ))}
         </motion.div>
       </div>
     </section>
   );
 };
+
+interface PhotoCollageItemProps {
+  item: {
+    widthClass: string;
+    rotate: number;
+    top: string;
+    left: string;
+    opacity: number;
+    shadow: string;
+    zIndex: number;
+  };
+  index: number;
+  isInView: boolean;
+}
+
+function PhotoCollageItem({ item, index, isInView }: PhotoCollageItemProps) {
+  
+  // Determine if photo is on the right side (top right and bottom right)
+  const isRightSide = index === 2 || index === 4; // Top right and bottom right photos
+  
+  // Calculate delay based on z-index (lower z-index = earlier animation)
+  // Lower z-index should have less delay (animate first)
+  const animationDelay = (item.zIndex - 1) * 0.15;
+  
+  return (
+    <motion.img
+      src={PhotoImage}
+      alt="Photo collage item"
+      className={`absolute ${item.widthClass} drop-shadow-${item.shadow} select-none pointer-events-none`}
+      style={{
+        top: item.top,
+        left: item.left,
+        opacity: item.opacity / 100,
+        zIndex: item.zIndex,
+      }}
+      initial="offscreen"
+      animate={isInView ? "onscreen" : "leaving"}
+      variants={photoItemVariants}
+      custom={{ rotate: item.rotate, delay: animationDelay, fromRight: isRightSide }}
+    />
+  );
+}
 
 // Global variable for off-screen distance
 const OFF_SCREEN_DISTANCE = "100vw";
@@ -87,6 +114,19 @@ const photoItemVariants: Variants = {
       bounce: 0.3,
       duration: 0.8,
       delay: custom.delay, // Stagger the animations
+    },
+  }),
+  leaving: (custom: { rotate: number; delay: number; fromRight: boolean }) => ({
+    x: custom.fromRight ? OFF_SCREEN_DISTANCE : `-${OFF_SCREEN_DISTANCE}`, // Animate back out
+    translateX: "-50%",
+    translateY: "-50%",
+    rotate: 0,
+    opacity: 0,
+    transition: {
+      type: "spring",
+      bounce: 0.2,
+      duration: 0.6,
+      delay: custom.delay * 0.5, // Faster exit stagger
     },
   }),
 };
