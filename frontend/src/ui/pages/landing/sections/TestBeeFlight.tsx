@@ -517,7 +517,63 @@ function BeeAnimation() {
         alert(`Legacy path imported! ${imported.length} waypoints (control points cleared)`);
         
       } else {
-        throw new Error('Invalid format. Expected complete path data or legacy waypoint array.');
+        // Try relaxed import - accept any object with waypoints array
+        if (parsed && typeof parsed === 'object' && Array.isArray(parsed.waypoints)) {
+          try {
+            const imported = importPathFromNormalized(parsed.waypoints);
+            setCustomWaypoints(imported);
+            setNormalizedWaypoints(parsed.waypoints);
+            
+            // Try to import control points if they exist
+            if (parsed.controlPoints && typeof parsed.controlPoints === 'object') {
+              try {
+                const importedControlPoints = importControlPointsFromNormalized(parsed.controlPoints);
+                setCustomControlPoints(importedControlPoints);
+                
+                const normalizedControlMap = new Map<string, {cp1: Position, cp2: Position}>();
+                for (const [key, pair] of Object.entries(parsed.controlPoints)) {
+                  if (pair && typeof pair === 'object' && 'cp1' in pair && 'cp2' in pair) {
+                    normalizedControlMap.set(key, pair as {cp1: Position, cp2: Position});
+                  }
+                }
+                setNormalizedControlPoints(normalizedControlMap);
+              } catch {
+                // If control points fail, just clear them
+                setCustomControlPoints(new Map());
+                setNormalizedControlPoints(new Map());
+              }
+            } else {
+              setCustomControlPoints(new Map());
+              setNormalizedControlPoints(new Map());
+            }
+            
+            // Try to import settings
+            if (typeof parsed.useSmoothPath === 'boolean') {
+              setUseSmoothPath(parsed.useSmoothPath);
+            }
+            
+            // Try to import custom origin
+            if (parsed.customOrigin && typeof parsed.customOrigin === 'object') {
+              setCustomOrigin({
+                x: parsed.customOrigin.x * window.innerWidth,
+                y: parsed.customOrigin.y * window.innerHeight
+              });
+            } else {
+              setCustomOrigin(null);
+            }
+            
+            // Update next ID to avoid conflicts
+            const maxId = Math.max(...imported.map(w => w.id), -1);
+            nextIdRef.current = maxId + 1;
+            
+            alert(`Relaxed import successful! ${imported.length} waypoints imported (some data may have been skipped if invalid)`);
+            
+          } catch (relaxedError) {
+            throw new Error('Could not parse waypoints data. Check format and try again.');
+          }
+        } else {
+          throw new Error('Invalid format. Expected object with waypoints array or legacy waypoint array.');
+        }
       }
       
     } catch (err) {
