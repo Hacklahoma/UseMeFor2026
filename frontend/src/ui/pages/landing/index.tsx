@@ -6,6 +6,7 @@ import PhotoCollage from './sections/PhotoCollage';
 import About from '../about/sections/About';
 
 const LandingPage: React.FC = () => {
+
   return (
     <div className="relative min-h-[100svh] w-full overflow-x-hidden">
       {/* Global fixed background so sections share the same image */}
