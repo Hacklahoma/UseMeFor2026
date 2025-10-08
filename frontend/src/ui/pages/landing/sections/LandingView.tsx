@@ -11,7 +11,7 @@ const LandingView: React.FC = () => {
   const [moveToFinal, setMoveToFinal] = useState(false);
   const [showFinalElements, setShowFinalElements] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const fullText = "You are invited to";
+  const fullText = "WE KINDLY INVITE YOU TO";
 
   useEffect(() => {
     let currentIndex = 0;
@@ -137,7 +137,7 @@ const LandingView: React.FC = () => {
 
           {/* Invitation text */}
           <div className="mb-8">
-            <h2 className="text-xl font-medium text-[#3D472C] mb-2">
+            <h2 className="text-xl font-semibold text-[#575f49] mb-2">
               {displayedText}
             </h2>
           </div>
@@ -145,7 +145,7 @@ const LandingView: React.FC = () => {
           {/* Hacklahoma title - with placeholder */}
           <div>
             {showElements ? (
-              <h1 className="text-5xl lg:text-7xl font-bold text-[#3D472C] animate-fade-in">
+              <h1 className="text-5xl lg:text-7xl font-bold text-[#575f49] animate-fade-in">
                 Hacklahoma
               </h1>
             ) : (
@@ -158,20 +158,20 @@ const LandingView: React.FC = () => {
       </div>
 
       {/* Bee logo in final header position - fades in */}
-      <div className={`fixed top-6 left-6 z-[60] transition-opacity duration-1000 ease-in-out ${
+      <div className={`fixed top-9 left-12 z-[60] transition-opacity duration-1000 ease-in-out ${
         showFinalElements ? 'opacity-100' : 'opacity-0'
       }`}>
         <a href="https://hacklahoma.org" target="_blank" rel="noopener noreferrer" className="block">
           <img 
             src={BeeLogo} 
             alt="Hacklahoma Bee Logo" 
-            className="w-16 h-16 object-contain hover:opacity-80 transition-opacity duration-300"
+            className="w-11 h-11 object-contain hover:opacity-80 transition-opacity duration-300"
           />
         </a>
       </div>
 
       {/* MLH Banner - top right, extends past header */}
-      <div className={`fixed top-0 right-8 z-[60] transition-opacity duration-1000 ease-in-out ${
+      <div className={`fixed top-0 right-7 z-[60] transition-opacity duration-1000 ease-in-out ${
         showFinalElements ? 'opacity-100' : 'opacity-0'
       }`}>
         <a href="https://mlh.io" target="_blank" rel="noopener noreferrer" className="block">
@@ -184,25 +184,27 @@ const LandingView: React.FC = () => {
       </div>
 
       {/* Bottom left content - fades in */}
-      <div className={`absolute bottom-8 left-8 lg:bottom-12 lg:left-12 transition-opacity duration-1000 ease-in-out ${
+      <div className={`absolute bottom-8 left-11 lg:bottom-12 lg:left-12 transition-opacity duration-1000 ease-in-out ${
         showFinalElements ? 'opacity-100' : 'opacity-0'
       }`}>
         <div className="text-left">
           {/* Invitation text */}
           <div className="mb-2">
-            <h2 className="text-xl font-medium text-[#3D472C] mb-2">
-              You are invited to
+            <h2 className="text-xl font-medium text-[#575f49] mb-2">
+              WE KINDLY INVITE YOU TO
             </h2>
           </div>
 
           {/* Hacklahoma title */}
-          <h1 className="text-5xl lg:text-7xl font-bold text-[#3D472C]">
+          <h1 className="text-5xl lg:text-7xl font-semibold text-[#575f49] font-serif"        
+            style={{ transform: 'scaleY(1.05)' }}
+          >
             Hacklahoma
           </h1>
           
           {/* Register Now button - under title on small screens */}
           <div className="mt-6 min-[600px]:hidden">
-            <button className="px-6 py-3 border-2 border-[#3D472C] text-[#3D472C] font-medium hover:bg-[#3D472C] hover:text-[#F5F5DC] transition-colors duration-300 rounded">
+            <button className="px-6 py-3 border-2 border-[#575f49] text-[#575f49] font-medium hover:bg-[#575f49] hover:text-[#F5F5DC] transition-colors duration-300 rounded">
               Register Now
             </button>
           </div>
@@ -224,7 +226,7 @@ const LandingView: React.FC = () => {
       <div className={`absolute bottom-8 right-8 lg:bottom-12 lg:right-12 hidden min-[600px]:block transition-opacity duration-1000 ease-in-out ${
         showFinalElements ? 'opacity-100' : 'opacity-0'
       }`}>
-        <button className="px-6 py-3 border-2 border-[#3D472C] text-[#3D472C] font-medium hover:bg-[#3D472C] hover:text-[#F5F5DC] transition-colors duration-300 rounded">
+        <button className="px-6 py-3 border-2 border-[#575f49] text-[#575f49] font-medium hover:bg-[#575f49] hover:text-[#F5F5DC] transition-colors duration-300 rounded">
           Register Now
         </button>
       </div>
