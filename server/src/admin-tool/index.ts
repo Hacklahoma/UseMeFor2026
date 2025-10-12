@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import mongoose from 'mongoose';
 import { config } from '../config';
 import { logger } from '../config/logger';
 import { databaseSeeder } from '../db/seeds/seed-dev';
@@ -109,12 +110,60 @@ export const createAdminRouter = (): Router => {
     }
   });
 
+  // Update user endpoint
+  router.put('/users/:userId', async (req, res) => {
+    try {
+      const { userId } = req.params;
+      const updates = req.body;
+
+      // Don't allow updating password through this endpoint for security
+      if (updates.password) {
+        delete updates.password;
+      }
+
+      const user = await User.findByIdAndUpdate(
+        userId,
+        { $set: updates },
+        { new: true, runValidators: true }
+      ).select('-password');
+
+      if (!user) {
+        return res.status(404).json({
+          success: false,
+          error: 'User not found'
+        });
+      }
+
+      logger.info(`Updated user: ${user.email}`);
+      
+      return res.json({
+        success: true,
+        message: 'User updated successfully',
+        user
+      });
+    } catch (error) {
+      logger.error('Update user failed', error);
+      return res.status(400).json({
+        success: false,
+        error: error instanceof Error ? error.message : 'User update failed'
+      });
+    }
+  });
+
   router.get('/system-info', (_req, res) => {
-    const systemInfo = getSystemInfo();
-    res.json({
-      success: true,
-      systemInfo
-    });
+    try {
+      const systemInfo = getSystemInfo();
+      res.json({
+        success: true,
+        systemInfo
+      });
+    } catch (error) {
+      logger.error('Failed to get system info', error);
+      res.status(500).json({
+        success: false,
+        error: 'Failed to retrieve system information'
+      });
+    }
   });
 
   // User impersonation endpoints
@@ -246,16 +295,20 @@ export const createAdminRouter = (): Router => {
 
 // System information utility
 export const getSystemInfo = (): object => {
+  // Get basic MongoDB connection info
+  let dbInfo = {
+    connected: mongoose.connection.readyState === 1,
+    uri: config.MONGODB_URI ? 'Connected to Atlas' : 'Not configured',
+    dbName: mongoose.connection.readyState === 1 ? mongoose.connection.db?.databaseName || 'Unknown' : 'Disconnected'
+  };
+
   return {
     nodeVersion: process.version,
     platform: process.platform,
     uptime: process.uptime(),
-    memory: process.memoryUsage(),
+    memoryUsage: process.memoryUsage(),
     environment: config.NODE_ENV,
     timestamp: new Date().toISOString(),
-    database: {
-      connected: true, // TODO: Add actual DB connection check
-      uri: config.MONGODB_URI ? 'Connected to Atlas' : 'Not configured'
-    }
+    database: dbInfo
   };
 };

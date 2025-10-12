@@ -1,3 +1,4 @@
+import mongoose from 'mongoose';
 import User, { UserRole } from '../models/User';
 import { passwordService } from '../../auth/password';
 import { logger } from '../../config/logger';
@@ -189,6 +190,13 @@ export class DatabaseSeeder {
   async getDatabaseStats(): Promise<{
     users: { total: number; hackers: number; staff: number };
     collections: Record<string, number>;
+    database: { 
+      size: number; 
+      storageSize: number; 
+      collections: number; 
+      documents: number;
+      indexes: number;
+    };
   }> {
     try {
       const [totalUsers, hackers, staff] = await Promise.all([
@@ -196,6 +204,30 @@ export class DatabaseSeeder {
         User.countDocuments({ role: UserRole.HACKER }),
         User.countDocuments({ role: UserRole.STAFF })
       ]);
+
+      // Get actual MongoDB database stats
+      let dbStats = {
+        size: 0,
+        storageSize: 0,
+        collections: 0,
+        documents: 0,
+        indexes: 0
+      };
+
+      try {
+        if (mongoose.connection.readyState === 1 && mongoose.connection.db) {
+          const stats = await mongoose.connection.db.stats();
+          dbStats = {
+            size: stats.dataSize || 0,           // Actual data size in bytes
+            storageSize: stats.storageSize || 0, // Storage size including indexes
+            collections: stats.collections || 0,  // Number of collections
+            documents: stats.objects || 0,        // Total documents across all collections
+            indexes: stats.indexes || 0           // Total number of indexes
+          };
+        }
+      } catch (dbStatsError) {
+        logger.warn('Failed to get MongoDB stats, using zeros', dbStatsError);
+      }
 
       return {
         users: {
@@ -206,7 +238,8 @@ export class DatabaseSeeder {
         collections: {
           users: totalUsers
           // Add more collections as they're created
-        }
+        },
+        database: dbStats
       };
     } catch (error) {
       logger.error('Failed to get database stats', error);
