@@ -180,12 +180,20 @@ class AdminGUI {
     try {
       this.showTableLoading('usersTable');
       
-      const response = await this.apiCall('/api/users');
+      const [usersResponse, statsResponse] = await Promise.all([
+        this.apiCall('/api/users'),
+        this.apiCall('/api/dashboard/stats')
+      ]);
       
-      if (response.success) {
-        this.updateUsersTable(response.data);
+      if (usersResponse.success) {
+        this.updateUsersTable(usersResponse.data);
       } else {
         this.showAlert('Failed to load users data', 'warning');
+      }
+      
+      // Update user statistics card
+      if (statsResponse.success) {
+        this.updateUserStats(statsResponse.data, usersResponse.data);
       }
     } catch (error) {
       console.error('Failed to load users:', error);
@@ -238,19 +246,19 @@ class AdminGUI {
   }
 
   updateStatCard(cardId, value, change = null) {
-    const card = document.getElementById(cardId);
-    if (card) {
-      const numberEl = card.querySelector('.stat-number');
-      const changeEl = card.querySelector('.stat-change');
+    const numberEl = document.getElementById(cardId);
+    if (numberEl) {
+      // Animate number change
+      this.animateNumber(numberEl, parseInt(numberEl.textContent) || 0, value);
       
-      if (numberEl) {
-        // Animate number change
-        this.animateNumber(numberEl, parseInt(numberEl.textContent) || 0, value);
-      }
-      
-      if (changeEl && change) {
-        changeEl.textContent = change > 0 ? `+${change}` : change;
-        changeEl.className = `stat-change ${change > 0 ? 'positive' : 'negative'}`;
+      // Update change indicator if provided
+      if (change) {
+        const card = numberEl.parentElement;
+        const changeEl = card?.querySelector('.stat-change');
+        if (changeEl) {
+          changeEl.textContent = change > 0 ? `+${change}` : change;
+          changeEl.className = `stat-change ${change > 0 ? 'positive' : 'negative'}`;
+        }
       }
     }
   }
@@ -316,10 +324,10 @@ class AdminGUI {
         <td>${this.formatDate(user.createdAt)}</td>
         <td>
           <div class="action-buttons">
-            <button class="btn btn-sm btn-secondary" onclick="adminGUI.impersonateUser('${user._id}')">
+            <button class="btn btn-sm btn-secondary" onclick="adminGUI.impersonateUser('${user.id}')">
               Impersonate
             </button>
-            <button class="btn btn-sm btn-warning" onclick="adminGUI.editUser('${user._id}')">
+            <button class="btn btn-sm btn-warning" onclick="adminGUI.editUser('${user.id}')">
               Edit
             </button>
           </div>
@@ -328,6 +336,35 @@ class AdminGUI {
     `).join('');
     
     this.hideTableLoading('usersTable');
+  }
+
+  updateUserStats(statsData, usersData) {
+    const stats = statsData.stats || {};
+    const users = usersData.users || [];
+    
+    // Update basic stats
+    const totalUsersEl = document.getElementById('userStatsTotal');
+    const hackersEl = document.getElementById('userStatsHackers');
+    const staffEl = document.getElementById('userStatsStaff');
+    const weekEl = document.getElementById('userStatsWeek');
+    
+    if (totalUsersEl) totalUsersEl.textContent = stats.users?.total || 0;
+    if (hackersEl) hackersEl.textContent = stats.users?.hackers || 0;
+    if (staffEl) staffEl.textContent = stats.users?.staff || 0;
+    
+    // Calculate users created this week
+    if (weekEl) {
+      const oneWeekAgo = new Date();
+      oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+      
+      const usersThisWeek = users.filter(user => {
+        if (!user.createdAt) return false;
+        const createdDate = new Date(user.createdAt);
+        return createdDate >= oneWeekAgo;
+      }).length;
+      
+      weekEl.textContent = usersThisWeek;
+    }
   }
 
   updateDatabaseStats(data) {

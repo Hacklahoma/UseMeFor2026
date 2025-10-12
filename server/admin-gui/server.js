@@ -313,13 +313,13 @@ app.use((req, res) => {
 
 // Start server
 const server = app.listen(config.PORT, () => {
-  console.log(`🐝 Hacklahoma Admin GUI running on port ${config.PORT}`);
+  console.log(`⚡ Hacklahoma Admin GUI running on port ${config.PORT}`);
   console.log(`🌍 Environment: ${config.NODE_ENV}`);
   console.log(`🔗 Main API: ${config.MAIN_API_URL}`);
   console.log(`🔒 Security headers: ${config.ENABLE_SECURITY_HEADERS ? 'enabled' : 'disabled'}`);
   console.log(`📊 Dashboard: http://localhost:${config.PORT}`);
   console.log('');
-  console.log('🚀 Ready for tech team database management!');
+  console.log('🏈 University of Oklahoma - Ready for tech team database management!');
 });
 
 // Graceful shutdown

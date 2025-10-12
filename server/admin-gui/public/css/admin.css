@@ -1,29 +1,35 @@
-/* Hacklahoma Admin GUI Styles */
-/* Modern dark theme with glassmorphism effects */
+/* University of Oklahoma Admin Dashboard */
+/* Clean, modern design with OU branding */
 
 :root {
-  /* Hacklahoma Brand Colors */
-  --primary-navy: #1a1a2e;
-  --primary-gold: #f4d03f;
-  --success-green: #27ae60;
-  --warning-orange: #f39c12;
-  --danger-red: #e74c3c;
-  --info-blue: #3498db;
+  /* OU Official Brand Colors */
+  --ou-crimson: #841617;
+  --ou-crimson-dark: #6B1214;
+  --ou-crimson-light: #A01C1E;
+  --ou-cream: #FDF9F5;
+  --ou-cream-dark: #F5EDE5;
   
-  /* Dark Theme Colors */
-  --bg-primary: #0f0f23;
-  --bg-secondary: #16213e;
-  --bg-tertiary: #1e2749;
-  --text-primary: #ffffff;
-  --text-secondary: #b8c5d6;
-  --text-muted: #8892b0;
-  --border-color: #2d3748;
-  --shadow-color: rgba(0, 0, 0, 0.3);
+  /* Functional Colors */
+  --success-green: #2E7D32;
+  --warning-orange: #ED6C02;
+  --danger-red: #D32F2F;
+  --info-blue: #0288D1;
   
-  /* Glassmorphism */
-  --glass-bg: rgba(255, 255, 255, 0.05);
-  --glass-border: rgba(255, 255, 255, 0.1);
-  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  /* Light Theme Colors */
+  --bg-primary: #FFFFFF;
+  --bg-secondary: #F8F9FA;
+  --bg-tertiary: #F5F5F5;
+  --text-primary: #212121;
+  --text-secondary: #666666;
+  --text-muted: #999999;
+  --border-color: #E0E0E0;
+  --shadow-color: rgba(0, 0, 0, 0.1);
+  
+  /* Card Effects */
+  --card-bg: #FFFFFF;
+  --card-border: #E5E5E5;
+  --card-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  --card-hover-shadow: 0 4px 16px rgba(132, 22, 23, 0.15);
 }
 
 * {
@@ -34,13 +40,13 @@
 
 body {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+  background: var(--bg-secondary);
   color: var(--text-primary);
   min-height: 100vh;
   line-height: 1.6;
 }
 
-/* Background Pattern */
+/* Subtle Background Pattern */
 body::before {
   content: '';
   position: fixed;
@@ -49,9 +55,10 @@ body::before {
   width: 100%;
   height: 100%;
   background-image: 
-    radial-gradient(circle at 25% 25%, var(--primary-gold) 0%, transparent 50%),
-    radial-gradient(circle at 75% 75%, var(--info-blue) 0%, transparent 50%);
-  opacity: 0.03;
+    linear-gradient(90deg, var(--border-color) 1px, transparent 1px),
+    linear-gradient(var(--border-color) 1px, transparent 1px);
+  background-size: 50px 50px;
+  opacity: 0.3;
   z-index: -1;
 }
 
@@ -64,14 +71,13 @@ body::before {
 
 /* Header */
 .header {
-  background: var(--glass-bg);
-  backdrop-filter: blur(20px);
-  border-bottom: 1px solid var(--glass-border);
+  background: var(--ou-crimson);
+  border-bottom: 3px solid var(--ou-crimson-dark);
   padding: 1rem 0;
   position: sticky;
   top: 0;
   z-index: 100;
-  box-shadow: var(--glass-shadow);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
 
 .header-content {
@@ -86,44 +92,41 @@ body::before {
   gap: 12px;
   font-size: 1.5rem;
   font-weight: 700;
-  color: var(--primary-gold);
-}
-
-.logo::before {
-  content: '🐝';
-  font-size: 2rem;
+  color: var(--ou-cream);
+  letter-spacing: 0.5px;
 }
 
 .nav-tabs {
   display: flex;
-  gap: 2px;
-  background: var(--glass-bg);
-  padding: 4px;
-  border-radius: 12px;
-  border: 1px solid var(--glass-border);
+  gap: 4px;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 6px;
+  border-radius: 10px;
 }
 
 .nav-tab {
-  padding: 12px 24px;
+  padding: 10px 20px;
   background: transparent;
   border: none;
-  color: var(--text-secondary);
+  color: var(--ou-cream);
   cursor: pointer;
-  border-radius: 8px;
+  border-radius: 6px;
   font-weight: 500;
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
   position: relative;
+  opacity: 0.85;
 }
 
 .nav-tab:hover {
-  color: var(--text-primary);
-  background: var(--glass-bg);
+  opacity: 1;
+  background: rgba(255, 255, 255, 0.15);
 }
 
 .nav-tab.active {
-  color: var(--primary-gold);
-  background: var(--glass-bg);
-  box-shadow: 0 4px 12px rgba(244, 208, 63, 0.2);
+  background: var(--ou-cream);
+  color: var(--ou-crimson);
+  opacity: 1;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .user-info {
@@ -138,16 +141,17 @@ body::before {
   align-items: center;
   gap: 8px;
   padding: 8px 16px;
-  background: var(--glass-bg);
+  background: rgba(255, 255, 255, 0.15);
   border-radius: 20px;
-  border: 1px solid var(--glass-border);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: var(--ou-cream);
 }
 
 .status-dot {
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: var(--success-green);
+  background: #4CAF50;
   animation: pulse 2s infinite;
 }
 
@@ -178,18 +182,18 @@ body::before {
 
 /* Cards */
 .card {
-  background: var(--glass-bg);
-  backdrop-filter: blur(20px);
-  border: 1px solid var(--glass-border);
-  border-radius: 16px;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 12px;
   padding: 24px;
-  box-shadow: var(--glass-shadow);
+  box-shadow: var(--card-shadow);
   transition: all 0.3s ease;
 }
 
 .card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+  box-shadow: var(--card-hover-shadow);
+  border-color: var(--ou-crimson-light);
 }
 
 .card-header {
@@ -240,7 +244,7 @@ body::before {
 .stat-number {
   font-size: 2.5rem;
   font-weight: 700;
-  color: var(--primary-gold);
+  color: var(--ou-crimson);
   display: block;
   margin-bottom: 8px;
 }
@@ -286,24 +290,25 @@ body::before {
 }
 
 .btn-primary {
-  background: var(--primary-gold);
-  color: var(--primary-navy);
+  background: var(--ou-crimson);
+  color: white;
 }
 
 .btn-primary:hover {
-  background: #f1c40f;
+  background: var(--ou-crimson-dark);
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(244, 208, 63, 0.3);
+  box-shadow: 0 4px 12px rgba(132, 22, 23, 0.3);
 }
 
 .btn-secondary {
-  background: var(--glass-bg);
-  color: var(--text-primary);
-  border: 1px solid var(--glass-border);
+  background: white;
+  color: var(--ou-crimson);
+  border: 2px solid var(--ou-crimson);
 }
 
 .btn-secondary:hover {
-  background: var(--bg-tertiary);
+  background: var(--ou-cream);
+  border-color: var(--ou-crimson-dark);
 }
 
 .btn-success {
@@ -358,8 +363,8 @@ body::before {
 .form-input {
   width: 100%;
   padding: 12px 16px;
-  background: var(--glass-bg);
-  border: 1px solid var(--glass-border);
+  background: white;
+  border: 2px solid var(--border-color);
   border-radius: 8px;
   color: var(--text-primary);
   font-size: 0.875rem;
@@ -368,8 +373,8 @@ body::before {
 
 .form-input:focus {
   outline: none;
-  border-color: var(--primary-gold);
-  box-shadow: 0 0 0 3px rgba(244, 208, 63, 0.1);
+  border-color: var(--ou-crimson);
+  box-shadow: 0 0 0 3px rgba(132, 22, 23, 0.1);
 }
 
 .form-input::placeholder {
@@ -379,11 +384,18 @@ body::before {
 .form-select {
   width: 100%;
   padding: 12px 16px;
-  background: var(--glass-bg);
-  border: 1px solid var(--glass-border);
+  background: white;
+  border: 2px solid var(--border-color);
   border-radius: 8px;
   color: var(--text-primary);
   cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.form-select:focus {
+  outline: none;
+  border-color: var(--ou-crimson);
+  box-shadow: 0 0 0 3px rgba(132, 22, 23, 0.1);
 }
 
 /* Tables */
@@ -396,14 +408,14 @@ body::before {
 .table {
   width: 100%;
   border-collapse: collapse;
-  background: var(--glass-bg);
+  background: white;
 }
 
 .table th,
 .table td {
   padding: 16px;
   text-align: left;
-  border-bottom: 1px solid var(--glass-border);
+  border-bottom: 1px solid var(--border-color);
 }
 
 .table th {
@@ -420,7 +432,7 @@ body::before {
 }
 
 .table tbody tr:hover {
-  background: rgba(255, 255, 255, 0.02);
+  background: var(--ou-cream);
 }
 
 /* Loading States */
@@ -435,8 +447,8 @@ body::before {
 .spinner {
   width: 24px;
   height: 24px;
-  border: 2px solid var(--glass-border);
-  border-top: 2px solid var(--primary-gold);
+  border: 2px solid var(--border-color);
+  border-top: 2px solid var(--ou-crimson);
   border-radius: 50%;
   animation: spin 1s linear infinite;
   margin-right: 12px;
@@ -529,7 +541,8 @@ body::before {
   font-size: 2rem;
   font-weight: 700;
   margin-bottom: 8px;
-  color: var(--primary-gold);
+  color: var(--ou-crimson);
+  letter-spacing: 1px;
 }
 
 .login-subtitle {
