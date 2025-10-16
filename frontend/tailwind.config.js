@@ -6,8 +6,9 @@ module.exports = {
     theme: {
         extend: {
             fontFamily: {
-                sans: ['"Source Sans 3"', 'ui-sans-serif', 'system-ui', 'sans-serif']
-            }
+                sans: ['"Source Code Pro"', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+                serif: ['"Source Serif 4"', 'ui-serif', 'serif']
+              }     
         },
     },
     plugins: [
