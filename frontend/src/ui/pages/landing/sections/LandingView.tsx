@@ -3,7 +3,6 @@ import BeeLogo from "../../../common/assets/BeeLogo.png";
 import MLHBanner2026 from "../../../common/assets/MLHBanner2026.png";
 import Postcard from "../../../common/assets/Postcard.png";
 import MapOutline from "../../../common/assets/OK_Norman_706465_1936_625001.png";
-import Compass from "../../../common/assets/eq2.png";
 import Mountain from "../../../common/assets/mountains.png";
 const LandingView: React.FC = () => {
   const [displayedText, setDisplayedText] = useState("");
@@ -11,7 +10,7 @@ const LandingView: React.FC = () => {
   const [moveToFinal, setMoveToFinal] = useState(false);
   const [showFinalElements, setShowFinalElements] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const fullText = "You are invited to";
+  const fullText = "WE KINDLY INVITE YOU TO";
 
   useEffect(() => {
     let currentIndex = 0;
@@ -30,11 +29,11 @@ const LandingView: React.FC = () => {
             // Show final elements after fade out completes
             setTimeout(() => {
               setShowFinalElements(true);
-            }, 1200);
-          }, 1500);
-        }, 500);
+            }, 700);
+          }, 800);
+        }, 800);
       }
-    }, 100);
+    }, 60);
 
     return () => clearInterval(interval);
   }, []);
@@ -47,24 +46,13 @@ const LandingView: React.FC = () => {
     >
       {/* Uses global background from page wrapper */}
 
-      {/* NEW: compass bottom-left */}
-      <img
-        src={Compass}
-        alt="" // decorative
-        aria-hidden
-        className="pointer-events-none select-none
-               absolute -bottom-8 -left-10
-               w-[14rem] sm:w-[18rem] md:w-[22rem]
-               opacity-80"
-      />
-
       {/* NEW: mountains bottom-right */}
       <img
         src={Mountain}
         alt="" // decorative
         aria-hidden
         className="pointer-events-none select-none
-               absolute -bottom-2 -right-4
+               absolute -bottom-12 -right-4
                w-[18rem] sm:w-[24rem] md:w-[30rem]
                opacity-85"
       />
@@ -75,43 +63,46 @@ const LandingView: React.FC = () => {
           showFinalElements ? "opacity-100" : "opacity-0"
         }`}
       >
-        <div className="h-full flex items-center justify-center px-6">
-          {/* Desktop Navigation - centered */}
-          <nav className="hidden min-[600px]:flex items-center">
-            <div className="flex items-center space-x-8">
-              <a
-                href="#top"
-                className="text-[#3D472C] hover:text-[#2a3a1f] transition-colors"
-              >
-                Home
-              </a>
-              <a
-                href="#about"
-                className="text-[#3D472C] hover:text-[#2a3a1f] transition-colors"
-              >
-                About
-              </a>
-              <a
-                href="#"
-                className="text-[#3D472C] hover:text-[#2a3a1f] transition-colors"
-              >
-                FAQ
-              </a>
-              <a
-                href="#sponsors"
-                className="text-[#3D472C] hover:text-[#2a3a1f] transition-colors"
-              >
-                Sponsors
-              </a>
-            </div>
-            <div className="ml-12 lg:ml-16 xl:ml-20 2xl:ml-24">
-              <a
-                href="#"
-                className="text-[#3D472C] hover:text-[#2a3a1f] transition-colors font-medium"
-              >
-                Login
-              </a>
-            </div>
+        <div className="h-full flex top-1 items-center justify-start px-6 relative">
+          {/* Centered bee icon */}
+          <a
+            href="https://hacklahoma.org"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 block"
+          >
+            <img
+              src={BeeLogo}
+              alt="Hacklahoma Bee Logo"
+              className="w-11 h-11 object-contain"
+            />
+          </a>
+          {/* Desktop Navigation - left & stacked */}
+          <nav className="hidden min-[600px]:flex flex-col items-start space-y-[-0.25rem] mt-8 ml-3">
+            <a
+              href="#top"
+              className="text-[#3D472C] hover:text-[#2a3a1f] transition-colors"
+            >
+              home
+            </a>
+            <a
+              href="#"
+              className="text-[#3D472C] hover:text-[#2a3a1f] transition-colors"
+            >
+              login
+            </a>
+            <a
+              href="#"
+              className="text-[#3D472C] hover:text-[#2a3a1f] transition-colors"
+            >
+              faq
+            </a>
+            <a
+              href="#"
+              className="text-[#3D472C] hover:text-[#2a3a1f] transition-colors"
+            >
+              apply
+            </a>
           </nav>
 
           {/* Mobile Menu Button - only on thin screens */}
@@ -146,36 +137,30 @@ const LandingView: React.FC = () => {
               : "opacity-0 -translate-y-4 pointer-events-none"
           }`}
         >
-          <nav className="flex flex-col py-4 items-center">
+          <nav className="flex flex-col py-4 items-start pl-6 space-y-1">
             <a
               href="#top"
-              className="px-6 py-3 text-[#3D472C] hover:bg-[#e8e8c7] transition-colors"
+              className="px-0 py-1 text-[#3D472C] hover:bg-[#e8e8c7] transition-colors"
             >
-              Home
-            </a>
-            <a
-              href="#about"
-              className="px-6 py-3 text-[#3D472C] hover:bg-[#e8e8c7] transition-colors"
-            >
-              About
+              home
             </a>
             <a
               href="#"
-              className="px-6 py-3 text-[#3D472C] hover:bg-[#e8e8c7] transition-colors"
+              className="px-0 py-1 text-[#3D472C] hover:bg-[#e8e8c7] transition-colors"
             >
-              FAQ
-            </a>
-            <a
-              href="#sponsors"
-              className="px-6 py-3 text-[#3D472C] hover:bg-[#e8e8c7] transition-colors"
-            >
-              Sponsors
+              login
             </a>
             <a
               href="#"
-              className="px-6 py-3 text-[#3D472C] hover:bg-[#e8e8c7] transition-colors font-medium"
+              className="px-0 py-1 text-[#3D472C] hover:bg-[#e8e8c7] transition-colors"
             >
-              Login
+              faq
+            </a>
+            <a
+              href="#"
+              className="px-0 py-1 text-[#3D472C] hover:bg-[#e8e8c7] transition-colors"
+            >
+              apply
             </a>
           </nav>
         </div>
@@ -203,7 +188,7 @@ const LandingView: React.FC = () => {
 
           {/* Invitation text */}
           <div className="mb-8">
-            <h2 className="text-xl font-medium text-[#3D472C] mb-2">
+            <h2 className="text-xl font-semibold text-[#575f49] mb-2">
               {displayedText}
             </h2>
           </div>
@@ -211,7 +196,10 @@ const LandingView: React.FC = () => {
           {/* Hacklahoma title - with placeholder */}
           <div>
             {showElements ? (
-              <h1 className="text-5xl lg:text-7xl font-bold text-[#3D472C] animate-fade-in">
+              <h1
+                className="text-6xl lg:text-8xl font-semibold text-[#575f49] font-serif animate-fade-in mt-2"
+                style={{ transform: "scaleX(0.97)" }}
+              >
                 Hacklahoma
               </h1>
             ) : (
@@ -223,29 +211,9 @@ const LandingView: React.FC = () => {
         </div>
       </div>
 
-      {/* Bee logo in final header position - fades in */}
-      <div
-        className={`fixed top-6 left-6 z-[60] transition-opacity duration-1000 ease-in-out ${
-          showFinalElements ? "opacity-100" : "opacity-0"
-        }`}
-      >
-        <a
-          href="https://hacklahoma.org"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="block"
-        >
-          <img
-            src={BeeLogo}
-            alt="Hacklahoma Bee Logo"
-            className="w-16 h-16 object-contain hover:opacity-80 transition-opacity duration-300"
-          />
-        </a>
-      </div>
-
       {/* MLH Banner - top right, extends past header */}
       <div
-        className={`fixed top-0 right-8 z-[60] transition-opacity duration-1000 ease-in-out ${
+        className={`fixed top-0 right-7 z-[60] transition-opacity duration-1000 ease-in-out ${
           showFinalElements ? "opacity-100" : "opacity-0"
         }`}
       >
@@ -265,26 +233,29 @@ const LandingView: React.FC = () => {
 
       {/* Bottom left content - fades in */}
       <div
-        className={`absolute bottom-8 left-8 lg:bottom-12 lg:left-12 transition-opacity duration-1000 ease-in-out ${
+        className={`absolute bottom-8 left-0 lg:bottom-12 lg:left-12 transition-opacity duration-1000 ease-in-out ${
           showFinalElements ? "opacity-100" : "opacity-0"
         }`}
       >
         <div className="text-left">
           {/* Invitation text */}
-          <div className="mb-2">
-            <h2 className="text-xl font-medium text-[#3D472C] mb-2">
-              You are invited to
+          <div className="mb-2 ml-5">
+            <h2 className="text-2xl font-semibold text-[#575f49]">
+              WE KINDLY INVITE YOU TO
             </h2>
           </div>
 
           {/* Hacklahoma title */}
-          <h1 className="text-5xl lg:text-7xl font-bold text-[#3D472C]">
+          <h1
+            className="text-5xl lg:text-8xl font-semibold text-[#575f49] font-serif"
+            style={{ transform: "scaleX(0.95)" }}
+          >
             Hacklahoma
           </h1>
 
           {/* Register Now button - under title on small screens */}
           <div className="mt-6 min-[600px]:hidden">
-            <button className="px-6 py-3 border-2 border-[#3D472C] text-[#3D472C] font-medium hover:bg-[#3D472C] hover:text-[#F5F5DC] transition-colors duration-300 rounded">
+            <button className="px-6 py-3 border-2 border-[#575f49] text-[#575f49] font-medium hover:bg-[#575f49] hover:text-[#F5F5DC] transition-colors duration-300 rounded">
               Register Now
             </button>
           </div>
@@ -300,7 +271,7 @@ const LandingView: React.FC = () => {
         <img
           src={Postcard}
           alt="Vintage postcard"
-          className="w-[40.56rem] md:w-[47.32rem] lg:w-[54.08rem] xl:w-[60.84rem] rotate-[-1deg] drop-shadow-2xl select-none pointer-events-none"
+          className="w-[32.5rem] md:w-[38rem] lg:w-[43rem] xl:w-[49rem] rotate-[-1deg] drop-shadow-2xl select-none pointer-events-none"
         />
       </div>
 
@@ -310,7 +281,7 @@ const LandingView: React.FC = () => {
           showFinalElements ? "opacity-100" : "opacity-0"
         }`}
       >
-        <button className="px-6 py-3 border-2 border-[#3D472C] text-[#3D472C] font-medium hover:bg-[#3D472C] hover:text-[#F5F5DC] transition-colors duration-300 rounded">
+        <button className="px-6 py-3 border-2 border-[#575f49] text-[#575f49] font-medium hover:bg-[#575f49] hover:text-[#F5F5DC] transition-colors duration-300 rounded">
           Register Now
         </button>
       </div>
