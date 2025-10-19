@@ -37,11 +37,11 @@ const sponsorLogos: SponsorLogo[] = [
 
 const Sponsors: React.FC = () => {
   return (
-    <section id="sponsors" className="py-16 px-4 sm:px-6 lg:px-8 bg-[#F5F5DC]">
+    <section id="sponsors" className="py-16 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
         {/* Title */}
         <div className="mb-12">
-          <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-[#3D472C] italic">
+          <h2 className="text-4xl md:text-5xl lg:text-6xl font-semibold text-[#3D472C] font-serif">
             Sponsors
           </h2>
         </div>
