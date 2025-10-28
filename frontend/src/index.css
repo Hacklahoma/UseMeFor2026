@@ -9,6 +9,7 @@ html, body {
 html {
   scroll-behavior: smooth;
   scroll-padding-top: 0;
+  font-weight: 600;
 }
 
 /* Ensure smooth scrolling to sections */
