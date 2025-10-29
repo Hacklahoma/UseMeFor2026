@@ -8,7 +8,10 @@ module.exports = {
             fontFamily: {
                 sans: ['"Source Code Pro"', 'ui-sans-serif', 'system-ui', 'sans-serif'],
                 serif: ['"Source Serif 4"', 'ui-serif', 'serif']
-              }     
+              },
+            screens: {
+                'custom600': '600px',
+            }     
         },
     },
     plugins: [
