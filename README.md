@@ -148,6 +148,24 @@ The application uses a comprehensive user model with the following fields:
 
 This project is licensed under the MIT License - see the LICENSE file for details.
 
+## 📚 **Documentation**
+
+### **Comprehensive Guides**
+- **[Architecture Guide](ARCHITECTURE.md)** - Complete system architecture and technical overview
+- **[API Documentation](API_DOCUMENTATION.md)** - Comprehensive API reference and examples
+- **[Deployment Guide](DEPLOYMENT.md)** - Production deployment and environment setup
+- **[Development Guide](DEVELOPMENT.md)** - Development workflow and coding standards
+- **[Database Schema](DATABASE_SCHEMA.md)** - Database structure and query patterns
+- **[Security Documentation](SECURITY.md)** - Security measures and best practices
+- **[Troubleshooting Guide](TROUBLESHOOTING.md)** - Common issues and solutions
+
+### **Admin Tools**
+- **[Admin GUI README](server/admin-gui/README.md)** - Admin interface specifications
+- **[Admin GUI Usage](server/admin-gui/USAGE.md)** - Admin interface usage guide
+
+### **Technical Blueprint**
+- **[NOTES.md](NOTES.md)** - Complete technical blueprint and implementation guide
+
 ## Contact
 
 For questions about the Hacklahoma 2026 website, please contact the development team.
