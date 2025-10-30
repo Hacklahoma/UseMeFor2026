@@ -3,36 +3,75 @@ import * as motion from "motion/react-client"
 import type { Variants } from "motion/react"
 import PhotoImage from '../../../common/assets/Postcard.png';
 import CollageArrow from '../../../common/assets/nav-arrow.svg';
+
+// Global scale value for all photo items
+const SCALE_VALUE = 0.7;
+
 const PhotoCollage: React.FC = () => {
   const [isInView, setIsInView] = useState(false);
   
-  const photoItems = [
+  // Base photo configuration - all cards have same size now
+  const basePhotoItems = [
     // Main center photo
-    { widthClass: 'w-80 md:w-[32rem] lg:w-[40rem]', rotate: 1.5, top: '50%', left: '50%', opacity: 100, shadow: '2xl', zIndex: 5 },
+    { rotate: 0, top: '50%', left: '50%', opacity: 100, shadow: '2xl', baseZIndex: 5 },
     // Top left photo
-    { widthClass: 'w-64 md:w-[26rem] lg:w-[32rem]', rotate: -13, top: '35%', left: '35%', opacity: 90, shadow: 'lg', zIndex: 4 },
+    { rotate: -8, top: '40%', left: '42%', opacity: 90, shadow: 'lg', baseZIndex: 4 },
     // Top right photo
-    { widthClass: 'w-[17rem] md:w-[28rem] lg:w-[34rem]', rotate: 14, top: '38%', left: '63%', opacity: 85, shadow: 'lg', zIndex: 3 },
+    { rotate: 14, top: '39%', left: '60%', opacity: 85, shadow: 'lg', baseZIndex: 3 },
     // Bottom left photo
-    { widthClass: 'w-[16.5rem] md:w-[27rem] lg:w-[33rem]', rotate: -8, top: '60%', left: '38%', opacity: 88, shadow: 'lg', zIndex: 2 },
+    { rotate: -8, top: '60%', left: '40%', opacity: 88, shadow: 'lg', baseZIndex: 2 },
     // Bottom right photo
-    { widthClass: 'w-[17.5rem] md:w-[29rem] lg:w-[35rem]', rotate: 12, top: '62%', left: '60%', opacity: 92, shadow: 'lg', zIndex: 1 },
+    { rotate: 12, top: '62%', left: '60%', opacity: 92, shadow: 'lg', baseZIndex: 1 },
   ];
 
+  // State to track current zIndex rotation - maps card index to current zIndex
+  // Initial: [5, 4, 3, 2, 1] (card 0 has z5, card 1 has z4, etc.)
+  const [zIndexMap, setZIndexMap] = useState<number[]>([5, 4, 3, 2, 1]);
+
+  // Shuffle function: move highest zIndex to the back (becomes zIndex 1)
+  const shuffleForward = () => {
+    setZIndexMap(prev => {
+      // Map each zIndex: 5→1, others increment
+      return prev.map(zIndex => zIndex === 5 ? 1 : zIndex + 1);
+    });
+  };
+
+  // Shuffle function: move lowest zIndex to the front (becomes zIndex 5)
+  const shuffleBackward = () => {
+    setZIndexMap(prev => {
+      // Map each zIndex: 1→5, others decrement
+      return prev.map(zIndex => zIndex === 1 ? 5 : zIndex - 1);
+    });
+  };
+
+  // Create photo items with current zIndex mapping and same size
+  const photoItems = basePhotoItems.map((item, index) => ({
+    ...item,
+    widthClass: 'w-80 md:w-[32rem] lg:w-[40rem]', // Same size for all
+    zIndex: zIndexMap[index],
+  }));
+
   return (
-    <section className="root-containerrelative min-h-screen w-full min-w-[380px] overflow-hidden m-0 py-16">
+    <section className="root-containerrelative h-auto w-full min-w-[380px] overflow-hidden m-0">
+
       {/* Proper flexbox container for centering content */}
-      <div className="flexbox-container flex flex-col justify-center items-center h-full min-h-[calc(100vh-8rem)] gap-[2rem] sm:gap-16 md:gap-[8rem] lg:gap-24 xl:gap-20">
+      <div className="flexbox-container flex flex-col justify-center items-center h-full min-h-[calc(100vh-8rem)] ">
+
         {/* Quote section - now properly positioned in flex layout */}
         <div className="px-4 sm:px-6 z-20 max-w-xs sm:max-w-sm md:max-w-2xl lg:max-w-4xl">
+
           <p className="text-center text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl font-medium text-[#3D472C] leading-relaxed">
             That's why we're giving you free food, merch, and 24 hours in Norman, Oklahoma to make something cool!
           </p>
+
         </div>
+
         <div className="photo-collage-parent-container relative w-full z-10 flex items-center justify-center">
+
           <motion.button 
-            className="left-arrow relative opacity-20 cursor-pointer bg-transparent border-none p-0 hidden custom600:flex items-center justify-center ml-10"
+            className="left-arrow relative opacity-20 cursor-pointer bg-transparent border-none p-0 hidden custom600:flex items-center justify-center mr-5"
             aria-label="Previous photo"
+            onClick={shuffleBackward}
             whileHover={{ 
               opacity: .8, 
               scale: 1.15
@@ -43,32 +82,33 @@ const PhotoCollage: React.FC = () => {
             <motion.img 
               src={CollageArrow} 
               alt="Left arrow" 
-              className="w-16 h-16 md:w-20 md:h-20 lg:w-24 lg:h-24 xl:w-24 xl:h-24 pointer-events-none aspect-square object-contain" 
+              className="w-16 h-16 md:w-20 md:h-20 pointer-events-none aspect-square object-contain" 
               initial={{ rotate: -90 }}
               animate={{ rotate: -90 }}
             />
           </motion.button>
+
           {/* Photo collage section - now properly positioned in flex layout */}
-          <div className="photo-collage-animation-container relative w-full h-auto z-10 flex items-center justify-center">
-            <motion.div 
-              className="photo-collage-container relative w-full h-96"
-              onViewportEnter={() => setIsInView(true)}
-              onViewportLeave={() => setIsInView(false)}
-              viewport={{ amount: 0.8 }}
-            >
-              {photoItems.map((item, index) => (
-                <PhotoCollageItem
-                  key={index}
-                  item={item}
-                  index={index}
-                  isInView={isInView}
-                />
-              ))}
-            </motion.div>
-          </div>
+          <motion.div 
+            className="photo-collage-container relative w-2/3 flex-shrink-0 h-[16rem] md:h-[32rem] lg:h-[40rem] xl:h-[48rem] overflow-visible"
+            onViewportEnter={() => setIsInView(true)}
+            onViewportLeave={() => setIsInView(false)}
+            viewport={{ amount: 0.8 }}
+          >
+            {photoItems.map((item, index) => (
+              <PhotoCollageItem
+                key={index}
+                item={item}
+                index={index}
+                isInView={isInView}
+              />
+            ))}
+          </motion.div>
+
           <motion.button 
-            className="right-arrow relative opacity-20 cursor-pointer bg-transparent border-none p-0 hidden custom600:flex items-center justify-center mr-10"
+            className="right-arrow relative opacity-20 cursor-pointer bg-transparent border-none p-0 hidden custom600:flex items-center justify-center ml-5"
             aria-label="Next photo"
+            onClick={shuffleForward}
             whileHover={{ 
               opacity: .8, 
               scale: 1.15
@@ -79,7 +119,7 @@ const PhotoCollage: React.FC = () => {
             <motion.img 
               src={CollageArrow} 
               alt="Right arrow" 
-              className="w-16 h-16 md:w-20 md:h-20 lg:w-24 lg:h-24 xl:w-24 xl:h-24 pointer-events-none aspect-square object-contain" 
+              className="w-16 h-16 md:w-20 md:h-20 pointer-events-none aspect-square object-contain" 
               initial={{ rotate: 90 }}
               animate={{ rotate: 90 }}
             />
@@ -117,16 +157,35 @@ function PhotoCollageItem({ item, index, isInView }: PhotoCollageItemProps) {
   // Max z-index is 5, so (5 - zIndex) gives reverse order
   const maxZIndex = 5;
   const exitDelay = (maxZIndex - item.zIndex) * 0.15 * 0.5;
+
+  // Adjust opacity and shadow based on current zIndex (higher zIndex = more prominent)
+  const opacityMap: { [key: number]: number } = {
+    5: 100,
+    4: 90,
+    3: 85,
+    2: 88,
+    1: 92,
+  };
+  const shadowMap: { [key: number]: string } = {
+    5: '2xl',
+    4: 'lg',
+    3: 'lg',
+    2: 'lg',
+    1: 'lg',
+  };
+
+  const currentOpacity = opacityMap[item.zIndex as keyof typeof opacityMap] || item.opacity;
+  const currentShadow = shadowMap[item.zIndex as keyof typeof shadowMap] || item.shadow;
   
   return (
     <motion.img
       src={PhotoImage}
       alt="Photo collage item"
-      className={`absolute ${item.widthClass} drop-shadow-${item.shadow} select-none pointer-events-none`}
+      className={`absolute ${item.widthClass} drop-shadow-${currentShadow} select-none pointer-events-none`}
       style={{
         top: item.top,
         left: item.left,
-        opacity: item.opacity / 100,
+        opacity: currentOpacity / 100,
         zIndex: item.zIndex,
       }}
       initial="offscreen"
@@ -147,6 +206,7 @@ const photoItemVariants: Variants = {
     translateY: "-50%",
     rotate: 0,
     opacity: 0,
+    scale: SCALE_VALUE,
   }),
   onscreen: (custom: { rotate: number; delay: number; fromRight: boolean }) => ({
     x: 0, // Move to final position
@@ -154,6 +214,7 @@ const photoItemVariants: Variants = {
     translateY: "-50%",
     rotate: custom.rotate, // Apply the card's specific rotation
     opacity: 1,
+    scale: SCALE_VALUE,
     transition: {
       type: "spring",
       bounce: 0.3,
@@ -167,6 +228,7 @@ const photoItemVariants: Variants = {
     translateY: "-50%",
     rotate: 0,
     opacity: 0,
+    scale: SCALE_VALUE,
     transition: {
       type: "spring",
       bounce: 0.2,
