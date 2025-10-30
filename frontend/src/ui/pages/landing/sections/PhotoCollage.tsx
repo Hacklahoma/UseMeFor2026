@@ -17,7 +17,7 @@
  * - isInView: Triggers initial entrance animations
  */
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import * as motion from 'motion/react-client';
 
 // Asset imports
@@ -55,14 +55,37 @@ const PhotoCollage: React.FC = () => {
   // Track card objects (each has id and position)
   const [cards, setCards] = useState<Card[]>(initializeCards());
   
+  // Track whether the initial entrance animation has completed
+  const [hasCompletedEntrance, setHasCompletedEntrance] = useState(false);
+  
+  // Track whether button animations have completed
+  const [leftButtonAnimationComplete, setLeftButtonAnimationComplete] = useState(false);
+  const [rightButtonAnimationComplete, setRightButtonAnimationComplete] = useState(false);
+  
   // Track animation state for each card
   const [animationStates, setAnimationStates] = useState<CardAnimationMap>({
-    [CardId.CARD_1]: AnimationState.IDLE,
-    [CardId.CARD_2]: AnimationState.IDLE,
-    [CardId.CARD_3]: AnimationState.IDLE,
-    [CardId.CARD_4]: AnimationState.IDLE,
-    [CardId.CARD_5]: AnimationState.IDLE,
+    [CardId.CARD_1]: AnimationState.OFFSCREEN,
+    [CardId.CARD_2]: AnimationState.OFFSCREEN,
+    [CardId.CARD_3]: AnimationState.OFFSCREEN,
+    [CardId.CARD_4]: AnimationState.OFFSCREEN,
+    [CardId.CARD_5]: AnimationState.OFFSCREEN,
   });
+
+  /**
+   * Trigger entrance animation when component comes into view
+   */
+  useEffect(() => {
+    if (isInView && !hasCompletedEntrance) {
+      // Transition all cards to ONSCREEN state to trigger entrance animation
+      setAnimationStates({
+        [CardId.CARD_1]: AnimationState.ONSCREEN,
+        [CardId.CARD_2]: AnimationState.ONSCREEN,
+        [CardId.CARD_3]: AnimationState.ONSCREEN,
+        [CardId.CARD_4]: AnimationState.ONSCREEN,
+        [CardId.CARD_5]: AnimationState.ONSCREEN,
+      });
+    }
+  }, [isInView, hasCompletedEntrance]);
 
   /**
    * Handle forward shuffle (right arrow click)
@@ -129,15 +152,52 @@ const PhotoCollage: React.FC = () => {
           
           {/* Left arrow button - triggers backward shuffle */}
           <motion.button 
-            className="left-arrow relative opacity-20 z-10 cursor-pointer bg-transparent border-none p-0 hidden custom600:flex items-center justify-center mr-5"
+            className="left-arrow relative opacity-20 cursor-pointer bg-transparent border-none p-0 hidden custom600:flex items-center justify-center mr-16"
+            style={{ zIndex: leftButtonAnimationComplete ? 10 : 0 }}
             aria-label="Previous photo"
             onClick={handleShuffleBackward}
+            initial={{ 
+              x: '30vw',  // Start at center of screen (move right from left position)
+              opacity: 0,
+              scale: 0.5,
+            }}
+            animate={hasCompletedEntrance ? { 
+              x: 0,  // Move to final left position
+              opacity: 0.2,
+              scale: 1,
+            } : {
+              x: '30vw',  // Stay at center
+              opacity: 0,
+              scale: 0.5,
+            }}
+            transition={{
+              x: { type: 'spring', stiffness: 100, damping: 25, duration: 0.8 },
+              opacity: { duration: 0.6 },
+              scale: { type: 'spring', stiffness: 100, damping: 25 },
+              delay: hasCompletedEntrance ? 0.2 : 0,
+            }}
+            onAnimationComplete={() => {
+              if (hasCompletedEntrance && !leftButtonAnimationComplete) {
+                setLeftButtonAnimationComplete(true);
+              }
+            }}
             whileHover={{ 
               opacity: 0.8, 
-              scale: 1.15
+              scale: 1.15,
+              transition: {
+                type: 'spring',
+                stiffness: 300,
+                damping: 20,
+              }
             }}
-            whileTap={{ scale: 1.05 }}
-            transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+            whileTap={{ 
+              scale: 1.05,
+              transition: {
+                type: 'spring',
+                stiffness: 300,
+                damping: 20,
+              }
+            }}
           >
             <motion.img 
               src={CollageArrow} 
@@ -150,7 +210,7 @@ const PhotoCollage: React.FC = () => {
 
           {/* Photo collage container */}
           <motion.div 
-            className="photo-collage-container relative w-2/3 flex-shrink-0 h-[16rem] md:h-[32rem] lg:h-[40rem] xl:h-[48rem] overflow-visible"
+            className="photo-collage-container relative w-1/2 flex-shrink-0 h-[16rem] md:h-[32rem] lg:h-[40rem] xl:h-[48rem] overflow-visible"
             onViewportEnter={() => setIsInView(true)}
             onViewportLeave={() => setIsInView(false)}
             viewport={{ amount: 0.8 }}
@@ -178,12 +238,21 @@ const PhotoCollage: React.FC = () => {
                     transform: 'translateZ(0)', // Force GPU layer
                   }}
                   initial={AnimationState.OFFSCREEN}
-                  animate={isInView ? currentAnimationState : AnimationState.OFFSCREEN}
+                  animate={currentAnimationState}
                   variants={photoCollageCardVariants}
                   custom={{
                     ...positionConfig,
                     zIndex: card.zIndex, // Pass card's zIndex to variants as well
                     delay: entranceDelay,
+                  }}
+                  onAnimationComplete={(definition) => {
+                    // Track when the initial entrance animation completes
+                    // Only trigger once for the last card (highest z-index = 5)
+                    if (definition === AnimationState.ONSCREEN && card.zIndex === 5 && !hasCompletedEntrance) {
+                      setHasCompletedEntrance(true);
+                      // Transition all cards to idle state after entrance
+                      setAnimationStates(resetAllCardsToIdle());
+                    }
                   }}
                 />
               );
@@ -192,15 +261,52 @@ const PhotoCollage: React.FC = () => {
 
           {/* Right arrow button - triggers forward shuffle */}
           <motion.button 
-            className="right-arrow relative opacity-20 z-10 cursor-pointer bg-transparent border-none p-0 hidden custom600:flex items-center justify-center ml-5"
+            className="right-arrow relative opacity-20 cursor-pointer bg-transparent border-none p-0 hidden custom600:flex items-center justify-center ml-16"
+            style={{ zIndex: rightButtonAnimationComplete ? 10 : 0 }}
             aria-label="Next photo"
             onClick={handleShuffleForward}
+            initial={{ 
+              x: '-30vw',  // Start at center of screen (move left from right position)
+              opacity: 0,
+              scale: 0.5,
+            }}
+            animate={hasCompletedEntrance ? { 
+              x: 0,  // Move to final right position
+              opacity: 0.2,
+              scale: 1,
+            } : {
+              x: '-30vw',  // Stay at center
+              opacity: 0,
+              scale: 0.5,
+            }}
+            transition={{
+              x: { type: 'spring', stiffness: 100, damping: 25, duration: 0.8 },
+              opacity: { duration: 0.6 },
+              scale: { type: 'spring', stiffness: 100, damping: 25 },
+              delay: hasCompletedEntrance ? 0.2 : 0,
+            }}
+            onAnimationComplete={() => {
+              if (hasCompletedEntrance && !rightButtonAnimationComplete) {
+                setRightButtonAnimationComplete(true);
+              }
+            }}
             whileHover={{ 
               opacity: 0.8, 
-              scale: 1.15
+              scale: 1.15,
+              transition: {
+                type: 'spring',
+                stiffness: 300,
+                damping: 20,
+              }
             }}
-            whileTap={{ scale: 1.05 }}
-            transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+            whileTap={{ 
+              scale: 1.05,
+              transition: {
+                type: 'spring',
+                stiffness: 300,
+                damping: 20,
+              }
+            }}
           >
             <motion.img 
               src={CollageArrow} 
