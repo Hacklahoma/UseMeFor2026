@@ -62,6 +62,9 @@ const PhotoCollage: React.FC = () => {
   const [leftButtonAnimationComplete, setLeftButtonAnimationComplete] = useState(false);
   const [rightButtonAnimationComplete, setRightButtonAnimationComplete] = useState(false);
   
+  // Track whether buttons are disabled (for click throttling)
+  const [buttonsDisabled, setButtonsDisabled] = useState(false);
+  
   // Track animation state for each card
   const [animationStates, setAnimationStates] = useState<CardAnimationMap>({
     [CardId.CARD_1]: AnimationState.OFFSCREEN,
@@ -93,6 +96,15 @@ const PhotoCollage: React.FC = () => {
    * Updates z-indexes at midpoint when card is off-screen
    */
   const handleShuffleForward = () => {
+    // Prevent clicks if buttons are disabled
+    if (buttonsDisabled) return;
+    
+    // Disable buttons for 500ms
+    setButtonsDisabled(true);
+    setTimeout(() => {
+      setButtonsDisabled(false);
+    }, 200);
+    
     // Execute shuffle logic (pure function, no side effects)
     const shuffleResult = executeForwardShuffle(cards);
     
@@ -117,6 +129,15 @@ const PhotoCollage: React.FC = () => {
    * Updates z-indexes at midpoint when card is off-screen
    */
   const handleShuffleBackward = () => {
+    // Prevent clicks if buttons are disabled
+    if (buttonsDisabled) return;
+    
+    // Disable buttons for 500ms
+    setButtonsDisabled(true);
+    setTimeout(() => {
+      setButtonsDisabled(false);
+    }, 200);
+    
     // Execute shuffle logic (pure function, no side effects)
     const shuffleResult = executeBackwardShuffle(cards);
     

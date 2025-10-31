@@ -66,9 +66,9 @@ export const photoCollageCardVariants: Variants = {
     scale: SCALE_VALUE,
     transition: {
       type: 'spring',
-      bounce: 0.2,
+      bounce: 0.1,
       duration: 0.6,
-      damping: 20,
+      damping: 25,
       stiffness: 300,
     },
     // GPU acceleration
@@ -105,7 +105,7 @@ export const photoCollageCardVariants: Variants = {
       bounce: 0.2,
       duration: 0.6,
       damping: 20,
-      stiffness: 300,
+      stiffness: 200,
     },
     // GPU acceleration
     willChange: 'transform',
@@ -141,7 +141,7 @@ export const photoCollageCardVariants: Variants = {
       type: 'spring',
       bounce: 0.2,
       duration: 0.6,
-      damping: 20,
+      damping: 15,
       stiffness: 300,
     },
     // GPU acceleration
@@ -178,7 +178,7 @@ export const photoCollageCardVariants: Variants = {
       type: 'spring',
       bounce: 0.2,
       duration: 0.6,
-      damping: 20,
+      damping: 15,
       stiffness: 300,
     },
     // GPU acceleration
