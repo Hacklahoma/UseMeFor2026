@@ -198,14 +198,20 @@ export function executeForwardShuffle(currentCards: Card[]): ShuffleResult {
  * Execute a backward shuffle operation (left arrow).
  * 
  * Backward Shuffle Behavior:
+ * The CENTER card cycles through positions: TOP_LEFT → TOP_RIGHT → BOTTOM_LEFT → BOTTOM_RIGHT → (repeat)
+ * 
  * 1. Find card at CENTER position
- * 2. Find which card should be PREVIOUS at CENTER (based on card ID rotation: 1←2←3←4←5←1)
- * 3. SWAP their positions:
- *    - CENTER card takes the previous card's position
- *    - Previous card takes CENTER
- * 4. All other 3 cards stay in their current positions
- * 5. Z-indexes rotate in reverse: all shift up (1→2→3→4→5), CENTER always gets 5
- * 6. Assign animations: center card flies away, previous card smoothly moves to center
+ * 2. Find card at CENTER_BACK position
+ * 3. Determine target position (cycles through non-CENTER positions in POSITION_JOURNEY_ORDER)
+ * 4. THREE cards move positions:
+ *    - CENTER card → target position (displacing the card there)
+ *    - CENTER_BACK card → CENTER (comes forward)
+ *    - Card at target position → CENTER_BACK (gets displaced)
+ * 
+ * Example sequence:
+ * Click 1: CARD_1(CENTER) → TOP_LEFT, CARD_6(CENTER_BACK) → CENTER, CARD_2(TOP_LEFT) → CENTER_BACK
+ * Click 2: CARD_6(CENTER) → TOP_RIGHT, CARD_2(CENTER_BACK) → CENTER, CARD_3(TOP_RIGHT) → CENTER_BACK
+ * Click 3: CARD_2(CENTER) → BOTTOM_LEFT, CARD_3(CENTER_BACK) → CENTER, CARD_4(BOTTOM_LEFT) → CENTER_BACK
  * 
  * @param currentCards - Current array of card objects
  * @returns ShuffleResult with updated cards and animation states
@@ -220,45 +226,86 @@ export function executeBackwardShuffle(currentCards: Card[]): ShuffleResult {
     throw new Error('No card found at CENTER position');
   }
   
-  // Determine which card should be previous at CENTER (rotate backward through card sequence)
-  const currentCenterIndex = CARD_SEQUENCE.indexOf(centerCard.id);
-  const prevCenterCardIndex = (currentCenterIndex - 1 + CARD_SEQUENCE.length) % CARD_SEQUENCE.length;
-  const prevCenterCardId = CARD_SEQUENCE[prevCenterCardIndex];
-  
-  // Find the card that will move to CENTER
-  const prevCenterCard = newCards.find(card => card.id === prevCenterCardId);
-  if (!prevCenterCard) {
-    throw new Error(`Card ${prevCenterCardId} not found`);
+  // Find the card currently at CENTER_BACK
+  const centerBackCard = newCards.find(card => card.position === CardPosition.CENTER_BACK);
+  if (!centerBackCard) {
+    throw new Error('No card found at CENTER_BACK position');
   }
   
-  // Determine where the center card will move to
-  // The card leaving CENTER always goes to where the previous center card currently is
-  const prevPosition = prevCenterCard.position;
+  // Determine target position by finding which position to target next
+  // We cycle through: TOP_LEFT → TOP_RIGHT → BOTTOM_LEFT → BOTTOM_RIGHT → (repeat)
+  // Strategy: Find which card from CENTER_BACK has most recently been placed
+  // Look at positions 2-5 (TOP_LEFT, TOP_RIGHT, BOTTOM_LEFT, BOTTOM_RIGHT)
+  // Find the "newest" card (highest z-index among those positions)
+  // Target the next position in the cycle
   
-  // Get fly direction for the BACK card (based on where it currently is)
-  // In backward shuffle, the back card flies from its current position to CENTER
-  const flyDirection = getPositionConfig(prevPosition).flyDirection;
+  // Get all cards at the 4 target positions
+  const positionsToCheck = [
+    CardPosition.TOP_LEFT,
+    CardPosition.TOP_RIGHT,
+    CardPosition.BOTTOM_LEFT,
+    CardPosition.BOTTOM_RIGHT,
+  ];
   
-  // Update positions (swap the two cards)
-  centerCard.position = prevPosition;
-  prevCenterCard.position = CardPosition.CENTER;
+  // Find which position has the card with highest z-index (most recently placed)
+  let highestZIndex = -1;
+  let positionWithHighestZ: CardPosition | null = null;
+  
+  positionsToCheck.forEach(pos => {
+    const cardAtPos = newCards.find(card => card.position === pos);
+    if (cardAtPos && cardAtPos.zIndex > highestZIndex) {
+      highestZIndex = cardAtPos.zIndex;
+      positionWithHighestZ = pos;
+    }
+  });
+  
+  // Determine target position: next position after the one with highest z-index
+  let targetPosition: CardPosition;
+  
+  if (positionWithHighestZ === null) {
+    // No cards placed yet, start with TOP_LEFT
+    targetPosition = CardPosition.TOP_LEFT;
+  } else {
+    // Find the index of the position with highest z-index
+    const currentPosIndex = positionsToCheck.indexOf(positionWithHighestZ);
+    // Get next position in cycle
+    const nextPosIndex = (currentPosIndex + 1) % positionsToCheck.length;
+    targetPosition = positionsToCheck[nextPosIndex];
+  }
+  
+  // Find the card at the target position (this card will be displaced to CENTER_BACK)
+  const targetPositionCard = newCards.find(card => card.position === targetPosition);
+  if (!targetPositionCard) {
+    throw new Error(`No card found at position ${targetPosition}`);
+  }
+  
+  // Get fly direction based on where CENTER_BACK card is going
+  const flyDirection = getPositionConfig(targetPosition).flyDirection;
+  
+  // Update positions (three-way rotation)
+  centerCard.position = targetPosition;                  // CENTER → target position
+  centerBackCard.position = CardPosition.CENTER;         // CENTER_BACK → CENTER
+  targetPositionCard.position = CardPosition.CENTER_BACK;  // target position → CENTER_BACK
   
   // Create version WITH old z-indexes (for initial state at t=0)
   const cardsWithOldZIndex = newCards.map(card => ({ ...card }));
   
-  // Update z-indexes (rotate BACKWARD for ALL cards)
-  // Card entering CENTER comes from z:0 (backmost) and gets z:5
-  // All other cards shift DOWN in z-index (everyone moves back as back card comes forward)
+  // Update z-indexes (reverse of forward shuffle)
+  // Strategy: Everyone shifts DOWN by 1 (back card comes forward, everyone moves back)
+  // Then set special cases:
+  // - centerBackCard: goes to z:5 (front)
+  // - centerCard: keeps shifted value
+  // - nextPositionCard: goes to z:0 (back)
   
-  prevCenterCard.zIndex = 5; // Card entering CENTER (was at z:0) gets highest z-index
-  
-  // All other cards shift DOWN by 1 (moving backward in the deck)
+  // Shift ALL cards down by 1 (back card comes forward, everyone moves back)
   newCards.forEach(card => {
-    if (card.id !== prevCenterCard.id) {
-      // Shift down: 5→4, 4→3, 3→2, 2→1, 1→0
-      card.zIndex = card.zIndex - 1;
-    }
+    card.zIndex = card.zIndex - 1;
   });
+  
+  // Set the two special cards
+  centerBackCard.zIndex = 5; // Card coming from CENTER_BACK goes to front
+  targetPositionCard.zIndex = 0; // Card going to CENTER_BACK goes to back
+  // centerCard keeps its shifted value (was 5, now 4)
   
   // Create version WITH new z-indexes (for midpoint state at t=200ms)
   const cardsWithNewZIndex = newCards.map(card => ({ ...card }));
@@ -266,20 +313,23 @@ export function executeBackwardShuffle(currentCards: Card[]): ShuffleResult {
   // Build animation states
   const animationStates: CardAnimationMap = resetAllCardsToIdle();
   
-  // Back card (entering CENTER) flies in
-  animationStates[prevCenterCard.id] = flyDirection === 'left' 
+  // CENTER_BACK card flies to CENTER
+  animationStates[centerBackCard.id] = flyDirection === 'left' 
     ? AnimationState.FLY_LEFT 
     : AnimationState.FLY_RIGHT;
   
-  // Center card (leaving CENTER) smoothly moves to back position
+  // Center card smoothly moves to target position
   animationStates[centerCard.id] = AnimationState.MOVE_TO_POSITION;
+  
+  // Target position card smoothly moves to CENTER_BACK
+  animationStates[targetPositionCard.id] = AnimationState.MOVE_TO_POSITION;
   
   return {
     cardsWithOldZIndex,
     cardsWithNewZIndex,
     animationStates,
-    flyingCardId: prevCenterCard.id, // Back card flies
-    movingToCenterCardId: centerCard.id, // Center card moves (but not to center, to back!)
+    flyingCardId: centerBackCard.id, // CENTER_BACK card flies to CENTER
+    movingToCenterCardId: centerBackCard.id, // Same card, it's moving to center
   };
 }
 

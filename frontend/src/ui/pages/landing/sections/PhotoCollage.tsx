@@ -17,7 +17,7 @@
  * - isInView: Triggers initial entrance animations
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import * as motion from 'motion/react-client';
 
 // Type imports
@@ -63,6 +63,12 @@ const PhotoCollage: React.FC = () => {
   
   // Track whether buttons are disabled (for click throttling)
   const [buttonsDisabled, setButtonsDisabled] = useState(false);
+  
+  // Use ref for immediate synchronous check (prevents race conditions)
+  const isAnimatingRef = useRef(false);
+  
+  // Track the last shuffle direction to detect direction changes
+  const [lastShuffleDirection, setLastShuffleDirection] = useState<'forward' | 'backward' | null>(null);
   
   // Track animation state for each card
   const [animationStates, setAnimationStates] = useState<CardAnimationMap>({
@@ -120,6 +126,9 @@ const PhotoCollage: React.FC = () => {
             setCards={setCards}
             setAnimationStates={setAnimationStates}
             setButtonsDisabled={setButtonsDisabled}
+            lastShuffleDirection={lastShuffleDirection}
+            setLastShuffleDirection={setLastShuffleDirection}
+            isAnimatingRef={isAnimatingRef}
           />
 
           {/* Photo collage container */}
@@ -138,7 +147,8 @@ const PhotoCollage: React.FC = () => {
               const currentAnimationState = animationStates[card.id];
               
               // Calculate stagger delay for initial entrance animation
-              const entranceDelay = (card.zIndex - 1) * 0.15;
+              // Use max(0, ...) to ensure delay is never negative (for z-index 0)
+              const entranceDelay = Math.max(0, (card.zIndex - 1) * 0.15);
               
               // Get the photo data for this card based on its photoIndex
               const photoData = getPhotoData(card.photoIndex);
@@ -190,6 +200,9 @@ const PhotoCollage: React.FC = () => {
             setCards={setCards}
             setAnimationStates={setAnimationStates}
             setButtonsDisabled={setButtonsDisabled}
+            lastShuffleDirection={lastShuffleDirection}
+            setLastShuffleDirection={setLastShuffleDirection}
+            isAnimatingRef={isAnimatingRef}
           />
         </div>
       </div>

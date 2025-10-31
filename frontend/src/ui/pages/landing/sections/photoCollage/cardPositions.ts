@@ -46,7 +46,7 @@ export const POSITION_CONFIGS: PositionConfigMap = {
     left: '50%',
     rotate: 0,
     zIndex: 0,
-    flyDirection: 'right',
+    flyDirection: 'left',
   },
   
   [CardPosition.TOP_LEFT]: {

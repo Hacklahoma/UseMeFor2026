@@ -5,7 +5,7 @@
  * Includes entrance animation, interactive hover/tap states, and shuffle logic.
  */
 
-import React from 'react';
+import React, { MutableRefObject } from 'react';
 import * as motion from 'motion/react-client';
 import CollageArrow from '../../../../common/assets/nav-arrow.svg';
 import { Card, CardAnimationMap } from './photoCollageTypes';
@@ -29,6 +29,12 @@ interface LeftButtonProps {
   setAnimationStates: (states: CardAnimationMap) => void;
   /** Callback to set buttons disabled state */
   setButtonsDisabled: (disabled: boolean) => void;
+  /** Last shuffle direction */
+  lastShuffleDirection: 'forward' | 'backward' | null;
+  /** Callback to set last shuffle direction */
+  setLastShuffleDirection: (direction: 'forward' | 'backward' | null) => void;
+  /** Ref to track if animation is in progress (synchronous check) */
+  isAnimatingRef: MutableRefObject<boolean>;
 }
 
 /**
@@ -44,6 +50,9 @@ export const LeftButton: React.FC<LeftButtonProps> = ({
   setCards,
   setAnimationStates,
   setButtonsDisabled,
+  lastShuffleDirection,
+  setLastShuffleDirection,
+  isAnimatingRef,
 }) => {
   /**
    * Handle backward shuffle (left arrow click)
@@ -51,14 +60,29 @@ export const LeftButton: React.FC<LeftButtonProps> = ({
    * Updates z-indexes at midpoint when card is off-screen
    */
   const handleShuffleBackward = () => {
+    // Synchronous check using ref (prevents race conditions)
+    if (isAnimatingRef.current) return;
+    
     // Prevent clicks if buttons are disabled
     if (buttonsDisabled) return;
     
-    // Disable buttons for 500ms
+    // Set ref immediately (synchronous)
+    isAnimatingRef.current = true;
+    
+    // Check if direction changed (switching from forward to backward)
+    const directionChanged = lastShuffleDirection === 'forward';
+    
+    // Disable buttons during animation
+    // Use longer delay if direction changed to ensure animation completes
+    const disableDelay = directionChanged ? SHUFFLE_DELAY + 300 : 200;
     setButtonsDisabled(true);
     setTimeout(() => {
       setButtonsDisabled(false);
-    }, 200);
+      isAnimatingRef.current = false; // Reset ref when animation completes
+    }, disableDelay);
+    
+    // Update last shuffle direction
+    setLastShuffleDirection('backward');
     
     // Execute shuffle logic (pure function, no side effects)
     const shuffleResult = executeBackwardShuffle(cards);
@@ -80,7 +104,7 @@ export const LeftButton: React.FC<LeftButtonProps> = ({
 
   return (
     <motion.button 
-      className="left-arrow relative opacity-20 cursor-pointer bg-transparent border-none p-0 hidden custom600:flex items-center justify-center mr-16"
+      className="left-arrow relative opacity-20 cursor-pointer bg-transparent border-none p-0 hidden custom600:flex items-center justify-center mr-16 select-none"
       style={{ zIndex: leftButtonAnimationComplete ? 10 : 0 }}
       aria-label="Previous photo"
       onClick={handleShuffleBackward}

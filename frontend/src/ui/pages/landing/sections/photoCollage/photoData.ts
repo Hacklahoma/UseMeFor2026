@@ -10,11 +10,18 @@ import React from 'react';
 import { VintagePostcard } from './VintagePostcard';
 
 // Import all photo images
+import IMG_1249 from '../../../../common/assets/photoCollageImages/IMG_1249.png';
+import IMG_1302 from '../../../../common/assets/photoCollageImages/IMG_1302.png';
 import IMG_1326 from '../../../../common/assets/photoCollageImages/IMG_1326.png';
 import IMG_1353 from '../../../../common/assets/photoCollageImages/IMG_1353.png';
 import IMG_1372 from '../../../../common/assets/photoCollageImages/IMG_1372.png';
 import IMG_1382 from '../../../../common/assets/photoCollageImages/IMG_1382.png';
+import IMG_1566 from '../../../../common/assets/photoCollageImages/IMG_1566.png';
+import IMG_1624 from '../../../../common/assets/photoCollageImages/IMG_1624.png';
+import IMG_1709 from '../../../../common/assets/photoCollageImages/IMG_1709.png';
+import IMG_1738 from '../../../../common/assets/photoCollageImages/IMG_1738.png';
 import IMG_1749 from '../../../../common/assets/photoCollageImages/IMG_1749.png';
+import IMG_1834 from '../../../../common/assets/photoCollageImages/IMG_1834.png';
 
 // Fallback image for missing cards
 import Postcard from '../../../../common/assets/Postcard.png';
@@ -33,7 +40,7 @@ export interface PhotoData {
 
 /**
  * Array of photo data for each card in the collage
- * Index corresponds to card number (0-4 for cards 1-5)
+ * Index corresponds to card number (0-11 for cards 1-12)
  * Additional cards beyond this array will use the fallback Postcard.png
  */
 export const photoImages: PhotoData[] = [
@@ -61,6 +68,41 @@ export const photoImages: PhotoData[] = [
     path: IMG_1749,
     title: 'Awards Ceremony, Norman, Okla.',
     footer: 'HK2024-005',
+  },
+  {
+    path: IMG_1249,
+    title: 'Hacklahoma Event, Norman, Okla.',
+    footer: 'HK2024-006',
+  },
+  {
+    path: IMG_1302,
+    title: 'Hacklahoma Event, Norman, Okla.',
+    footer: 'HK2024-007',
+  },
+  {
+    path: IMG_1566,
+    title: 'Hacklahoma Event, Norman, Okla.',
+    footer: 'HK2024-008',
+  },
+  {
+    path: IMG_1624,
+    title: 'Hacklahoma Event, Norman, Okla.',
+    footer: 'HK2024-009',
+  },
+  {
+    path: IMG_1709,
+    title: 'Hacklahoma Event, Norman, Okla.',
+    footer: 'HK2024-010',
+  },
+  {
+    path: IMG_1738,
+    title: 'Hacklahoma Event, Norman, Okla.',
+    footer: 'HK2024-011',
+  },
+  {
+    path: IMG_1834,
+    title: 'Hacklahoma Event, Norman, Okla.',
+    footer: 'HK2024-012',
   },
 ];
 

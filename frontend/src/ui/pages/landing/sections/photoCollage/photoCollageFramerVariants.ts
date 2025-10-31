@@ -198,11 +198,12 @@ export const photoCollageCardVariants: Variants = {
    * Animation characteristics:
    * - No rotation (0°) for clean entrance
    * - Positioned off-screen based on flyDirection
+   * - Uses 55vw distance for entrance (more dramatic than shuffle animations)
    * - Opacity 0 for fade-in effect
    * - No transition (instant positioning)
    */
   offscreen: (config: VariantCustomProps) => ({
-    x: config.flyDirection === 'right' ? OFF_SCREEN_DISTANCE : `-${OFF_SCREEN_DISTANCE}`,
+    x: config.flyDirection === 'right' ? '55vw' : '-55vw',
     y: 0,
     top: config.top,
     left: config.left,
