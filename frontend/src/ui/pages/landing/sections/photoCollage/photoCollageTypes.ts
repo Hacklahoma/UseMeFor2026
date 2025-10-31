@@ -7,7 +7,7 @@
  */
 
 /**
- * Represents the five distinct positions cards can occupy in the collage.
+ * Represents the six distinct positions cards can occupy in the collage.
  * Each position has associated properties like coordinates, rotation, and z-index.
  * 
  * Position hierarchy (by z-index):
@@ -16,9 +16,11 @@
  * 3. TOP_RIGHT - Behind center, right side (z-index: 3)
  * 4. BOTTOM_LEFT - Back layer, left side (z-index: 2)
  * 5. BOTTOM_RIGHT - Back-most card, right side (z-index: 1)
+ * 6. CENTER_BACK - Hidden behind center (z-index: 0)
  */
 export enum CardPosition {
   CENTER = 'center',
+  CENTER_BACK = 'centerBack',
   TOP_LEFT = 'topLeft',
   TOP_RIGHT = 'topRight',
   BOTTOM_LEFT = 'bottomLeft',
@@ -26,7 +28,7 @@ export enum CardPosition {
 }
 
 /**
- * Unique identifiers for each of the five physical cards in the collage.
+ * Unique identifiers for each of the six physical cards in the collage.
  * These IDs remain constant throughout the lifecycle of the component,
  * even as cards move between positions.
  */
@@ -36,6 +38,7 @@ export enum CardId {
   CARD_3 = 'card3',
   CARD_4 = 'card4',
   CARD_5 = 'card5',
+  CARD_6 = 'card6',
 }
 
 /**

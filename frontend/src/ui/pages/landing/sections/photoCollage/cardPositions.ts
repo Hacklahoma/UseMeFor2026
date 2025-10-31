@@ -21,7 +21,7 @@ import {
 } from './photoCollageTypes';
 
 /**
- * Hardcoded position configurations for all five card positions.
+ * Hardcoded position configurations for all six card positions.
  * 
  * These values define the exact visual appearance of each position slot:
  * - top/left: CSS percentage coordinates
@@ -39,6 +39,14 @@ export const POSITION_CONFIGS: PositionConfigMap = {
     rotate: 0,
     zIndex: 5,
     flyDirection: 'right', // Default; actual direction determined by target position
+  },
+  
+  [CardPosition.CENTER_BACK]: {
+    top: '50%',
+    left: '50%',
+    rotate: 0,
+    zIndex: 0,
+    flyDirection: 'right',
   },
   
   [CardPosition.TOP_LEFT]: {
@@ -79,13 +87,14 @@ export const POSITION_CONFIGS: PositionConfigMap = {
  * 
  * This array defines the circular path cards take as they're shuffled:
  * - Index 0: CENTER (z-index 5) - Front of deck, visible on top
- * - Index 1: TOP_LEFT (z-index 4) - Just behind center
- * - Index 2: TOP_RIGHT (z-index 3) - Middle layer
- * - Index 3: BOTTOM_LEFT (z-index 2) - Near back
- * - Index 4: BOTTOM_RIGHT (z-index 1) - Very back of deck
+ * - Index 1: CENTER_BACK (z-index 0) - Hidden behind center
+ * - Index 2: TOP_LEFT (z-index 4) - Just behind center
+ * - Index 3: TOP_RIGHT (z-index 3) - Middle layer
+ * - Index 4: BOTTOM_LEFT (z-index 2) - Near back
+ * - Index 5: BOTTOM_RIGHT (z-index 1) - Very back of deck
  * 
  * As cards are shuffled forward, each card moves to the next position in this array.
- * When a card reaches BOTTOM_RIGHT (index 4), it wraps back to CENTER (index 0).
+ * When a card reaches BOTTOM_RIGHT (index 5), it wraps back to CENTER (index 0).
  * 
  * This creates the visual effect of:
  * - Forward shuffle: Front card moves through positions toward the back
@@ -93,10 +102,11 @@ export const POSITION_CONFIGS: PositionConfigMap = {
  */
 export const POSITION_JOURNEY_ORDER: CardPosition[] = [
   CardPosition.CENTER,        // Index 0: Front (z-index 5)
-  CardPosition.TOP_LEFT,      // Index 1: Behind center (z-index 4)
-  CardPosition.TOP_RIGHT,     // Index 2: Middle (z-index 3)
-  CardPosition.BOTTOM_LEFT,   // Index 3: Near back (z-index 2)
-  CardPosition.BOTTOM_RIGHT,  // Index 4: Back (z-index 1)
+  CardPosition.CENTER_BACK,   // Index 1: Hidden behind (z-index 0)
+  CardPosition.TOP_LEFT,      // Index 2: Behind center (z-index 4)
+  CardPosition.TOP_RIGHT,     // Index 3: Middle (z-index 3)
+  CardPosition.BOTTOM_LEFT,   // Index 4: Near back (z-index 2)
+  CardPosition.BOTTOM_RIGHT,  // Index 5: Back (z-index 1)
 ];
 
 

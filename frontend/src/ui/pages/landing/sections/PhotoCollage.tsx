@@ -71,6 +71,7 @@ const PhotoCollage: React.FC = () => {
     [CardId.CARD_3]: AnimationState.OFFSCREEN,
     [CardId.CARD_4]: AnimationState.OFFSCREEN,
     [CardId.CARD_5]: AnimationState.OFFSCREEN,
+    [CardId.CARD_6]: AnimationState.OFFSCREEN,
   });
   
   // Debug: Toggle fixed image visibility
@@ -88,6 +89,7 @@ const PhotoCollage: React.FC = () => {
         [CardId.CARD_3]: AnimationState.ONSCREEN,
         [CardId.CARD_4]: AnimationState.ONSCREEN,
         [CardId.CARD_5]: AnimationState.ONSCREEN,
+        [CardId.CARD_6]: AnimationState.ONSCREEN,
       });
     }
   }, [isInView, hasCompletedEntrance]);
@@ -127,7 +129,7 @@ const PhotoCollage: React.FC = () => {
             onViewportLeave={() => setIsInView(false)}
             viewport={{ amount: 0.8 }}
           >
-            {/* Render all 5 cards based on their current positions */}
+            {/* Render all 6 cards based on their current positions */}
             {cards.map((card) => {
               // Get position config based on card's current position
               const positionConfig = getPositionConfig(card.position);

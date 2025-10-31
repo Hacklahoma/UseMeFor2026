@@ -16,6 +16,9 @@ import IMG_1372 from '../../../../common/assets/photoCollageImages/IMG_1372.png'
 import IMG_1382 from '../../../../common/assets/photoCollageImages/IMG_1382.png';
 import IMG_1749 from '../../../../common/assets/photoCollageImages/IMG_1749.png';
 
+// Fallback image for missing cards
+import Postcard from '../../../../common/assets/Postcard.png';
+
 /**
  * Photo data interface
  */
@@ -31,6 +34,7 @@ export interface PhotoData {
 /**
  * Array of photo data for each card in the collage
  * Index corresponds to card number (0-4 for cards 1-5)
+ * Additional cards beyond this array will use the fallback Postcard.png
  */
 export const photoImages: PhotoData[] = [
   {
@@ -62,20 +66,31 @@ export const photoImages: PhotoData[] = [
 
 /**
  * Get photo data for a specific card by index
- * @param index - Card index (0-4)
- * @returns Photo data for the specified card
+ * @param index - Card index (0-5+)
+ * @returns Photo data for the specified card, or fallback Postcard.png if index is out of bounds
  */
 export const getPhotoData = (index: number): PhotoData => {
-  if (index < 0 || index >= photoImages.length) {
-    throw new Error(`Invalid card index: ${index}. Must be between 0 and ${photoImages.length - 1}`);
+  if (index < 0) {
+    throw new Error(`Invalid card index: ${index}. Must be >= 0`);
   }
-  return photoImages[index];
+  
+  // If index is within bounds, return the photo data
+  if (index < photoImages.length) {
+    return photoImages[index];
+  }
+  
+  // Otherwise, return fallback postcard
+  return {
+    path: Postcard,
+    title: 'Hacklahoma, Norman, Okla.',
+    footer: `HK2024-${String(index + 1).padStart(3, '0')}`,
+  };
 };
 
 /**
  * Get photo path for a specific card by index
- * @param index - Card index (0-4)
- * @returns Image path for the specified card
+ * @param index - Card index (0-5+)
+ * @returns Image path for the specified card, or fallback if out of bounds
  */
 export const getPhotoPath = (index: number): string => {
   return getPhotoData(index).path;
@@ -85,7 +100,7 @@ export const getPhotoPath = (index: number): string => {
  * Create a vintage postcard element for a specific card
  * Applies vintage styling with border, title, and footer text
  * 
- * @param index - Card index (0-4)
+ * @param index - Card index (0-5+)
  * @param className - Optional additional CSS classes
  * @returns React element with vintage postcard styling
  */
