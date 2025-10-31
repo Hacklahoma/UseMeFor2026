@@ -54,22 +54,24 @@ export interface ShuffleResult {
 
 /**
  * Initialize the starting card configuration.
- * Sets up the 5 cards with their initial positions and z-indexes based on the CSV.
+ * Sets up the 5 cards with their initial positions, z-indexes, and photo assignments.
  * 
  * Step 0: 
- * - CARD_1: CENTER (z:5)
- * - CARD_2: TOP_LEFT (z:4)
- * - CARD_3: TOP_RIGHT (z:3)
- * - CARD_4: BOTTOM_LEFT (z:2)
- * - CARD_5: BOTTOM_RIGHT (z:1)
+ * - CARD_1: CENTER (z:5, photo:0)
+ * - CARD_2: TOP_LEFT (z:4, photo:1)
+ * - CARD_3: TOP_RIGHT (z:3, photo:2)
+ * - CARD_4: BOTTOM_LEFT (z:2, photo:3)
+ * - CARD_5: BOTTOM_RIGHT (z:1, photo:4)
+ * 
+ * Each card gets a unique photo index (0-4) that never changes.
  */
 export function initializeCards(): Card[] {
   return [
-    { id: CardId.CARD_1, position: CardPosition.CENTER, zIndex: 5 },
-    { id: CardId.CARD_2, position: CardPosition.TOP_LEFT, zIndex: 4 },
-    { id: CardId.CARD_3, position: CardPosition.TOP_RIGHT, zIndex: 3 },
-    { id: CardId.CARD_4, position: CardPosition.BOTTOM_LEFT, zIndex: 2 },
-    { id: CardId.CARD_5, position: CardPosition.BOTTOM_RIGHT, zIndex: 1 },
+    { id: CardId.CARD_1, position: CardPosition.CENTER, zIndex: 5, photoIndex: 0 },
+    { id: CardId.CARD_2, position: CardPosition.TOP_LEFT, zIndex: 4, photoIndex: 1 },
+    { id: CardId.CARD_3, position: CardPosition.TOP_RIGHT, zIndex: 3, photoIndex: 2 },
+    { id: CardId.CARD_4, position: CardPosition.BOTTOM_LEFT, zIndex: 2, photoIndex: 3 },
+    { id: CardId.CARD_5, position: CardPosition.BOTTOM_RIGHT, zIndex: 1, photoIndex: 4 },
   ];
 }
 

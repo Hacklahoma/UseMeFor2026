@@ -14,7 +14,7 @@
  * - All position-specific values come from PositionConfig
  * - Timing values are consistent across similar animation types
  * - Spring animations provide natural, fluid motion
- */
+*/
 
 import type { Variants } from 'motion/react';
 import { PositionConfig } from './photoCollageTypes';

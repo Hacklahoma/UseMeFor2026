@@ -39,12 +39,13 @@ export enum CardId {
 }
 
 /**
- * Card object representing a single card with its identity, position, and z-index.
+ * Card object representing a single card with its identity, position, z-index, and photo.
  * 
  * This is the core data structure for the collage system:
  * - id: Never changes (CARD_1, CARD_2, etc.)
  * - position: Changes during shuffles (CENTER, TOP_LEFT, etc.)
  * - zIndex: Changes during every shuffle (rotates: 5→4→3→2→1→4, CENTER always gets 5)
+ * - photoIndex: Never changes, determines which photo this card displays (0-4)
  * 
  * Visual properties (top, left, rotate, flyDirection) come from the position's config,
  * but zIndex is tracked separately per card and overrides the position's default zIndex.
@@ -59,6 +60,9 @@ export interface Card {
   
   /** Current z-index stacking order (1=back, 5=front, CENTER always has 5) */
   zIndex: number;
+  
+  /** Index of the photo to display (0-4, immutable) */
+  photoIndex: number;
 }
 
 /**

@@ -20,10 +20,6 @@
 import React, { useState, useEffect } from 'react';
 import * as motion from 'motion/react-client';
 
-// Asset imports
-import PhotoImage from '../../../common/assets/Postcard.png';
-import CollageArrow from '../../../common/assets/nav-arrow.svg';
-
 // Type imports
 import {
   Card,
@@ -36,14 +32,17 @@ import {
 import {
   getPositionConfig,
 } from './photoCollage/cardPositions';
-import { photoCollageCardVariants } from './photoCollage/photoCollageVariants';
+import { photoCollageCardVariants } from './photoCollage/photoCollageFramerVariants';
 import {
   initializeCards,
-  executeForwardShuffle,
-  executeBackwardShuffle,
   resetAllCardsToIdle,
 } from './photoCollage/cardShuffleLogic';
-import { SHUFFLE_DELAY } from './photoCollage/cardConstants';
+import { getPhotoData } from './photoCollage/photoData';
+
+// Component imports
+import { LeftButton } from './photoCollage/LeftButton';
+import { RightButton } from './photoCollage/RightButton';
+import { VintagePostcard } from './photoCollage/VintagePostcard';
 
 /**
  * Main Photo Collage Component
@@ -73,6 +72,9 @@ const PhotoCollage: React.FC = () => {
     [CardId.CARD_4]: AnimationState.OFFSCREEN,
     [CardId.CARD_5]: AnimationState.OFFSCREEN,
   });
+  
+  // Debug: Toggle fixed image visibility
+  const [showDebugImage, setShowDebugImage] = useState(false);
 
   /**
    * Trigger entrance animation when component comes into view
@@ -90,74 +92,9 @@ const PhotoCollage: React.FC = () => {
     }
   }, [isInView, hasCompletedEntrance]);
 
-  /**
-   * Handle forward shuffle (right arrow click)
-   * Swaps positions between center card and next card in journey
-   * Updates z-indexes at midpoint when card is off-screen
-   */
-  const handleShuffleForward = () => {
-    // Prevent clicks if buttons are disabled
-    if (buttonsDisabled) return;
-    
-    // Disable buttons for 500ms
-    setButtonsDisabled(true);
-    setTimeout(() => {
-      setButtonsDisabled(false);
-    }, 200);
-    
-    // Execute shuffle logic (pure function, no side effects)
-    const shuffleResult = executeForwardShuffle(cards);
-    
-    // Phase 1 (t=0ms): Update positions with OLD z-indexes, start animations
-    setCards(shuffleResult.cardsWithOldZIndex);
-    setAnimationStates(shuffleResult.animationStates);
-
-    // Phase 2 (t=200ms): Update z-indexes when card is off-screen (midpoint)
-    setTimeout(() => {
-      setCards(shuffleResult.cardsWithNewZIndex);
-    }, SHUFFLE_DELAY / 2);
-
-    // Phase 3 (t=400ms): Reset animations to idle
-    setTimeout(() => {
-      setAnimationStates(resetAllCardsToIdle());
-    }, SHUFFLE_DELAY);
-  };
-
-  /**
-   * Handle backward shuffle (left arrow click)
-   * Swaps positions between center card and previous card in journey
-   * Updates z-indexes at midpoint when card is off-screen
-   */
-  const handleShuffleBackward = () => {
-    // Prevent clicks if buttons are disabled
-    if (buttonsDisabled) return;
-    
-    // Disable buttons for 500ms
-    setButtonsDisabled(true);
-    setTimeout(() => {
-      setButtonsDisabled(false);
-    }, 200);
-    
-    // Execute shuffle logic (pure function, no side effects)
-    const shuffleResult = executeBackwardShuffle(cards);
-    
-    // Phase 1 (t=0ms): Update positions with OLD z-indexes, start animations
-    setCards(shuffleResult.cardsWithOldZIndex);
-    setAnimationStates(shuffleResult.animationStates);
-
-    // Phase 2 (t=200ms): Update z-indexes when card is off-screen (midpoint)
-    setTimeout(() => {
-      setCards(shuffleResult.cardsWithNewZIndex);
-    }, SHUFFLE_DELAY / 2);
-
-    // Phase 3 (t=400ms): Reset animations to idle
-    setTimeout(() => {
-      setAnimationStates(resetAllCardsToIdle());
-    }, SHUFFLE_DELAY);
-  };
-
   return (
     <section className="root-container relative h-auto w-full min-w-[380px] overflow-hidden m-0">
+      
       {/* Main flexbox container for centering content */}
       <div className="flexbox-container flex flex-col justify-center items-center h-full min-h-[calc(100vh-8rem)]">
         
@@ -172,62 +109,16 @@ const PhotoCollage: React.FC = () => {
         <div className="photo-collage-parent-container relative w-full z-10 flex items-center justify-center">
           
           {/* Left arrow button - triggers backward shuffle */}
-          <motion.button 
-            className="left-arrow relative opacity-20 cursor-pointer bg-transparent border-none p-0 hidden custom600:flex items-center justify-center mr-16"
-            style={{ zIndex: leftButtonAnimationComplete ? 10 : 0 }}
-            aria-label="Previous photo"
-            onClick={handleShuffleBackward}
-            initial={{ 
-              x: '30vw',  // Start at center of screen (move right from left position)
-              opacity: 0,
-              scale: 0.5,
-            }}
-            animate={hasCompletedEntrance ? { 
-              x: 0,  // Move to final left position
-              opacity: 0.2,
-              scale: 1,
-            } : {
-              x: '30vw',  // Stay at center
-              opacity: 0,
-              scale: 0.5,
-            }}
-            transition={{
-              x: { type: 'spring', stiffness: 100, damping: 25, duration: 0.8 },
-              opacity: { duration: 0.6 },
-              scale: { type: 'spring', stiffness: 100, damping: 25 },
-              delay: hasCompletedEntrance ? 0.2 : 0,
-            }}
-            onAnimationComplete={() => {
-              if (hasCompletedEntrance && !leftButtonAnimationComplete) {
-                setLeftButtonAnimationComplete(true);
-              }
-            }}
-            whileHover={{ 
-              opacity: 0.8, 
-              scale: 1.15,
-              transition: {
-                type: 'spring',
-                stiffness: 300,
-                damping: 20,
-              }
-            }}
-            whileTap={{ 
-              scale: 1.05,
-              transition: {
-                type: 'spring',
-                stiffness: 300,
-                damping: 20,
-              }
-            }}
-          >
-            <motion.img 
-              src={CollageArrow} 
-              alt="Left arrow" 
-              className="w-16 h-16 md:w-20 md:h-20 pointer-events-none aspect-square object-contain" 
-              initial={{ rotate: -90 }}
-              animate={{ rotate: -90 }}
-            />
-          </motion.button>
+          <LeftButton
+            hasCompletedEntrance={hasCompletedEntrance}
+            leftButtonAnimationComplete={leftButtonAnimationComplete}
+            onAnimationComplete={() => setLeftButtonAnimationComplete(true)}
+            cards={cards}
+            buttonsDisabled={buttonsDisabled}
+            setCards={setCards}
+            setAnimationStates={setAnimationStates}
+            setButtonsDisabled={setButtonsDisabled}
+          />
 
           {/* Photo collage container */}
           <motion.div 
@@ -247,11 +138,12 @@ const PhotoCollage: React.FC = () => {
               // Calculate stagger delay for initial entrance animation
               const entranceDelay = (card.zIndex - 1) * 0.15;
               
+              // Get the photo data for this card based on its photoIndex
+              const photoData = getPhotoData(card.photoIndex);
+              
               return (
-                <motion.img
+                <motion.div
                   key={card.id}
-                  src={PhotoImage}
-                  alt={`Photo collage ${card.id}`}
                   className={`absolute w-80 md:w-[32rem] lg:w-[40rem] drop-shadow-lg select-none pointer-events-none`}
                   style={{
                     zIndex: card.zIndex, // Use card's zIndex, not position's default
@@ -275,68 +167,28 @@ const PhotoCollage: React.FC = () => {
                       setAnimationStates(resetAllCardsToIdle());
                     }
                   }}
-                />
+                >
+                  <VintagePostcard
+                    imageUrl={photoData.path}
+                    title={photoData.title}
+                    footer={photoData.footer}
+                  />
+                </motion.div>
               );
             })}
           </motion.div>
 
           {/* Right arrow button - triggers forward shuffle */}
-          <motion.button 
-            className="right-arrow relative opacity-20 cursor-pointer bg-transparent border-none p-0 hidden custom600:flex items-center justify-center ml-16"
-            style={{ zIndex: rightButtonAnimationComplete ? 10 : 0 }}
-            aria-label="Next photo"
-            onClick={handleShuffleForward}
-            initial={{ 
-              x: '-30vw',  // Start at center of screen (move left from right position)
-              opacity: 0,
-              scale: 0.5,
-            }}
-            animate={hasCompletedEntrance ? { 
-              x: 0,  // Move to final right position
-              opacity: 0.2,
-              scale: 1,
-            } : {
-              x: '-30vw',  // Stay at center
-              opacity: 0,
-              scale: 0.5,
-            }}
-            transition={{
-              x: { type: 'spring', stiffness: 100, damping: 25, duration: 0.8 },
-              opacity: { duration: 0.6 },
-              scale: { type: 'spring', stiffness: 100, damping: 25 },
-              delay: hasCompletedEntrance ? 0.2 : 0,
-            }}
-            onAnimationComplete={() => {
-              if (hasCompletedEntrance && !rightButtonAnimationComplete) {
-                setRightButtonAnimationComplete(true);
-              }
-            }}
-            whileHover={{ 
-              opacity: 0.8, 
-              scale: 1.15,
-              transition: {
-                type: 'spring',
-                stiffness: 300,
-                damping: 20,
-              }
-            }}
-            whileTap={{ 
-              scale: 1.05,
-              transition: {
-                type: 'spring',
-                stiffness: 300,
-                damping: 20,
-              }
-            }}
-          >
-            <motion.img 
-              src={CollageArrow} 
-              alt="Right arrow" 
-              className="w-16 h-16 md:w-20 md:h-20 pointer-events-none aspect-square object-contain" 
-              initial={{ rotate: 90 }}
-              animate={{ rotate: 90 }}
-            />
-          </motion.button>
+          <RightButton
+            hasCompletedEntrance={hasCompletedEntrance}
+            rightButtonAnimationComplete={rightButtonAnimationComplete}
+            onAnimationComplete={() => setRightButtonAnimationComplete(true)}
+            cards={cards}
+            buttonsDisabled={buttonsDisabled}
+            setCards={setCards}
+            setAnimationStates={setAnimationStates}
+            setButtonsDisabled={setButtonsDisabled}
+          />
         </div>
       </div>
     </section>
