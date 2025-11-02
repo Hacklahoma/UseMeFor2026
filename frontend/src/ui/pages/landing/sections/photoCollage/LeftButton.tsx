@@ -59,22 +59,32 @@ export const LeftButton: React.FC<LeftButtonProps> = ({
    * Swaps positions between center card and previous card in journey
    * Updates z-indexes at midpoint when card is off-screen
    */
-  const handleShuffleBackward = () => {
+  const handleShuffleBackward = (e: React.MouseEvent) => {
+    // Stop event propagation and prevent default
+    e.stopPropagation();
+    e.preventDefault();
+    
     // Synchronous check using ref (prevents race conditions)
-    if (isAnimatingRef.current) return;
+    // This MUST be the first check and immediately return if true
+    if (isAnimatingRef.current) {
+      return;
+    }
     
     // Prevent clicks if buttons are disabled
-    if (buttonsDisabled) return;
+    if (buttonsDisabled) {
+      return;
+    }
     
-    // Set ref immediately (synchronous)
+    // Set ref immediately (synchronous) - this blocks all subsequent clicks
     isAnimatingRef.current = true;
     
     // Check if direction changed (switching from forward to backward)
     const directionChanged = lastShuffleDirection === 'forward';
     
     // Disable buttons during animation
-    // Use longer delay if direction changed to ensure animation completes
-    const disableDelay = directionChanged ? SHUFFLE_DELAY + 300 : 200;
+    // Use longer delay to ensure animation fully completes before allowing next click
+    // Minimum 600ms to prevent spam clicking from breaking animations
+    const disableDelay = directionChanged ? SHUFFLE_DELAY + 300 : SHUFFLE_DELAY;
     setButtonsDisabled(true);
     setTimeout(() => {
       setButtonsDisabled(false);
@@ -99,6 +109,13 @@ export const LeftButton: React.FC<LeftButtonProps> = ({
     // Phase 3 (t=400ms): Reset animations to idle
     setTimeout(() => {
       setAnimationStates(resetAllCardsToIdle());
+      
+      // DEBUG: Log card states after shuffle
+      console.log('🎯 BACKWARD - After shuffle:');
+      shuffleResult.cardsWithNewZIndex.forEach(c => {
+        const letter = c.id.replace('card', '').toUpperCase();
+        console.log(`  Card ${letter}: position=${c.position}, z=${c.zIndex}, currentPhoto=${c.currentPhotoIndex}`);
+      });
     }, SHUFFLE_DELAY);
   };
 

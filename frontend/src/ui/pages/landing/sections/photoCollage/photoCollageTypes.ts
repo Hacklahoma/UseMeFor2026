@@ -31,24 +31,34 @@ export enum CardPosition {
  * Unique identifiers for each of the six physical cards in the collage.
  * These IDs remain constant throughout the lifecycle of the component,
  * even as cards move between positions.
+ * 
+ * Using letter IDs (A-F) makes it easier to track individual cards during shuffles.
+ * Each card's letter is displayed in the footer and never changes.
  */
 export enum CardId {
-  CARD_1 = 'card1',
-  CARD_2 = 'card2',
-  CARD_3 = 'card3',
-  CARD_4 = 'card4',
-  CARD_5 = 'card5',
-  CARD_6 = 'card6',
+  CARD_A = 'cardA',
+  CARD_B = 'cardB',
+  CARD_C = 'cardC',
+  CARD_D = 'cardD',
+  CARD_E = 'cardE',
+  CARD_F = 'cardF',
 }
 
 /**
- * Card object representing a single card with its identity, position, z-index, and photo.
+ * Card object representing a single card with its identity, position, z-index, and photos.
  * 
  * This is the core data structure for the collage system:
  * - id: Never changes (CARD_1, CARD_2, etc.)
  * - position: Changes during shuffles (CENTER, TOP_LEFT, etc.)
- * - zIndex: Changes during every shuffle (rotates: 5→4→3→2→1→4, CENTER always gets 5)
- * - photoIndex: Never changes, determines which photo this card displays (0-4)
+ * - zIndex: Changes during every shuffle (rotates: 5→4→3→2→1→0, CENTER always gets 5)
+ * - photoIndex: Original photo assignment (immutable, kept for reference)
+ * - currentPhotoIndex: The photo currently being displayed (mutable, changes when card reaches CENTER)
+ * 
+ * Photo Management Strategy:
+ * - When a card moves TO CENTER position, it receives a new photo via currentPhotoIndex
+ * - The card "holds onto" this photo even when it moves to other visible positions
+ * - This creates the illusion of infinite photos cycling through the deck
+ * - CENTER_BACK is the exception: it always shows the "next" photo as a buffer
  * 
  * Visual properties (top, left, rotate, flyDirection) come from the position's config,
  * but zIndex is tracked separately per card and overrides the position's default zIndex.
@@ -61,11 +71,14 @@ export interface Card {
   /** Current visual position in the collage (changes during shuffles) */
   position: CardPosition;
   
-  /** Current z-index stacking order (1=back, 5=front, CENTER always has 5) */
+  /** Current z-index stacking order (0=back, 5=front, CENTER always has 5) */
   zIndex: number;
   
-  /** Index of the photo to display (0-4, immutable) */
+  /** Original photo index assigned at initialization (immutable, for reference) */
   photoIndex: number;
+  
+  /** Photo currently being displayed by this card (mutable, updated when card reaches CENTER) */
+  currentPhotoIndex: number;
 }
 
 /**
@@ -122,4 +135,23 @@ export type CardAnimationMap = Record<CardId, AnimationState>;
  * This is used to look up the visual properties for any given position.
  */
 export type PositionConfigMap = Record<CardPosition, PositionConfig>;
+
+/**
+ * Get the display letter (A-F) for a card ID.
+ * This letter is shown in the footer and never changes.
+ * 
+ * @param cardId - The card ID enum value
+ * @returns Single letter string (A, B, C, D, E, or F)
+ */
+export function getCardLetter(cardId: CardId): string {
+  const letterMap: Record<CardId, string> = {
+    [CardId.CARD_A]: 'A',
+    [CardId.CARD_B]: 'B',
+    [CardId.CARD_C]: 'C',
+    [CardId.CARD_D]: 'D',
+    [CardId.CARD_E]: 'E',
+    [CardId.CARD_F]: 'F',
+  };
+  return letterMap[cardId];
+}
 

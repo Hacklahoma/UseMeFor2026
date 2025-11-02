@@ -26,6 +26,7 @@ import {
   CardId,
   CardAnimationMap,
   AnimationState,
+  getCardLetter,
 } from './photoCollage/photoCollageTypes';
 
 // Logic and data imports
@@ -72,12 +73,12 @@ const PhotoCollage: React.FC = () => {
   
   // Track animation state for each card
   const [animationStates, setAnimationStates] = useState<CardAnimationMap>({
-    [CardId.CARD_1]: AnimationState.OFFSCREEN,
-    [CardId.CARD_2]: AnimationState.OFFSCREEN,
-    [CardId.CARD_3]: AnimationState.OFFSCREEN,
-    [CardId.CARD_4]: AnimationState.OFFSCREEN,
-    [CardId.CARD_5]: AnimationState.OFFSCREEN,
-    [CardId.CARD_6]: AnimationState.OFFSCREEN,
+    [CardId.CARD_A]: AnimationState.OFFSCREEN,
+    [CardId.CARD_B]: AnimationState.OFFSCREEN,
+    [CardId.CARD_C]: AnimationState.OFFSCREEN,
+    [CardId.CARD_D]: AnimationState.OFFSCREEN,
+    [CardId.CARD_E]: AnimationState.OFFSCREEN,
+    [CardId.CARD_F]: AnimationState.OFFSCREEN,
   });
   
   // Debug: Toggle fixed image visibility
@@ -90,12 +91,12 @@ const PhotoCollage: React.FC = () => {
     if (isInView && !hasCompletedEntrance) {
       // Transition all cards to ONSCREEN state to trigger entrance animation
       setAnimationStates({
-        [CardId.CARD_1]: AnimationState.ONSCREEN,
-        [CardId.CARD_2]: AnimationState.ONSCREEN,
-        [CardId.CARD_3]: AnimationState.ONSCREEN,
-        [CardId.CARD_4]: AnimationState.ONSCREEN,
-        [CardId.CARD_5]: AnimationState.ONSCREEN,
-        [CardId.CARD_6]: AnimationState.ONSCREEN,
+        [CardId.CARD_A]: AnimationState.ONSCREEN,
+        [CardId.CARD_B]: AnimationState.ONSCREEN,
+        [CardId.CARD_C]: AnimationState.ONSCREEN,
+        [CardId.CARD_D]: AnimationState.ONSCREEN,
+        [CardId.CARD_E]: AnimationState.ONSCREEN,
+        [CardId.CARD_F]: AnimationState.ONSCREEN,
       });
     }
   }, [isInView, hasCompletedEntrance]);
@@ -150,13 +151,19 @@ const PhotoCollage: React.FC = () => {
               // Use max(0, ...) to ensure delay is never negative (for z-index 0)
               const entranceDelay = Math.max(0, (card.zIndex - 1) * 0.15);
               
-              // Get the photo data for this card based on its photoIndex
-              const photoData = getPhotoData(card.photoIndex);
+              // Determine which photo to display for this card
+              // For now, all cards display their currentPhotoIndex (static photos)
+              const photoIndexToDisplay = card.currentPhotoIndex;
+              
+              const photoData = getPhotoData(photoIndexToDisplay);
+              
+              // Get the permanent card letter (A-F) for the footer
+              const cardLetter = getCardLetter(card.id);
               
               return (
                 <motion.div
                   key={card.id}
-                  className={`absolute w-80 md:w-[32rem] lg:w-[40rem] drop-shadow-lg select-none pointer-events-none`}
+                  className={`${card.id} absolute w-80 md:w-[32rem] lg:w-[40rem] drop-shadow-lg select-none pointer-events-none`}
                   style={{
                     zIndex: card.zIndex, // Use card's zIndex, not position's default
                     willChange: 'transform, opacity', // GPU acceleration hint
@@ -183,7 +190,7 @@ const PhotoCollage: React.FC = () => {
                   <VintagePostcard
                     imageUrl={photoData.path}
                     title={photoData.title}
-                    footer={photoData.footer}
+                    footer={`CARD ${cardLetter}`}
                   />
                 </motion.div>
               );
