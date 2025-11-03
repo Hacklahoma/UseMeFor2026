@@ -9,7 +9,7 @@ import React, { MutableRefObject } from 'react';
 import * as motion from 'motion/react-client';
 import CollageArrow from '../../../../common/assets/nav-arrow.svg';
 import { Card, CardAnimationMap } from './photoCollageTypes';
-import { executeBackwardShuffle, resetAllCardsToIdle } from './cardShuffleLogic';
+import { executeBackwardShuffle } from './cardShuffleLogic';
 import { SHUFFLE_DELAY } from './cardConstants';
 
 interface LeftButtonProps {
@@ -96,10 +96,7 @@ export const LeftButton: React.FC<LeftButtonProps> = ({
       setCards(shuffleResult.cardsWithNewZIndex);
     }, SHUFFLE_DELAY / 2);
 
-    // Phase 3 (t=400ms): Reset animations to idle
-    setTimeout(() => {
-      setAnimationStates(resetAllCardsToIdle());
-    }, SHUFFLE_DELAY);
+    // Phase 3 (t=400ms): Animation states maintained in MOVE_TO_POSITION
   };
 
   return (

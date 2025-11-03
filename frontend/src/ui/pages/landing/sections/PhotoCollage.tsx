@@ -36,7 +36,6 @@ import {
 import { photoCollageCardVariants } from './photoCollage/photoCollageFramerVariants';
 import {
   initializeCards,
-  resetAllCardsToIdle,
 } from './photoCollage/cardShuffleLogic';
 import { getPhotoData, photoImages } from './photoCollage/photoData';
 
@@ -67,6 +66,9 @@ const PhotoCollage: React.FC = () => {
   
   // Use ref for immediate synchronous check (prevents race conditions)
   const isAnimatingRef = useRef(false);
+  
+  // Track which cards are in flying state (to know when swapCenterBack should be called)
+  const flyingCardsRef = useRef<Set<CardId>>(new Set());
   
   // Track animation state for each card
   const [animationStates, setAnimationStates] = useState<CardAnimationMap>({
@@ -216,8 +218,34 @@ const PhotoCollage: React.FC = () => {
                     // Only trigger once for the last card (highest z-index = 5)
                     if (definition === AnimationState.ONSCREEN && card.zIndex === 5 && !hasCompletedEntrance) {
                       setHasCompletedEntrance(true);
-                      // Transition all cards to idle state after entrance
-                      setAnimationStates(resetAllCardsToIdle());
+                      // Transition all cards to MOVE_TO_POSITION to maintain their positions
+                      setAnimationStates({
+                        [CardId.CARD_A]: AnimationState.MOVE_TO_POSITION,
+                        [CardId.CARD_B]: AnimationState.MOVE_TO_POSITION,
+                        [CardId.CARD_C]: AnimationState.MOVE_TO_POSITION,
+                        [CardId.CARD_D]: AnimationState.MOVE_TO_POSITION,
+                        [CardId.CARD_E]: AnimationState.MOVE_TO_POSITION,
+                        [CardId.CARD_F]: AnimationState.MOVE_TO_POSITION,
+                      });
+                    }
+                    
+                    // Sequence: First check if fly animation completes, then transition to MOVE_TO_POSITION
+                    if (definition === AnimationState.FLY_LEFT || definition === AnimationState.FLY_RIGHT) {
+                      // Mark this card as having flown (so we know to swap photo when it reaches centerBack)
+                      flyingCardsRef.current.add(card.id);
+                      // Fly animation completed - transition to MOVE_TO_POSITION to bring card back to stack
+                      setAnimationStates((prevStates) => ({
+                        ...prevStates,
+                        [card.id]: AnimationState.MOVE_TO_POSITION,
+                      }));
+                    }
+                    
+                    // Sequence: Then check if MOVE_TO_POSITION completes AND card is at centerBack
+                    // Only swap photo if this card was previously flying (part of a shuffle), not during initial load
+                    if (definition === AnimationState.MOVE_TO_POSITION && card.position === 'centerBack' && flyingCardsRef.current.has(card.id)) {
+                      swapCenterBack();
+                      // Remove from set after handling to prevent duplicate calls
+                      flyingCardsRef.current.delete(card.id);
                     }
                   }}
                 >

@@ -9,7 +9,7 @@ import React, { MutableRefObject } from 'react';
 import * as motion from 'motion/react-client';
 import CollageArrow from '../../../../common/assets/nav-arrow.svg';
 import { Card, CardId, CardAnimationMap } from './photoCollageTypes';
-import { executeForwardShuffle, resetAllCardsToIdle } from './cardShuffleLogic';
+import { executeForwardShuffle } from './cardShuffleLogic';
 import { SHUFFLE_DELAY } from './cardConstants';
 
 interface RightButtonProps {
@@ -80,7 +80,7 @@ export const RightButton: React.FC<RightButtonProps> = ({
     setTimeout(() => {
       setButtonsDisabled(false);
       isAnimatingRef.current = false; // Reset ref when animation completes
-    }, SHUFFLE_DELAY);
+    }, SHUFFLE_DELAY + 200);
     
     // Execute shuffle logic (pure function, no side effects)
     const shuffleResult = executeForwardShuffle(cards);
@@ -94,15 +94,12 @@ export const RightButton: React.FC<RightButtonProps> = ({
       setCards(shuffleResult.cardsWithNewZIndex);
     }, SHUFFLE_DELAY / 2);
 
-    // Phase 3 (t=300ms): Reset animations to idle AND swap center back photo
-    setTimeout(() => {
-      setAnimationStates(resetAllCardsToIdle());
-    }, SHUFFLE_DELAY);
+    // Phase 3 (t=300ms): Animation states maintained in MOVE_TO_POSITION
 
-    // Phase 4 (t=600ms): Swap center back photo
-    setTimeout(() => {
-      swapCenterBack();
-    }, SHUFFLE_DELAY * 2);
+    // // Phase 4 (t=600ms): Swap center back photo
+    // setTimeout(() => {
+    //   swapCenterBack();
+    // }, SHUFFLE_DELAY * 2);
   };
 
   return (

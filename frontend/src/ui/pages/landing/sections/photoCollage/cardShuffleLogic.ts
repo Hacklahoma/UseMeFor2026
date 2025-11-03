@@ -309,7 +309,15 @@ function buildAnimationStates(
   flyDirection: 'left' | 'right',
   movingCardIds: CardId[]
 ): CardAnimationMap {
-  const animationStates = resetAllCardsToIdle();
+  // Initialize all cards to MOVE_TO_POSITION (maintains their current position)
+  const animationStates: CardAnimationMap = {
+    [CardId.CARD_A]: AnimationState.MOVE_TO_POSITION,
+    [CardId.CARD_B]: AnimationState.MOVE_TO_POSITION,
+    [CardId.CARD_C]: AnimationState.MOVE_TO_POSITION,
+    [CardId.CARD_D]: AnimationState.MOVE_TO_POSITION,
+    [CardId.CARD_E]: AnimationState.MOVE_TO_POSITION,
+    [CardId.CARD_F]: AnimationState.MOVE_TO_POSITION,
+  };
   
   // Flying card gets directional fly animation
   animationStates[flyingCardId] = flyDirection === 'left'
@@ -322,43 +330,4 @@ function buildAnimationStates(
   });
   
   return animationStates;
-}
-
-/**
- * Reset all cards to idle animation state.
- * Used after shuffle animations complete to return cards to rest state.
- *
- * @returns Animation state map with all cards set to IDLE
- */
-export function resetAllCardsToIdle(): CardAnimationMap {
-  return {
-    [CardId.CARD_A]: AnimationState.IDLE,
-    [CardId.CARD_B]: AnimationState.IDLE,
-    [CardId.CARD_C]: AnimationState.IDLE,
-    [CardId.CARD_D]: AnimationState.IDLE,
-    [CardId.CARD_E]: AnimationState.IDLE,
-    [CardId.CARD_F]: AnimationState.IDLE,
-  };
-}
-
-/**
- * Assign a photo to the card currently at CENTER position.
- * This should be called after the shuffle animation completes.
- *
- * The card at CENTER receives the new photo and "holds onto" it
- * as it moves through other positions in future shuffles.
- *
- * @param cards - Current array of cards
- * @param photoIndex - The photo index to assign to the CENTER card
- * @returns Updated array of cards with photo assigned
- */
-export function assignPhotoToCenterCard(cards: Card[], photoIndex: number): Card[] {
-  const updatedCards = cards.map(card => ({ ...card }));
-  const centerCard = updatedCards.find(card => card.position === CardPosition.CENTER);
-  
-  if (centerCard) {
-    centerCard.currentPhotoIndex = photoIndex;
-  }
-  
-  return updatedCards;
 }

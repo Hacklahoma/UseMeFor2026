@@ -85,7 +85,7 @@ export interface Card {
  * Possible animation states a card can be in.
  * These states map directly to Framer Motion variants.
  * 
- * - IDLE: Card is at rest in its current position
+ * - IDLE: Card is at rest in its assigned position with no active animation.
  * - FLY_LEFT: Card is flying off screen to the left
  * - FLY_RIGHT: Card is flying off screen to the right
  * - MOVE_TO_POSITION: Card is smoothly transitioning to a new position
@@ -126,7 +126,7 @@ export interface PositionConfig {
  * Maps each card ID to its current animation state.
  * Used to control which Framer Motion variant each card should use.
  * 
- * Example: { card1: 'idle', card2: 'moveToPosition', ... }
+ * Example: { card1: 'moveToPosition', card2: 'flyLeft', ... }
  */
 export type CardAnimationMap = Record<CardId, AnimationState>;
 

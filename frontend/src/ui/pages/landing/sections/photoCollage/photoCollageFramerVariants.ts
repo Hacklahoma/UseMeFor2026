@@ -18,7 +18,7 @@
 
 import type { Variants } from 'motion/react';
 import { PositionConfig } from './photoCollageTypes';
-import { SCALE_VALUE, OFF_SCREEN_DISTANCE } from './cardConstants';
+import { SCALE_VALUE, OFF_SCREEN_DISTANCE, FLY_DISTANCE } from './cardConstants';
 
 /**
  * Custom properties passed to variants for dynamic animation calculations.
@@ -33,7 +33,6 @@ interface VariantCustomProps extends PositionConfig {
  * Complete set of animation variants for photo collage cards.
  * 
  * Variant naming convention:
- * - Present tense verbs for active states (e.g., 'idle')
  * - Directional suffixes for movement (e.g., 'flyLeft', 'flyRight')
  * - Descriptive names for complex states (e.g., 'moveToPosition')
  * 
@@ -48,33 +47,11 @@ export const photoCollageCardVariants: Variants = {
    * IDLE STATE
    * Card is at rest in its assigned position with no active animation.
    * This is the default state after animations complete.
-   * 
-   * Used when:
-   * - Card has finished transitioning to a position
-   * - Component is in a stable state between shuffles
-   * - No user interactions are occurring
    */
   idle: (config: VariantCustomProps) => ({
     x: 0,
     y: 0,
-    top: config.top,
-    left: config.left,
-    rotate: config.rotate,
-    translateX: '-50%',
-    translateY: '-50%',
-    opacity: 1,
-    scale: SCALE_VALUE,
-    transition: {
-      type: 'spring',
-      bounce: 0.1,
-      duration: 0.6,
-      damping: 25,
-      stiffness: 300,
-    },
-    // GPU acceleration
-    willChange: 'transform',
   }),
-
   /**
    * MOVE TO POSITION STATE
    * Card smoothly transitions from its current position to a new position.
@@ -103,7 +80,7 @@ export const photoCollageCardVariants: Variants = {
     transition: {
       type: 'spring',
       bounce: 0.2,
-      duration: 0.6,
+      duration: 0.3,
       damping: 20,
       stiffness: 200,
     },
@@ -128,7 +105,7 @@ export const photoCollageCardVariants: Variants = {
    * - Maintains opacity for smooth visual exit
    */
   flyLeft: (config: VariantCustomProps) => ({
-    x: `-${OFF_SCREEN_DISTANCE}`,
+    x: `-${FLY_DISTANCE}`,
     y: 0,
     top: config.top,
     left: config.left,
@@ -138,11 +115,9 @@ export const photoCollageCardVariants: Variants = {
     opacity: 1,
     scale: SCALE_VALUE,
     transition: {
-      type: 'spring',
-      bounce: 0.2,
-      duration: 0.6,
-      damping: 15,
-      stiffness: 300,
+      type: 'tween',
+      duration: 0.15,
+      ease: 'easeInOut',
     },
     // GPU acceleration
     willChange: 'transform',
@@ -165,7 +140,7 @@ export const photoCollageCardVariants: Variants = {
    * - Maintains opacity for smooth visual exit
    */
   flyRight: (config: VariantCustomProps) => ({
-    x: OFF_SCREEN_DISTANCE,
+    x: FLY_DISTANCE,
     y: 0,
     top: config.top,
     left: config.left,
@@ -175,11 +150,9 @@ export const photoCollageCardVariants: Variants = {
     opacity: 1,
     scale: SCALE_VALUE,
     transition: {
-      type: 'spring',
-      bounce: 0.2,
-      duration: 0.6,
-      damping: 15,
-      stiffness: 300,
+      type: 'tween',
+      duration: 0.15,
+      ease: 'easeInOut',
     },
     // GPU acceleration
     willChange: 'transform',
