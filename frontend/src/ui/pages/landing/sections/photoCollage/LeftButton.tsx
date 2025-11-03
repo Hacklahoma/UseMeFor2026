@@ -29,12 +29,10 @@ interface LeftButtonProps {
   setAnimationStates: (states: CardAnimationMap) => void;
   /** Callback to set buttons disabled state */
   setButtonsDisabled: (disabled: boolean) => void;
-  /** Last shuffle direction */
-  lastShuffleDirection: 'forward' | 'backward' | null;
-  /** Callback to set last shuffle direction */
-  setLastShuffleDirection: (direction: 'forward' | 'backward' | null) => void;
   /** Ref to track if animation is in progress (synchronous check) */
   isAnimatingRef: MutableRefObject<boolean>;
+  /** Callback to swap center back card's photo before shuffle logic executes */
+  swapPhotoBackShuffle: (cards: Card[]) => Card[];
 }
 
 /**
@@ -50,9 +48,8 @@ export const LeftButton: React.FC<LeftButtonProps> = ({
   setCards,
   setAnimationStates,
   setButtonsDisabled,
-  lastShuffleDirection,
-  setLastShuffleDirection,
   isAnimatingRef,
+  swapPhotoBackShuffle,
 }) => {
   /**
    * Handle backward shuffle (left arrow click)
@@ -85,14 +82,15 @@ export const LeftButton: React.FC<LeftButtonProps> = ({
       isAnimatingRef.current = false; // Reset ref when animation completes
     }, SHUFFLE_DELAY);
     
+    // Swap photo BEFORE shuffle logic executes
+    const cardsWithUpdatedPhoto = swapPhotoBackShuffle(cards);
     
-    // Execute shuffle logic (pure function, no side effects)
-    const shuffleResult = executeBackwardShuffle(cards);
+    // Execute shuffle logic (pure function, no side effects) on cards with updated photo
+    const shuffleResult = executeBackwardShuffle(cardsWithUpdatedPhoto);
     
     // Phase 1 (t=0ms): Update positions with OLD z-indexes, start animations
     setCards(shuffleResult.cardsWithOldZIndex);
     setAnimationStates(shuffleResult.animationStates);
-
     // Phase 2 (t=200ms): Update z-indexes when card is off-screen (midpoint)
     setTimeout(() => {
       setCards(shuffleResult.cardsWithNewZIndex);

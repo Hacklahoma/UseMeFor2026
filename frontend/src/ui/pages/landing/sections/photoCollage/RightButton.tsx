@@ -8,7 +8,7 @@
 import React, { MutableRefObject } from 'react';
 import * as motion from 'motion/react-client';
 import CollageArrow from '../../../../common/assets/nav-arrow.svg';
-import { Card, CardAnimationMap } from './photoCollageTypes';
+import { Card, CardId, CardAnimationMap } from './photoCollageTypes';
 import { executeForwardShuffle, resetAllCardsToIdle } from './cardShuffleLogic';
 import { SHUFFLE_DELAY } from './cardConstants';
 
@@ -29,12 +29,10 @@ interface RightButtonProps {
   setAnimationStates: (states: CardAnimationMap) => void;
   /** Callback to set buttons disabled state */
   setButtonsDisabled: (disabled: boolean) => void;
-  /** Last shuffle direction */
-  lastShuffleDirection: 'forward' | 'backward' | null;
-  /** Callback to set last shuffle direction */
-  setLastShuffleDirection: (direction: 'forward' | 'backward' | null) => void;
   /** Ref to track if animation is in progress (synchronous check) */
   isAnimatingRef: MutableRefObject<boolean>;
+  /** Callback to swap center back card's photo after flying animation completes */
+  swapCenterBack: () => void;
 }
 
 /**
@@ -51,6 +49,7 @@ export const RightButton: React.FC<RightButtonProps> = ({
   setAnimationStates,
   setButtonsDisabled,
   isAnimatingRef,
+  swapCenterBack,
 }) => {
   /**
    * Handle forward shuffle (right arrow click)
@@ -90,15 +89,20 @@ export const RightButton: React.FC<RightButtonProps> = ({
     setCards(shuffleResult.cardsWithOldZIndex);
     setAnimationStates(shuffleResult.animationStates);
 
-    // Phase 2 (t=200ms): Update z-indexes when card is off-screen (midpoint)
+    // Phase 2 (t=150ms): Update z-indexes when card is off-screen (midpoint)
     setTimeout(() => {
       setCards(shuffleResult.cardsWithNewZIndex);
     }, SHUFFLE_DELAY / 2);
 
-    // Phase 3 (t=400ms): Reset animations to idle
+    // Phase 3 (t=300ms): Reset animations to idle AND swap center back photo
     setTimeout(() => {
       setAnimationStates(resetAllCardsToIdle());
     }, SHUFFLE_DELAY);
+
+    // Phase 4 (t=600ms): Swap center back photo
+    setTimeout(() => {
+      swapCenterBack();
+    }, SHUFFLE_DELAY * 2);
   };
 
   return (

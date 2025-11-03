@@ -38,7 +38,7 @@ import {
   initializeCards,
   resetAllCardsToIdle,
 } from './photoCollage/cardShuffleLogic';
-import { getPhotoData } from './photoCollage/photoData';
+import { getPhotoData, photoImages } from './photoCollage/photoData';
 
 // Component imports
 import { LeftButton } from './photoCollage/LeftButton';
@@ -67,9 +67,6 @@ const PhotoCollage: React.FC = () => {
   
   // Use ref for immediate synchronous check (prevents race conditions)
   const isAnimatingRef = useRef(false);
-  
-  // Track the last shuffle direction to detect direction changes
-  const [lastShuffleDirection, setLastShuffleDirection] = useState<'forward' | 'backward' | null>(null);
   
   // Track animation state for each card
   const [animationStates, setAnimationStates] = useState<CardAnimationMap>({
@@ -101,6 +98,44 @@ const PhotoCollage: React.FC = () => {
     }
   }, [isInView, hasCompletedEntrance]);
 
+  /**
+   * Swap the center back card's photo to the next photo in the sequence.
+   * Called after the flying animation completes.
+   */
+  const swapCenterBack = () => {
+    setCards(prevCards => {
+      const updatedCards = prevCards.map(c => ({ ...c }));
+      const centerBackCard = updatedCards.find(c => c.position === 'centerBack');
+      
+      if (centerBackCard) {
+        centerBackCard.currentPhotoIndex = (centerBackCard.currentPhotoIndex + 6) % photoImages.length;
+      }
+      
+      return updatedCards;
+    });
+  };
+
+  /**
+   * Swap the center back card's photo to the previous photo in the sequence.
+   * Returns updated cards array with photo change applied.
+   * Called BEFORE the shuffle logic executes.
+   */
+  const swapPhotoBackShuffle = (currentCards: Card[]): Card[] => {
+    const updatedCards = currentCards.map(c => ({ ...c }));
+    const centerBackCard = updatedCards.find(c => c.position === 'centerBack');
+    const centerCard = updatedCards.find(c => c.position === 'center');
+    
+    if (centerCard && centerBackCard) {
+      if (centerCard.currentPhotoIndex === 0) {
+        centerBackCard.currentPhotoIndex = photoImages.length - 1; // Wrap to last photo
+      } else {
+        centerBackCard.currentPhotoIndex = centerCard.currentPhotoIndex - 1; // Move to previous photo
+      }
+    }
+    
+    return updatedCards;
+  };
+
   return (
     <section className="root-container relative h-auto w-full min-w-[380px] overflow-hidden m-0">
       
@@ -127,9 +162,8 @@ const PhotoCollage: React.FC = () => {
             setCards={setCards}
             setAnimationStates={setAnimationStates}
             setButtonsDisabled={setButtonsDisabled}
-            lastShuffleDirection={lastShuffleDirection}
-            setLastShuffleDirection={setLastShuffleDirection}
             isAnimatingRef={isAnimatingRef}
+            swapPhotoBackShuffle={swapPhotoBackShuffle}
           />
 
           {/* Photo collage container */}
@@ -207,9 +241,8 @@ const PhotoCollage: React.FC = () => {
             setCards={setCards}
             setAnimationStates={setAnimationStates}
             setButtonsDisabled={setButtonsDisabled}
-            lastShuffleDirection={lastShuffleDirection}
-            setLastShuffleDirection={setLastShuffleDirection}
             isAnimatingRef={isAnimatingRef}
+            swapCenterBack={swapCenterBack}
           />
         </div>
       </div>
