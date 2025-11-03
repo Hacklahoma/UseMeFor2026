@@ -7,16 +7,15 @@
  * 
  * Key Responsibilities:
  * - Find which card is at CENTER position
- * - Find which card is at the next position in the journey
- * - Swap their positions
+ * - Determine next/previous card in the sequence
+ * - Execute 3-way position rotation
  * - Assign appropriate animation states (fly away vs smooth transition)
- * - Return updated card array
- * 
+ * - Manage z-index updates to prevent visual glitches
+ *
  * Architecture:
- * - Cards are objects with { id, position }
- * - Only 2 cards change position per shuffle
- * - Only 2 cards animate per shuffle
- * - All other 3 cards remain unchanged
+ * - THREE cards change position per shuffle (3-way rotation)
+ * - THREE cards animate per shuffle (1 flies, 2 move smoothly)
+ * - Other 3 cards remain stationary
  */
 
 import {
@@ -55,15 +54,15 @@ export interface ShuffleResult {
 /**
  * Initialize the starting card configuration.
  * Sets up the 6 cards with their initial positions, z-indexes, and photo assignments.
- * 
- * Initial State: 
+ *
+ * Initial State:
  * - CARD_A: CENTER (z:5, original photo:0, displaying photo:0)
  * - CARD_B: TOP_LEFT (z:4, original photo:1, displaying photo:1)
  * - CARD_C: TOP_RIGHT (z:3, original photo:2, displaying photo:2)
  * - CARD_D: BOTTOM_LEFT (z:2, original photo:3, displaying photo:3)
  * - CARD_E: BOTTOM_RIGHT (z:1, original photo:4, displaying photo:4)
  * - CARD_F: CENTER_BACK (z:0, original photo:5, displaying photo:5)
- * 
+ *
  * Each card gets:
  * - id: Permanent letter identity (A-F) shown in footer
  * - photoIndex: Original photo assignment (immutable, for reference)
@@ -76,7 +75,7 @@ export function initializeCards(): Card[] {
     { id: CardId.CARD_C, position: CardPosition.TOP_RIGHT, zIndex: 3, photoIndex: 2, currentPhotoIndex: 2 },
     { id: CardId.CARD_D, position: CardPosition.BOTTOM_LEFT, zIndex: 2, photoIndex: 3, currentPhotoIndex: 3 },
     { id: CardId.CARD_E, position: CardPosition.BOTTOM_RIGHT, zIndex: 1, photoIndex: 4, currentPhotoIndex: 4 },
-    { id: CardId.CARD_F, position: CardPosition.CENTER_BACK, zIndex: 0, photoIndex: 5, currentPhotoIndex: 5 }
+    { id: CardId.CARD_F, position: CardPosition.CENTER_BACK, zIndex: 0, photoIndex: 5, currentPhotoIndex: 5 },
   ];
 }
 
@@ -92,13 +91,6 @@ const CARD_SEQUENCE: CardId[] = [
   CardId.CARD_D,
   CardId.CARD_E,
   CardId.CARD_F,
-];
-
-const POSITION_SEQUENCE: CardPosition[] = [
-  CardPosition.TOP_LEFT,
-  CardPosition.TOP_RIGHT,
-  CardPosition.BOTTOM_LEFT,
-  CardPosition.BOTTOM_RIGHT
 ];
 
 /**
@@ -122,7 +114,6 @@ const POSITION_SEQUENCE: CardPosition[] = [
  * @returns ShuffleResult with updated cards and animation states
  */
 export function executeForwardShuffle(currentCards: Card[]): ShuffleResult {
-
   // Deep clone to avoid mutation
   const newCards = currentCards.map(card => ({ ...card }));
   
@@ -132,10 +123,7 @@ export function executeForwardShuffle(currentCards: Card[]): ShuffleResult {
   
   // Step 2: Determine which card should move to CENTER next
   const nextCenterId = getNextCardIdInSequence(centerCard.id, 'forward');
-  const nextCenterCard = newCards.find(card => card.id === nextCenterId);
-  if (!nextCenterCard) {
-    throw new Error(`Card ${nextCenterId} not found`);
-  }
+  const nextCenterCard = findCardById(newCards, nextCenterId);
   
   // Step 3: THREE cards move (3-way rotation)
   // Save where nextCenterCard is coming from (this position will be vacated)
@@ -202,7 +190,6 @@ export function executeForwardShuffle(currentCards: Card[]): ShuffleResult {
  * @returns ShuffleResult with updated cards and animation states
  */
 export function executeBackwardShuffle(currentCards: Card[]): ShuffleResult {
-
   // Deep clone to avoid mutation
   const newCards = currentCards.map(card => ({ ...card }));
   
@@ -210,25 +197,19 @@ export function executeBackwardShuffle(currentCards: Card[]): ShuffleResult {
   const centerCard = findCardAtPosition(newCards, CardPosition.CENTER);
   const centerBackCard = findCardAtPosition(newCards, CardPosition.CENTER_BACK);
   
-  // Step 2: Determine which card should move to CENTER next
-  const nextCenterId = getNextCardIdInSequence(centerCard.id, 'backward');
-  const twoStepsBackId = getNextCardIdInSequence(nextCenterId, 'backward');
-
-  const twoStepsBackCard = newCards.find(card => card.id === twoStepsBackId);
-  if (!twoStepsBackCard) {
-    throw new Error(`Card ${twoStepsBackId} not found`);
-  }
+  // Step 2: Determine which card should move to CENTER next (2 steps back in sequence)
+  const oneStepBackId = getNextCardIdInSequence(centerCard.id, 'backward');
+  const twoStepsBackId = getNextCardIdInSequence(oneStepBackId, 'backward');
+  const targetCard = findCardById(newCards, twoStepsBackId);
   
   // Step 3: THREE cards move (3-way rotation)
-  const nextPosition = twoStepsBackCard.position;
-  
-  // Get fly direction based on where CENTER_BACK card is moving to
-  const flyDirection = getPositionConfig(nextPosition).flyDirection;
+  const vacatedPosition = targetCard.position;
+  const flyDirection = getPositionConfig(vacatedPosition).flyDirection;
   
   // Step 4: Update positions (three-way rotation)
-  centerCard.position = nextPosition;    // CENTER → next position
-  centerBackCard.position = CardPosition.CENTER;     // Next card → CENTER
-  twoStepsBackCard.position = CardPosition.CENTER_BACK;         // CENTER_BACK → next position
+  centerCard.position = vacatedPosition;             // CENTER → vacated position
+  centerBackCard.position = CardPosition.CENTER;     // CENTER_BACK → CENTER
+  targetCard.position = CardPosition.CENTER_BACK;    // Target → CENTER_BACK
   
   // Step 5: Create two-phase z-index snapshots (prevents visual glitches)
   // Phase 1: Snapshot with OLD z-indexes (t=0ms, cards start moving)
@@ -244,15 +225,15 @@ export function executeBackwardShuffle(currentCards: Card[]): ShuffleResult {
   const animationStates = buildAnimationStates(
     centerBackCard.id,
     flyDirection,
-    [twoStepsBackCard.id, centerCard.id]
+    [targetCard.id, centerCard.id]
   );
   
   return {
     cardsWithOldZIndex,
     cardsWithNewZIndex,
     animationStates,
-    flyingCardId: centerBackCard.id, // CENTER_BACK card flies away (symmetric with forward)
-    movingToCenterCardId: centerBackCard.id, // CENTER_BACK card moves to center
+    flyingCardId: centerBackCard.id,
+    movingToCenterCardId: centerBackCard.id,
   };
 }
 
@@ -269,20 +250,34 @@ function findCardAtPosition(cards: Card[], position: CardPosition): Card {
 }
 
 /**
+ * Helper: Find a card by its ID, throw if not found.
+ * This ensures we always have the required cards for a shuffle.
+ */
+function findCardById(cards: Card[], cardId: CardId): Card {
+  const card = cards.find(c => c.id === cardId);
+  if (!card) {
+    throw new Error(`Card ${cardId} not found`);
+  }
+  return card;
+}
+
+/**
  * Helper: Get the next card ID in the sequence (circular).
  * Used for forward shuffles to determine which card moves to CENTER next.
  */
 function getNextCardIdInSequence(currentCardId: CardId, direction: 'forward' | 'backward'): CardId {
   const currentIndex = CARD_SEQUENCE.indexOf(currentCardId);
-  const nextIndex = direction === 'forward' 
-    ? (currentIndex + 1) % CARD_SEQUENCE.length 
+  const nextIndex = direction === 'forward'
+    ? (currentIndex + 1) % CARD_SEQUENCE.length
     : (currentIndex - 1 + CARD_SEQUENCE.length) % CARD_SEQUENCE.length;
   return CARD_SEQUENCE[nextIndex];
 }
 
 /**
- * Helper: Update z-indexes for forward shuffle.
- * Strategy: Shift all cards up by 1, then set special cases for entering/leaving CENTER.
+ * Helper: Update z-indexes for shuffle operations.
+ *
+ * Forward: Shift all cards up (+1), then set special cases
+ * Backward: Shift all cards down (-1), then set special cases
  */
 function updateZIndexes(cards: Card[], centerCard: Card, nextCenterCard: Card, direction: 'forward' | 'backward'): void {
   if (direction === 'forward') {
@@ -317,8 +312,8 @@ function buildAnimationStates(
   const animationStates = resetAllCardsToIdle();
   
   // Flying card gets directional fly animation
-  animationStates[flyingCardId] = flyDirection === 'left' 
-    ? AnimationState.FLY_LEFT 
+  animationStates[flyingCardId] = flyDirection === 'left'
+    ? AnimationState.FLY_LEFT
     : AnimationState.FLY_RIGHT;
   
   // Moving cards get smooth position transitions
@@ -332,7 +327,7 @@ function buildAnimationStates(
 /**
  * Reset all cards to idle animation state.
  * Used after shuffle animations complete to return cards to rest state.
- * 
+ *
  * @returns Animation state map with all cards set to IDLE
  */
 export function resetAllCardsToIdle(): CardAnimationMap {
@@ -349,10 +344,10 @@ export function resetAllCardsToIdle(): CardAnimationMap {
 /**
  * Assign a photo to the card currently at CENTER position.
  * This should be called after the shuffle animation completes.
- * 
+ *
  * The card at CENTER receives the new photo and "holds onto" it
  * as it moves through other positions in future shuffles.
- * 
+ *
  * @param cards - Current array of cards
  * @param photoIndex - The photo index to assign to the CENTER card
  * @returns Updated array of cards with photo assigned

@@ -98,13 +98,6 @@ export const RightButton: React.FC<RightButtonProps> = ({
     // Phase 3 (t=400ms): Reset animations to idle
     setTimeout(() => {
       setAnimationStates(resetAllCardsToIdle());
-      
-      // DEBUG: Log card states after shuffle
-      console.log('🎯 FORWARD - After shuffle:');
-      shuffleResult.cardsWithNewZIndex.forEach(c => {
-        const letter = c.id.replace('card', '').toUpperCase();
-        console.log(`  Card ${letter}: position=${c.position}, z=${c.zIndex}, currentPhoto=${c.currentPhotoIndex}`);
-      });
     }, SHUFFLE_DELAY);
   };
 
