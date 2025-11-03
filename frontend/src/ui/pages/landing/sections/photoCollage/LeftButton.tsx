@@ -78,21 +78,13 @@ export const LeftButton: React.FC<LeftButtonProps> = ({
     // Set ref immediately (synchronous) - this blocks all subsequent clicks
     isAnimatingRef.current = true;
     
-    // Check if direction changed (switching from forward to backward)
-    const directionChanged = lastShuffleDirection === 'forward';
-    
     // Disable buttons during animation
-    // Use longer delay to ensure animation fully completes before allowing next click
-    // Minimum 600ms to prevent spam clicking from breaking animations
-    const disableDelay = directionChanged ? SHUFFLE_DELAY + 300 : SHUFFLE_DELAY;
     setButtonsDisabled(true);
     setTimeout(() => {
       setButtonsDisabled(false);
       isAnimatingRef.current = false; // Reset ref when animation completes
-    }, disableDelay);
+    }, SHUFFLE_DELAY);
     
-    // Update last shuffle direction
-    setLastShuffleDirection('backward');
     
     // Execute shuffle logic (pure function, no side effects)
     const shuffleResult = executeBackwardShuffle(cards);
