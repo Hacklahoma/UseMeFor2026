@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import BeeLogo from '../../../common/assets/BeeLogo.png';
 import MLHBanner2026 from '../../../common/assets/MLHBanner2026.png';
 import Postcard from '../../../common/assets/Postcard.png';
@@ -72,7 +73,7 @@ const LandingView: React.FC = () => {
             <a href="#top" className="text-[#3D472C] hover:text-[#2a3a1f] transition-colors">home</a>
             <a href="#" className="text-[#3D472C] hover:text-[#2a3a1f] transition-colors">login</a>
             <a href="#" className="text-[#3D472C] hover:text-[#2a3a1f] transition-colors">faq</a>
-            <a href="#" className="text-[#3D472C] hover:text-[#2a3a1f] transition-colors">apply</a>
+            <Link to="/register" className="text-[#3D472C] hover:text-[#2a3a1f] transition-colors">apply</Link>
           </nav>
 
           {/* Mobile Menu Button - only on thin screens */}
@@ -101,7 +102,7 @@ const LandingView: React.FC = () => {
             <a href="#top" className="px-0 py-1 text-[#3D472C] hover:bg-[#e8e8c7] transition-colors">home</a>
             <a href="#" className="px-0 py-1 text-[#3D472C] hover:bg-[#e8e8c7] transition-colors">login</a>
             <a href="#" className="px-0 py-1 text-[#3D472C] hover:bg-[#e8e8c7] transition-colors">faq</a>
-            <a href="#" className="px-0 py-1 text-[#3D472C] hover:bg-[#e8e8c7] transition-colors">apply</a>
+            <Link to="/register" className="px-0 py-1 text-[#3D472C] hover:bg-[#e8e8c7] transition-colors">apply</Link>
           </nav>
         </div>
       </header>
@@ -182,9 +183,9 @@ const LandingView: React.FC = () => {
           
           {/* Register Now button - under title on small screens */}
           <div className="mt-6 min-[600px]:hidden">
-            <button className="px-6 py-3 border-2 border-[#575f49] text-[#575f49] font-medium hover:bg-[#575f49] hover:text-[#F5F5DC] transition-colors duration-300 rounded">
+            <Link to="/register" className="inline-block px-6 py-3 border-2 border-[#575f49] text-[#575f49] font-medium hover:bg-[#575f49] hover:text-[#F5F5DC] transition-colors duration-300 rounded">
               Register Now
-            </button>
+            </Link>
           </div>
         </div>
       </div>
@@ -204,9 +205,9 @@ const LandingView: React.FC = () => {
       <div className={`absolute bottom-8 right-8 lg:bottom-12 lg:right-12 hidden min-[600px]:block transition-opacity duration-1000 ease-in-out ${
         showFinalElements ? 'opacity-100' : 'opacity-0'
       }`}>
-        <button className="px-6 py-3 border-2 border-[#575f49] text-[#575f49] font-medium hover:bg-[#575f49] hover:text-[#F5F5DC] transition-colors duration-300 rounded">
+        <Link to="/register" className="inline-block px-6 py-3 border-2 border-[#575f49] text-[#575f49] font-medium hover:bg-[#575f49] hover:text-[#F5F5DC] transition-colors duration-300 rounded">
           Register Now
-        </button>
+        </Link>
       </div>
     </div>
   );
