@@ -90,8 +90,8 @@ export const photoCollageCardVariants: Variants = {
 
   /**
    * FLY LEFT STATE
-   * Card rapidly exits the viewport to the left with a tilted rotation.
-   * Creates a dynamic "swooping away" effect.
+   * Card rapidly exits to the left with a tilted rotation, then returns to center.
+   * Creates a dynamic "swooping away and back" effect.
    * 
    * Used when:
    * - Left-positioned cards are shuffled away
@@ -99,25 +99,26 @@ export const photoCollageCardVariants: Variants = {
    * - Directional feedback is important for user understanding
    * 
    * Animation characteristics:
-   * - -25° rotation (counter-clockwise tilt)
-   * - Exits to -55vw (well off-screen left)
-   * - Lower bounce for snappy, decisive motion
-   * - Maintains opacity for smooth visual exit
+   * - -25° rotation (counter-clockwise tilt) at peak
+   * - Exits to -45vw (well off-screen left), then returns
+   * - Smooth return to center position
+   * - Maintains opacity for smooth visual effect
    */
   flyLeft: (config: VariantCustomProps) => ({
-    x: `-${FLY_DISTANCE}`,
+    x: [0, `-${FLY_DISTANCE}`, 0], // Keyframes: start -> fly left -> return to center
     y: 0,
     top: config.top,
     left: config.left,
-    rotate: -25,
+    rotate: [0, -25, 0], // Keyframes: start -> tilt left -> return to straight
     translateX: '-50%',
     translateY: '-50%',
     opacity: 1,
     scale: SCALE_VALUE,
     transition: {
       type: 'tween',
-      duration: 0.15,
+      duration: 0.6, // Total duration for both movements (there and back)
       ease: 'easeInOut',
+      times: [0, 0.5, 1], // Timeline: 0% at start, 50% at left peak, 100% back at center
     },
     // GPU acceleration
     willChange: 'transform',
@@ -125,7 +126,7 @@ export const photoCollageCardVariants: Variants = {
 
   /**
    * FLY RIGHT STATE
-   * Card rapidly exits the viewport to the right with a tilted rotation.
+   * Card rapidly exits to the right with a tilted rotation, then returns to center.
    * Mirror of flyLeft for rightward motion.
    * 
    * Used when:
@@ -134,25 +135,26 @@ export const photoCollageCardVariants: Variants = {
    * - Directional feedback is important for user understanding
    * 
    * Animation characteristics:
-   * - +25° rotation (clockwise tilt)
-   * - Exits to +55vw (well off-screen right)
-   * - Lower bounce for snappy, decisive motion
-   * - Maintains opacity for smooth visual exit
+   * - +25° rotation (clockwise tilt) at peak
+   * - Exits to +45vw (well off-screen right), then returns
+   * - Smooth return to center position
+   * - Maintains opacity for smooth visual effect
    */
   flyRight: (config: VariantCustomProps) => ({
-    x: FLY_DISTANCE,
+    x: [0, FLY_DISTANCE, 0], // Keyframes: start -> fly right -> return to center
     y: 0,
     top: config.top,
     left: config.left,
-    rotate: 25,
+    rotate: [0, 25, 0], // Keyframes: start -> tilt right -> return to straight
     translateX: '-50%',
     translateY: '-50%',
     opacity: 1,
     scale: SCALE_VALUE,
     transition: {
       type: 'tween',
-      duration: 0.15,
+      duration: 0.6, // Total duration for both movements (there and back)
       ease: 'easeInOut',
+      times: [0, 0.5, 1], // Timeline: 0% at start, 50% at right peak, 100% back at center
     },
     // GPU acceleration
     willChange: 'transform',

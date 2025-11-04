@@ -31,8 +31,8 @@ interface RightButtonProps {
   setButtonsDisabled: (disabled: boolean) => void;
   /** Ref to track if animation is in progress (synchronous check) */
   isAnimatingRef: MutableRefObject<boolean>;
-  /** Callback to swap center back card's photo after flying animation completes */
-  swapCenterBack: () => void;
+  /** Callback to swap a card's photo after flying animation completes */
+  swapPhotoOnCardID: (cardId: CardId, cards: Card[]) => Card[];
 }
 
 /**
@@ -49,7 +49,7 @@ export const RightButton: React.FC<RightButtonProps> = ({
   setAnimationStates,
   setButtonsDisabled,
   isAnimatingRef,
-  swapCenterBack,
+  swapPhotoOnCardID,
 }) => {
   /**
    * Handle forward shuffle (right arrow click)
@@ -80,7 +80,7 @@ export const RightButton: React.FC<RightButtonProps> = ({
     setTimeout(() => {
       setButtonsDisabled(false);
       isAnimatingRef.current = false; // Reset ref when animation completes
-    }, SHUFFLE_DELAY + 200);
+    }, SHUFFLE_DELAY + 100);
     
     // Execute shuffle logic (pure function, no side effects)
     const shuffleResult = executeForwardShuffle(cards);
@@ -89,17 +89,16 @@ export const RightButton: React.FC<RightButtonProps> = ({
     setCards(shuffleResult.cardsWithOldZIndex);
     setAnimationStates(shuffleResult.animationStates);
 
-    // Phase 2 (t=150ms): Update z-indexes when card is off-screen (midpoint)
+    // Phase 2 (t=300ms): Update z-indexes when card is off-screen (midpoint)
     setTimeout(() => {
       setCards(shuffleResult.cardsWithNewZIndex);
-    }, SHUFFLE_DELAY / 2);
+    }, SHUFFLE_DELAY);
 
-    // Phase 3 (t=300ms): Animation states maintained in MOVE_TO_POSITION
-
-    // // Phase 4 (t=600ms): Swap center back photo
-    // setTimeout(() => {
-    //   swapCenterBack();
-    // }, SHUFFLE_DELAY * 2);
+    // Phase 3 (t=600ms): Swap center back photo
+    setTimeout(() => {
+      const updatedCards = swapPhotoOnCardID(shuffleResult.flyingCardId, shuffleResult.cardsWithNewZIndex);
+      setCards(updatedCards);
+    }, SHUFFLE_DELAY + 100);
   };
 
   return (

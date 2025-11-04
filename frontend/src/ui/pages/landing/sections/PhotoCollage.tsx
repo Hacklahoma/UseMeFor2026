@@ -101,20 +101,20 @@ const PhotoCollage: React.FC = () => {
   }, [isInView, hasCompletedEntrance]);
 
   /**
-   * Swap the center back card's photo to the next photo in the sequence.
-   * Called after the flying animation completes.
+   * Swap a card's photo to the next photo in the sequence.
+   * @param cardId - The ID of the card to swap the photo for
+   * @param cards - The current cards array
+   * @returns Updated cards array with photo swapped
    */
-  const swapCenterBack = () => {
-    setCards(prevCards => {
-      const updatedCards = prevCards.map(c => ({ ...c }));
-      const centerBackCard = updatedCards.find(c => c.position === 'centerBack');
-      
-      if (centerBackCard) {
-        centerBackCard.currentPhotoIndex = (centerBackCard.currentPhotoIndex + 6) % photoImages.length;
-      }
-      
-      return updatedCards;
-    });
+  const swapPhotoOnCardID = (cardId: CardId, cards: Card[]): Card[] => {
+    const updatedCards = cards.map(c => ({ ...c }));
+    const targetCard = updatedCards.find(c => c.id === cardId);
+    
+    if (targetCard) {
+      targetCard.currentPhotoIndex = (targetCard.currentPhotoIndex + 6) % photoImages.length;
+    }
+    
+    return updatedCards;
   };
 
   /**
@@ -229,24 +229,14 @@ const PhotoCollage: React.FC = () => {
                       });
                     }
                     
-                    // Sequence: First check if fly animation completes, then transition to MOVE_TO_POSITION
-                    if (definition === AnimationState.FLY_LEFT || definition === AnimationState.FLY_RIGHT) {
-                      // Mark this card as having flown (so we know to swap photo when it reaches centerBack)
-                      flyingCardsRef.current.add(card.id);
-                      // Fly animation completed - transition to MOVE_TO_POSITION to bring card back to stack
-                      setAnimationStates((prevStates) => ({
-                        ...prevStates,
-                        [card.id]: AnimationState.MOVE_TO_POSITION,
-                      }));
-                    }
-                    
-                    // Sequence: Then check if MOVE_TO_POSITION completes AND card is at centerBack
-                    // Only swap photo if this card was previously flying (part of a shuffle), not during initial load
-                    if (definition === AnimationState.MOVE_TO_POSITION && card.position === 'centerBack' && flyingCardsRef.current.has(card.id)) {
-                      swapCenterBack();
-                      // Remove from set after handling to prevent duplicate calls
-                      flyingCardsRef.current.delete(card.id);
-                    }
+                    // // Sequence: First check if fly animation completes
+                    // if (definition === AnimationState.FLY_LEFT || definition === AnimationState.FLY_RIGHT) {
+                    //   // Mark this card as having flown (so we know to swap photo when it reaches centerBack)
+                    //   flyingCardsRef.current.add(card.id);
+                    //   // Fly animation completed
+                    //   setCards(swapPhotoOnCardID(card.id, cards));
+                    //   flyingCardsRef.current.delete(card.id);
+                    // }
                   }}
                 >
                   <VintagePostcard
@@ -270,7 +260,7 @@ const PhotoCollage: React.FC = () => {
             setAnimationStates={setAnimationStates}
             setButtonsDisabled={setButtonsDisabled}
             isAnimatingRef={isAnimatingRef}
-            swapCenterBack={swapCenterBack}
+            swapPhotoOnCardID={swapPhotoOnCardID}
           />
         </div>
       </div>
