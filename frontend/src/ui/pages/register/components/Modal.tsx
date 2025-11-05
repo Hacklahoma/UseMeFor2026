@@ -7,9 +7,10 @@ interface ModalProps {
   onClose: () => void;
   title: string;
   bodyText: string;
+  downloadUrl?: string;
 }
 
-const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, bodyText }) => {
+const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, bodyText, downloadUrl }) => {
   if (!isOpen) return null;
 
   return createPortal(
@@ -65,10 +66,19 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, bodyText }) => {
         </div>
         
         {/* Footer */}
-        <div className="p-6 border-t-2 border-[#575f49]">
+        <div className="p-6 border-t-2 border-[#575f49] flex gap-3">
+          {downloadUrl && (
+            <a
+              href={downloadUrl}
+              download
+              className="flex-1 px-6 py-3 border-2 border-[#575f49] text-[#575f49] font-medium hover:bg-[#e8e8c7] transition-colors duration-300 rounded text-center"
+            >
+              Download PDF
+            </a>
+          )}
           <button
             onClick={onClose}
-            className="w-full px-6 py-3 border-2 border-[#575f49] bg-[#575f49] text-[#F5F5DC] font-medium hover:bg-[#2a3a1f] transition-colors duration-300 rounded"
+            className={`px-6 py-3 border-2 border-[#575f49] bg-[#575f49] text-[#F5F5DC] font-medium hover:bg-[#2a3a1f] transition-colors duration-300 rounded ${downloadUrl ? 'flex-1' : 'w-full'}`}
           >
             Close
           </button>
