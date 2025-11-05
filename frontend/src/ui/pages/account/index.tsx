@@ -86,13 +86,13 @@ const AccountPage: React.FC = () => {
       <Background />
       <Header hideBee={false} />
 
-          <div className="relative min-h-[100svh] w-full flex items-center justify-center px-4 py-20">
-            <motion.div
-              className="max-w-5xl w-full"
-              initial={{ opacity: 0, scale: 0.95, y: 20 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              transition={{ duration: 0.8, ease: 'easeOut' }}
-            >
+              <div className="relative min-h-[100svh] w-full flex items-center justify-center px-2 md:px-4 py-4 md:py-20">
+                <motion.div
+                  className="max-w-5xl w-full"
+                  initial={{ opacity: 0, scale: 0.95, y: 20 }}
+                  animate={{ opacity: 1, scale: 1, y: 0 }}
+                  transition={{ duration: 0.8, ease: 'easeOut' }}
+                >
           {/* Flip Container */}
           <div style={{ perspective: '1000px' }}>
             <motion.div
@@ -106,7 +106,7 @@ const AccountPage: React.FC = () => {
             >
               {/* Front Side - US Passport Style Card */}
               <motion.div
-                className="bg-[#1a3a2e] rounded-lg shadow-2xl overflow-hidden border-4 border-[#2a4a3e] w-full"
+                className="bg-[#1a3a2e] rounded-lg shadow-2xl overflow-hidden border-4 border-[#2a4a3e] w-full max-h-[80vh] md:max-h-none flex flex-col"
                 style={{ 
                   backfaceVisibility: 'hidden',
                   WebkitBackfaceVisibility: 'hidden'
@@ -115,12 +115,12 @@ const AccountPage: React.FC = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.2 }}
               >
-                    {/* Passport Cover - Blue */}
-                    <div className="bg-gradient-to-b from-[#1a3a2e] via-[#2a4a3e] to-[#1a3a2e] py-4 px-6 border-b-3 border-[#3D472C]">
-                      <div className="flex items-center justify-between">
-                        <div className="text-[#F5F5DC]">
-                          <h1 className="text-xl md:text-2xl font-serif font-bold">HACKLAHOMA 2026</h1>
-                        </div>
+            {/* Passport Cover - Blue */}
+            <div className="bg-gradient-to-b from-[#1a3a2e] via-[#2a4a3e] to-[#1a3a2e] py-2 md:py-4 px-3 md:px-6 border-b-3 border-[#3D472C]">
+              <div className="flex items-center justify-between">
+                <div className="text-[#F5F5DC]">
+                  <h1 className="text-base md:text-2xl font-serif font-bold">HACKLAHOMA 2026</h1>
+                </div>
                         <div className="flex items-center gap-3">
                           {/* Flip Button */}
                           <button
@@ -147,7 +147,7 @@ const AccountPage: React.FC = () => {
                     </div>
 
             {/* Passport Content - Horizontal Layout */}
-            <div className="bg-[#FFFCF5] p-4 md:p-6 relative overflow-hidden">
+            <div className="bg-[#FFFCF5] p-2 md:p-6 relative overflow-hidden flex-1">
               {/* Background Bee Logo */}
               <div className="absolute inset-0 flex pointer-events-none overflow-hidden">
                 {/* Mobile: Center horizontally, positioned in bottom 40% */}
@@ -177,10 +177,10 @@ const AccountPage: React.FC = () => {
                   />
                 </div>
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-6 gap-4 relative z-10">
+              <div className="grid grid-cols-1 md:grid-cols-6 gap-2 md:gap-4 relative z-10">
                 {/* Left Column - Photo Section */}
                 <div className="md:col-span-2">
-                  <div className="bg-white border-3 border-[#575f49] rounded-lg p-2 aspect-square flex items-center justify-center relative">
+                  <div className="bg-white border-2 md:border-3 border-[#575f49] rounded-lg p-1 md:p-2 aspect-square flex items-center justify-center relative max-w-[120px] md:max-w-none mx-auto">
                     {accountData.profilePicture ? (
                       <img
                         src={URL.createObjectURL(accountData.profilePicture)}
@@ -190,7 +190,7 @@ const AccountPage: React.FC = () => {
                     ) : (
                       <div className="text-center text-[#575f49]">
                         <svg
-                          className="w-20 h-20 mx-auto mb-3 opacity-50"
+                          className="w-12 h-12 md:w-20 md:h-20 mx-auto mb-2 md:mb-3 opacity-50"
                           fill="none"
                           stroke="currentColor"
                           viewBox="0 0 24 24"
@@ -202,7 +202,7 @@ const AccountPage: React.FC = () => {
                             d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
                           />
                         </svg>
-                        <label className="cursor-pointer text-xs font-medium hover:text-[#2a3a1f] transition-colors">
+                        <label className="cursor-pointer text-[10px] md:text-xs font-medium hover:text-[#2a3a1f] transition-colors">
                           <input
                             type="file"
                             accept="image/*"
@@ -226,10 +226,10 @@ const AccountPage: React.FC = () => {
                       </button>
                     )}
                   </div>
-                  <p className="text-[10px] text-[#575f49] text-center mt-1.5 font-semibold mb-3">PHOTO</p>
+                  <p className="text-[8px] md:text-[10px] text-[#575f49] text-center mt-1 md:mt-1.5 font-semibold mb-2 md:mb-3">PHOTO</p>
                   
                   {/* Social Media Links */}
-                  <div className="mt-4">
+                  <div className="mt-2 md:mt-4">
                     <SocialMediaLinks
                       github={accountData.github}
                       linkedin={accountData.linkedin}
@@ -241,14 +241,14 @@ const AccountPage: React.FC = () => {
                 </div>
 
                 {/* Right Column - Information Fields */}
-                <div className="md:col-span-4 space-y-3">
+                <div className="md:col-span-4 space-y-1 md:space-y-3">
                   {/* Name - First Name and Last Name */}
-                  <div className="grid grid-cols-2 gap-3">
+                  <div className="grid grid-cols-2 gap-1.5 md:gap-3">
                     <div>
-                      <label className="text-[10px] text-[#575f49] uppercase tracking-wider font-semibold block mb-1">
+                      <label className="text-[9px] md:text-[10px] text-[#575f49] uppercase tracking-wider font-semibold block mb-0.5 md:mb-1">
                         FIRST NAME
                       </label>
-                      <div className="border-b-2 border-[#575f49] pb-0.5 min-h-[28px] flex items-center">
+                      <div className="border-b-2 border-[#575f49] pb-0.5 min-h-[20px] md:min-h-[28px] flex items-center">
                         <EditableField
                           value={accountData.firstName}
                           onChange={(value) => handleFieldChange('firstName', value)}
@@ -257,10 +257,10 @@ const AccountPage: React.FC = () => {
                       </div>
                     </div>
                     <div>
-                      <label className="text-[10px] text-[#575f49] uppercase tracking-wider font-semibold block mb-1">
+                      <label className="text-[9px] md:text-[10px] text-[#575f49] uppercase tracking-wider font-semibold block mb-0.5 md:mb-1">
                         LAST NAME
                       </label>
-                      <div className="border-b-2 border-[#575f49] pb-0.5 min-h-[28px] flex items-center">
+                      <div className="border-b-2 border-[#575f49] pb-0.5 min-h-[20px] md:min-h-[28px] flex items-center">
                         <EditableField
                           value={accountData.lastName}
                           onChange={(value) => handleFieldChange('lastName', value)}
@@ -272,23 +272,23 @@ const AccountPage: React.FC = () => {
 
                   {/* Email */}
                   <div>
-                    <label className="text-[10px] text-[#575f49] uppercase tracking-wider font-semibold block mb-1">
+                    <label className="text-[9px] md:text-[10px] text-[#575f49] uppercase tracking-wider font-semibold block mb-0.5 md:mb-1">
                       EMAIL ADDRESS
                     </label>
-                    <div className="border-b-2 border-[#575f49]/50 pb-0.5 min-h-[28px] flex items-center">
-                      <span className="text-xs text-[#3D472C] font-serif opacity-75">
+                    <div className="border-b-2 border-[#575f49]/50 pb-0.5 min-h-[20px] md:min-h-[28px] flex items-center">
+                      <span className="text-[10px] md:text-xs text-[#3D472C] font-serif opacity-75">
                         {formData.email}
                       </span>
                     </div>
                   </div>
 
                   {/* School, Major, Grade in a row with appropriate widths */}
-                  <div className="grid grid-cols-12 gap-3">
+                  <div className="grid grid-cols-12 gap-1.5 md:gap-3">
                     <div className="col-span-6">
-                      <label className="text-[10px] text-[#575f49] uppercase tracking-wider font-semibold block mb-1">
+                      <label className="text-[9px] md:text-[10px] text-[#575f49] uppercase tracking-wider font-semibold block mb-0.5 md:mb-1">
                         SCHOOL
                       </label>
-                      <div className="border-b-2 border-[#575f49] pb-0.5 min-h-[28px] flex items-center">
+                      <div className="border-b-2 border-[#575f49] pb-0.5 min-h-[20px] md:min-h-[28px] flex items-center">
                         <EditableField
                           value={accountData.school}
                           onChange={(value) => handleFieldChange('school', value)}
@@ -297,10 +297,10 @@ const AccountPage: React.FC = () => {
                       </div>
                     </div>
                     <div className="col-span-4">
-                      <label className="text-[10px] text-[#575f49] uppercase tracking-wider font-semibold block mb-1">
+                      <label className="text-[9px] md:text-[10px] text-[#575f49] uppercase tracking-wider font-semibold block mb-0.5 md:mb-1">
                         MAJOR
                       </label>
-                      <div className="border-b-2 border-[#575f49] pb-0.5 min-h-[28px] flex items-center">
+                      <div className="border-b-2 border-[#575f49] pb-0.5 min-h-[20px] md:min-h-[28px] flex items-center">
                         <EditableField
                           value={accountData.major}
                           onChange={(value) => handleFieldChange('major', value)}
@@ -309,10 +309,10 @@ const AccountPage: React.FC = () => {
                       </div>
                     </div>
                     <div className="col-span-2">
-                      <label className="text-[10px] text-[#575f49] uppercase tracking-wider font-semibold block mb-1">
+                      <label className="text-[9px] md:text-[10px] text-[#575f49] uppercase tracking-wider font-semibold block mb-0.5 md:mb-1">
                         GRADE
                       </label>
-                      <div className="border-b-2 border-[#575f49] pb-0.5 min-h-[28px] flex items-center">
+                      <div className="border-b-2 border-[#575f49] pb-0.5 min-h-[20px] md:min-h-[28px] flex items-center">
                         <EditableField
                           value={accountData.grade}
                           onChange={(value) => handleFieldChange('grade', value)}
@@ -323,12 +323,12 @@ const AccountPage: React.FC = () => {
                   </div>
 
                   {/* T-Shirt / Sweatshirt Size Section */}
-                  <div className="grid grid-cols-2 gap-3">
+                  <div className="grid grid-cols-2 gap-1.5 md:gap-3">
                     <div>
-                      <label className="text-[10px] text-[#575f49] uppercase tracking-wider font-semibold block mb-1">
+                      <label className="text-[9px] md:text-[10px] text-[#575f49] uppercase tracking-wider font-semibold block mb-0.5 md:mb-1">
                         T-SHIRT SIZE
                       </label>
-                      <div className="border-b-2 border-[#575f49] pb-0.5 min-h-[28px] flex items-center">
+                      <div className="border-b-2 border-[#575f49] pb-0.5 min-h-[20px] md:min-h-[28px] flex items-center">
                         <EditableField
                           value={accountData.tshirtSize}
                           onChange={(value) => handleFieldChange('tshirtSize', value)}
@@ -348,10 +348,10 @@ const AccountPage: React.FC = () => {
                       </div>
                     </div>
                     <div>
-                      <label className="text-[10px] text-[#575f49] uppercase tracking-wider font-semibold block mb-1">
+                      <label className="text-[9px] md:text-[10px] text-[#575f49] uppercase tracking-wider font-semibold block mb-0.5 md:mb-1">
                         SWEATSHIRT SIZE
                       </label>
-                      <div className="border-b-2 border-[#575f49] pb-0.5 min-h-[28px] flex items-center">
+                      <div className="border-b-2 border-[#575f49] pb-0.5 min-h-[20px] md:min-h-[28px] flex items-center">
                         <EditableField
                           value={accountData.sweatshirtSize}
                           onChange={(value) => handleFieldChange('sweatshirtSize', value)}
@@ -373,10 +373,10 @@ const AccountPage: React.FC = () => {
                   </div>
 
                   {/* Address Section */}
-                  <div className="grid grid-cols-12 gap-3">
+                  <div className="grid grid-cols-12 gap-1.5 md:gap-3">
                     {/* Left Column - Title, Checkbox, and Question Mark */}
                     <div className="col-span-3">
-                      <label className="text-[10px] text-[#575f49] uppercase tracking-wider font-semibold block mb-1">
+                      <label className="text-[9px] md:text-[10px] text-[#575f49] uppercase tracking-wider font-semibold block mb-0.5 md:mb-1">
                         ADDRESS
                       </label>
                       <div className="flex items-center gap-2">
@@ -498,11 +498,11 @@ const AccountPage: React.FC = () => {
 
                   {/* Signature */}
                   <div className="pt-1.5">
-                    <label className="text-[10px] text-[#575f49] uppercase tracking-wider font-semibold block mb-1.5">
+                    <label className="text-[9px] md:text-[10px] text-[#575f49] uppercase tracking-wider font-semibold block mb-1 md:mb-1.5">
                       SIGNATURE
                     </label>
-                    <div className="border-b-2 border-[#575f49] pb-1.5 min-h-[32px] flex items-center">
-                      <p className="text-lg text-[#575f49] font-serif italic">
+                    <div className="border-b-2 border-[#575f49] pb-1 md:pb-1.5 min-h-[24px] md:min-h-[32px] flex items-center">
+                      <p className="text-sm md:text-lg text-[#575f49] font-serif italic">
                         {accountData.firstName} {accountData.lastName}
                       </p>
                     </div>
@@ -512,7 +512,7 @@ const AccountPage: React.FC = () => {
             </div>
 
             {/* Passport Footer - Official Text */}
-            <div className="bg-[#e8e8c7] border-t-3 border-[#575f49] py-3 px-6 relative">
+            <div className="bg-[#e8e8c7] border-t-2 md:border-t-3 border-[#575f49] py-2 md:py-3 px-3 md:px-6 relative">
               <div className="text-center">
                 <p className="text-[10px] text-[#575f49] font-serif italic mb-1.5">
                   This card certifies that the bearer is a registered participant of Hacklahoma 2026
@@ -549,7 +549,7 @@ const AccountPage: React.FC = () => {
 
               {/* Back Side - QR Code */}
               <motion.div
-                className="bg-[#1a3a2e] rounded-lg shadow-2xl overflow-hidden border-4 border-[#2a4a3e] w-full absolute inset-0 flex flex-col"
+                className="bg-[#1a3a2e] rounded-lg shadow-2xl overflow-hidden border-4 border-[#2a4a3e] w-full absolute inset-0 flex flex-col max-h-[80vh] md:max-h-none"
                 style={{ 
                   backfaceVisibility: 'hidden',
                   WebkitBackfaceVisibility: 'hidden',
@@ -560,10 +560,10 @@ const AccountPage: React.FC = () => {
                 transition={{ duration: 0.6, delay: 0.2 }}
               >
                 {/* Passport Cover - Blue (Back) */}
-                <div className="bg-gradient-to-b from-[#1a3a2e] via-[#2a4a3e] to-[#1a3a2e] py-4 px-6 border-b-3 border-[#3D472C]">
+                <div className="bg-gradient-to-b from-[#1a3a2e] via-[#2a4a3e] to-[#1a3a2e] py-2 md:py-4 px-3 md:px-6 border-b-3 border-[#3D472C]">
                   <div className="flex items-center justify-between">
                     <div className="text-[#F5F5DC]">
-                      <h1 className="text-xl md:text-2xl font-serif font-bold">HACKLAHOMA 2026</h1>
+                      <h1 className="text-base md:text-2xl font-serif font-bold">HACKLAHOMA 2026</h1>
                     </div>
                     <div className="flex items-center gap-3">
                       {/* Flip Button */}
@@ -591,38 +591,42 @@ const AccountPage: React.FC = () => {
                 </div>
 
                 {/* QR Code Content */}
-                <div className="bg-[#FFFCF5] p-4 md:p-6 flex-1 flex items-center">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 w-full">
+                <div className="bg-[#FFFCF5] p-2 md:p-6 flex-1 flex items-center">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-8 w-full">
                     {/* Left Column - QR Code Section */}
                     <div className="flex flex-col items-center justify-center">
                       {/* QR Code */}
-                      <div className="bg-white p-4 rounded-lg shadow-lg border-4 border-[#575f49] mb-4">
-                        <QRCodeSVG
-                          value={qrCodeData}
-                          size={200}
-                          level="H"
-                          includeMargin={true}
-                          fgColor="#575f49"
-                          bgColor="#FFFFFF"
-                        />
+                      <div className="bg-white p-2 md:p-4 rounded-lg shadow-lg border-2 md:border-4 border-[#575f49] mb-2 md:mb-4">
+                        <div className="w-[140px] h-[140px] md:w-[200px] md:h-[200px] flex items-center justify-center">
+                          <QRCodeSVG
+                            value={qrCodeData}
+                            size={200}
+                            level="H"
+                            includeMargin={true}
+                            fgColor="#575f49"
+                            bgColor="#FFFFFF"
+                            style={{ width: '100%', height: '100%', maxWidth: '140px', maxHeight: '140px' }}
+                            className="md:max-w-[200px] md:max-h-[200px]"
+                          />
+                        </div>
                       </div>
 
                       {/* Participant Name */}
                       <div className="text-center">
-                        <p className="text-base md:text-lg font-serif text-[#3D472C] font-semibold">
+                        <p className="text-sm md:text-lg font-serif text-[#3D472C] font-semibold">
                           {accountData.firstName} {accountData.lastName}
                         </p>
                       </div>
                     </div>
 
                     {/* Right Column - Three Subsections */}
-                    <div className="flex flex-col justify-center space-y-6">
+                    <div className="flex flex-col justify-center space-y-3 md:space-y-6">
                       {/* Check-in Section */}
                       <div>
-                        <h3 className="text-sm md:text-base font-serif font-bold text-[#3D472C] mb-3">
+                        <h3 className="text-xs md:text-base font-serif font-bold text-[#3D472C] mb-1.5 md:mb-3">
                           Check-In
                         </h3>
-                        <div className="grid grid-cols-2 gap-2">
+                        <div className="grid grid-cols-2 gap-1 md:gap-2">
                           {[
                             { label: 'Check In', checked: checkIn, onChange: setCheckIn },
                             { label: 'Merch Grab', checked: merchReceived, onChange: setMerchReceived },
@@ -647,10 +651,10 @@ const AccountPage: React.FC = () => {
 
                       {/* Meals Section */}
                       <div>
-                        <h3 className="text-sm md:text-base font-serif font-bold text-[#3D472C] mb-3">
+                        <h3 className="text-xs md:text-base font-serif font-bold text-[#3D472C] mb-1.5 md:mb-3">
                           Meals
                         </h3>
-                        <div className="grid grid-cols-2 gap-2">
+                        <div className="grid grid-cols-2 gap-1 md:gap-2">
                           {[
                             { label: 'Lunch', checked: lunchReceived, onChange: setLunchReceived },
                             { label: 'Dinner', checked: dinnerReceived, onChange: setDinnerReceived },
@@ -677,11 +681,11 @@ const AccountPage: React.FC = () => {
 
                       {/* Workshops Section */}
                       <div>
-                        <div className="flex items-center p-2 rounded mt-2">
-                          <span className="text-sm text-[#3D472C] font-medium">
+                        <div className="flex items-center p-1 md:p-2 rounded mt-1">
+                          <span className="text-xs md:text-sm text-[#3D472C] font-medium">
                             Workshops Attended:
                           </span>
-                          <span className="ml-2 text-xl font-serif font-bold text-[#3D472C]">
+                          <span className="ml-1.5 md:ml-2 text-lg md:text-xl font-serif font-bold text-[#3D472C]">
                             {workshopCount}
                           </span>
                         </div>
@@ -691,7 +695,7 @@ const AccountPage: React.FC = () => {
                 </div>
 
                 {/* Passport Footer - Official Text (Back) */}
-                <div className="bg-[#e8e8c7] border-t-3 border-[#575f49] py-3 px-6 flex-shrink-0">
+                <div className="bg-[#e8e8c7] border-t-2 md:border-t-3 border-[#575f49] py-2 md:py-3 px-3 md:px-6 flex-shrink-0">
                   <div className="text-center">
                     <p className="text-[10px] text-[#575f49] font-serif italic mb-1.5">
                       This card certifies that the bearer is a registered participant of Hacklahoma 2026

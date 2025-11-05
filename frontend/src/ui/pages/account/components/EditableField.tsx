@@ -62,13 +62,13 @@ const EditableField: React.FC<EditableFieldProps> = ({
     if (type === 'select') {
       return (
         <div className={className}>
-          <select
-            ref={selectRef}
-            defaultValue={value}
-            onBlur={handleBlur}
-            onKeyDown={handleKeyDown}
-            className="w-full text-xs text-[#3D472C] font-serif bg-transparent border-none outline-none focus:outline-none cursor-pointer"
-          >
+              <select
+                ref={selectRef}
+                defaultValue={value}
+                onBlur={handleBlur}
+                onKeyDown={handleKeyDown}
+                className="w-full text-[10px] md:text-xs text-[#3D472C] font-serif bg-transparent border-none outline-none focus:outline-none cursor-pointer"
+              >
             {selectOptions.map((option) => (
               <option key={option.value} value={option.value}>
                 {option.label}
@@ -81,27 +81,27 @@ const EditableField: React.FC<EditableFieldProps> = ({
 
     return (
       <div className={className}>
-        <input
-          ref={inputRef}
-          type="text"
-          defaultValue={value}
-          onBlur={handleBlur}
-          onKeyDown={handleKeyDown}
-          onFocus={onFocus}
-          placeholder={placeholder}
-          className="w-full text-xs text-[#3D472C] font-serif bg-transparent border-none outline-none focus:outline-none cursor-text"
-        />
+            <input
+              ref={inputRef}
+              type="text"
+              defaultValue={value}
+              onBlur={handleBlur}
+              onKeyDown={handleKeyDown}
+              onFocus={onFocus}
+              placeholder={placeholder}
+              className="w-full text-[10px] md:text-xs text-[#3D472C] font-serif bg-transparent border-none outline-none focus:outline-none cursor-text"
+            />
       </div>
     );
   }
 
-  return (
-    <div className={className}>
-      <span className="text-xs text-[#3D472C] font-serif">
-        {displayValue}
-      </span>
-    </div>
-  );
+      return (
+        <div className={className}>
+          <span className="text-[10px] md:text-xs text-[#3D472C] font-serif">
+            {displayValue}
+          </span>
+        </div>
+      );
 };
 
 export default EditableField;
