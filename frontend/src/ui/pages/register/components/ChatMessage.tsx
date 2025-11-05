@@ -22,7 +22,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ text, sender }) => {
             : 'bg-[#e8e8c7] text-[#3D472C]'
         }`}
       >
-        <p className="text-base md:text-lg">{text}</p>
+            <p className="text-sm md:text-lg">{text}</p>
       </div>
     </motion.div>
   );

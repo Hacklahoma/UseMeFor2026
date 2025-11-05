@@ -109,8 +109,22 @@ const AccountPage: React.FC = () => {
             {/* Passport Content - Horizontal Layout */}
             <div className="bg-[#FFFCF5] p-4 md:p-6 relative overflow-hidden">
               {/* Background Bee Logo */}
-              <div className="absolute inset-0 flex items-center pointer-events-none overflow-hidden">
-                <div className="absolute left-[66.67%] -translate-x-1/2 flex items-center justify-center" style={{ height: '100%' }}>
+              <div className="absolute inset-0 flex pointer-events-none overflow-hidden">
+                {/* Mobile: Center horizontally, positioned in bottom 40% */}
+                <div className="absolute left-1/2 -translate-x-1/2 bottom-[10%] flex items-end justify-center md:hidden">
+                  <img
+                    src={BeeLogo}
+                    alt="Hacklahoma Bee Logo"
+                    className="opacity-20"
+                    style={{ 
+                      height: '75%',
+                      width: 'auto',
+                      maxWidth: 'none'
+                    }}
+                  />
+                </div>
+                {/* Desktop: Rule of thirds position, vertically centered */}
+                <div className="hidden md:flex absolute left-[66.67%] -translate-x-1/2 items-center justify-center" style={{ height: '100%' }}>
                   <img
                     src={BeeLogo}
                     alt="Hacklahoma Bee Logo"
