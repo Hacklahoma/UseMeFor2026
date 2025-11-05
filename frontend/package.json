@@ -13,6 +13,7 @@
   "dependencies": {
     "@types/react-router-dom": "^5.3.3",
     "motion": "^12.23.22",
+    "qrcode.react": "^4.2.0",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
     "react-router-dom": "^7.9.5"

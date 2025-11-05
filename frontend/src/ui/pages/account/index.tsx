@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import * as motion from "motion/react-client";
 import { useLocation, useNavigate } from 'react-router-dom';
+import { QRCodeSVG } from 'qrcode.react';
 import { FormData } from '../register/types';
 import Header from '../register/components/Header';
 import { Background } from '../register/components/Background';
@@ -45,6 +46,33 @@ const AccountPage: React.FC = () => {
   const [useCustomAddress, setUseCustomAddress] = useState(false);
   const [showTooltip, setShowTooltip] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
+  const [isFlipped, setIsFlipped] = useState(false);
+  const [isDesktop, setIsDesktop] = useState(false);
+  const [checkIn, setCheckIn] = useState(false);
+  const [merchReceived, setMerchReceived] = useState(false);
+  const [lunchReceived, setLunchReceived] = useState(false);
+  const [dinnerReceived, setDinnerReceived] = useState(false);
+  const [midnightSnackReceived, setMidnightSnackReceived] = useState(false);
+  const [breakfastReceived, setBreakfastReceived] = useState(false);
+  const [workshopCount, setWorkshopCount] = useState(0);
+
+  // Check if desktop (md breakpoint and above)
+  useEffect(() => {
+    const checkDesktop = () => {
+      setIsDesktop(window.innerWidth >= 768);
+    };
+    checkDesktop();
+    window.addEventListener('resize', checkDesktop);
+    return () => window.removeEventListener('resize', checkDesktop);
+  }, []);
+
+  // Generate JSON data for QR code
+  const qrCodeData = useMemo(() => {
+    return JSON.stringify({
+      name: `${accountData.firstName} ${accountData.lastName}`,
+      email: formData.email
+    });
+  }, [accountData.firstName, accountData.lastName, formData.email]);
 
   const handleFieldChange = <K extends keyof typeof accountData>(
     field: K,
@@ -65,13 +93,28 @@ const AccountPage: React.FC = () => {
               animate={{ opacity: 1, scale: 1, y: 0 }}
               transition={{ duration: 0.8, ease: 'easeOut' }}
             >
-          {/* US Passport Style Card - Horizontal */}
-          <motion.div
-            className="bg-[#1a3a2e] rounded-lg shadow-2xl overflow-hidden border-4 border-[#2a4a3e]"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-          >
+          {/* Flip Container */}
+          <div style={{ perspective: '1000px' }}>
+            <motion.div
+              className="relative w-full"
+              style={{ transformStyle: 'preserve-3d' }}
+              animate={{ 
+                rotateY: isDesktop ? 0 : (isFlipped ? 180 : 0),
+                rotateX: isDesktop ? (isFlipped ? 180 : 0) : 0
+              }}
+              transition={{ duration: 0.6, ease: 'easeInOut' }}
+            >
+              {/* Front Side - US Passport Style Card */}
+              <motion.div
+                className="bg-[#1a3a2e] rounded-lg shadow-2xl overflow-hidden border-4 border-[#2a4a3e] w-full"
+                style={{ 
+                  backfaceVisibility: 'hidden',
+                  WebkitBackfaceVisibility: 'hidden'
+                }}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.2 }}
+              >
             {/* Passport Cover - Blue */}
             <div className="bg-gradient-to-b from-[#1a3a2e] via-[#2a4a3e] to-[#1a3a2e] py-4 px-6 border-b-3 border-[#3D472C]">
               <div className="flex items-center justify-between">
@@ -79,6 +122,26 @@ const AccountPage: React.FC = () => {
                   <h1 className="text-xl md:text-2xl font-serif font-bold">HACKLAHOMA 2026</h1>
                 </div>
                 <div className="flex items-center gap-3">
+                  {/* Flip Button */}
+                  <button
+                    onClick={() => setIsFlipped(!isFlipped)}
+                    className="text-[#F5F5DC] hover:text-[#e8e8c7] transition-colors"
+                    title="Flip passport"
+                  >
+                    <svg
+                      className="w-5 h-5"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+                      />
+                    </svg>
+                  </button>
                   {/* Edit Button */}
                   <button
                     onClick={() => setIsEditMode(!isEditMode)}
@@ -482,7 +545,165 @@ const AccountPage: React.FC = () => {
                 </p>
               </div>
             </div>
-          </motion.div>
+              </motion.div>
+
+              {/* Back Side - QR Code */}
+              <motion.div
+                className="bg-[#1a3a2e] rounded-lg shadow-2xl overflow-hidden border-4 border-[#2a4a3e] w-full absolute inset-0 flex flex-col"
+                style={{ 
+                  backfaceVisibility: 'hidden',
+                  WebkitBackfaceVisibility: 'hidden',
+                  transform: isDesktop ? 'rotateX(180deg)' : 'rotateY(180deg)'
+                }}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.6, delay: 0.2 }}
+              >
+                {/* Passport Cover - Blue (Back) */}
+                <div className="bg-gradient-to-b from-[#1a3a2e] via-[#2a4a3e] to-[#1a3a2e] py-4 px-6 border-b-3 border-[#3D472C]">
+                  <div className="flex items-center justify-between">
+                    <div className="text-[#F5F5DC]">
+                      <h1 className="text-xl md:text-2xl font-serif font-bold">HACKLAHOMA 2026</h1>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      {/* Flip Button */}
+                      <button
+                        onClick={() => setIsFlipped(!isFlipped)}
+                        className="text-[#F5F5DC] hover:text-[#e8e8c7] transition-colors"
+                        title="Flip passport"
+                      >
+                        <svg
+                          className="w-5 h-5"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+                          />
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                {/* QR Code Content */}
+                <div className="bg-[#FFFCF5] p-4 md:p-6 flex-1 flex items-center">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 w-full">
+                    {/* Left Column - QR Code Section */}
+                    <div className="flex flex-col items-center justify-center">
+                      {/* QR Code */}
+                      <div className="bg-white p-4 rounded-lg shadow-lg border-4 border-[#575f49] mb-4">
+                        <QRCodeSVG
+                          value={qrCodeData}
+                          size={200}
+                          level="H"
+                          includeMargin={true}
+                          fgColor="#575f49"
+                          bgColor="#FFFFFF"
+                        />
+                      </div>
+
+                      {/* Participant Name */}
+                      <div className="text-center">
+                        <p className="text-base md:text-lg font-serif text-[#3D472C] font-semibold">
+                          {accountData.firstName} {accountData.lastName}
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Right Column - Three Subsections */}
+                    <div className="flex flex-col justify-center space-y-6">
+                      {/* Check-in Section */}
+                      <div>
+                        <h3 className="text-sm md:text-base font-serif font-bold text-[#3D472C] mb-3">
+                          Check-In
+                        </h3>
+                        <div className="grid grid-cols-2 gap-2">
+                          {[
+                            { label: 'Check In', checked: checkIn, onChange: setCheckIn },
+                            { label: 'Merch Grab', checked: merchReceived, onChange: setMerchReceived },
+                          ].map((item) => (
+                            <label
+                              key={item.label}
+                              className="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-[#e8e8c7] transition-colors"
+                            >
+                              <input
+                                type="checkbox"
+                                checked={item.checked}
+                                onChange={(e) => item.onChange(e.target.checked)}
+                                className="w-5 h-5 text-[#575f49] border-2 border-[#575f49] rounded focus:ring-[#575f49] cursor-pointer"
+                              />
+                              <span className="text-sm text-[#3D472C] font-medium">
+                                {item.label}
+                              </span>
+                            </label>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* Meals Section */}
+                      <div>
+                        <h3 className="text-sm md:text-base font-serif font-bold text-[#3D472C] mb-3">
+                          Meals
+                        </h3>
+                        <div className="grid grid-cols-2 gap-2">
+                          {[
+                            { label: 'Lunch', checked: lunchReceived, onChange: setLunchReceived },
+                            { label: 'Dinner', checked: dinnerReceived, onChange: setDinnerReceived },
+                            { label: 'Midnight Snack', checked: midnightSnackReceived, onChange: setMidnightSnackReceived },
+                            { label: 'Breakfast', checked: breakfastReceived, onChange: setBreakfastReceived },
+                          ].map((item) => (
+                            <label
+                              key={item.label}
+                              className="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-[#e8e8c7] transition-colors"
+                            >
+                              <input
+                                type="checkbox"
+                                checked={item.checked}
+                                onChange={(e) => item.onChange(e.target.checked)}
+                                className="w-5 h-5 text-[#575f49] border-2 border-[#575f49] rounded focus:ring-[#575f49] cursor-pointer"
+                              />
+                              <span className="text-sm text-[#3D472C] font-medium">
+                                {item.label}
+                              </span>
+                            </label>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* Workshops Section */}
+                      <div>
+                        <div className="flex items-center p-2 rounded mt-2">
+                          <span className="text-sm text-[#3D472C] font-medium">
+                            Workshops Attended:
+                          </span>
+                          <span className="ml-2 text-xl font-serif font-bold text-[#3D472C]">
+                            {workshopCount}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Passport Footer - Official Text (Back) */}
+                <div className="bg-[#e8e8c7] border-t-3 border-[#575f49] py-3 px-6 flex-shrink-0">
+                  <div className="text-center">
+                    <p className="text-[10px] text-[#575f49] font-serif italic mb-1.5">
+                      This card certifies that the bearer is a registered participant of Hacklahoma 2026
+                    </p>
+                    <p className="text-[9px] text-[#575f49] opacity-75">
+                      HACKLAHOMA 2026 • NORMAN, OKLAHOMA
+                    </p>
+                  </div>
+                </div>
+              </motion.div>
+            </motion.div>
+          </div>
         </motion.div>
       </div>
     </div>
