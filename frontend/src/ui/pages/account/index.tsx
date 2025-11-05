@@ -115,59 +115,36 @@ const AccountPage: React.FC = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.2 }}
               >
-            {/* Passport Cover - Blue */}
-            <div className="bg-gradient-to-b from-[#1a3a2e] via-[#2a4a3e] to-[#1a3a2e] py-4 px-6 border-b-3 border-[#3D472C]">
-              <div className="flex items-center justify-between">
-                <div className="text-[#F5F5DC]">
-                  <h1 className="text-xl md:text-2xl font-serif font-bold">HACKLAHOMA 2026</h1>
-                </div>
-                <div className="flex items-center gap-3">
-                  {/* Flip Button */}
-                  <button
-                    onClick={() => setIsFlipped(!isFlipped)}
-                    className="text-[#F5F5DC] hover:text-[#e8e8c7] transition-colors"
-                    title="Flip passport"
-                  >
-                    <svg
-                      className="w-5 h-5"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
-                      />
-                    </svg>
-                  </button>
-                  {/* Edit Button */}
-                  <button
-                    onClick={() => setIsEditMode(!isEditMode)}
-                    className="text-[#F5F5DC] hover:text-[#e8e8c7] transition-colors"
-                    title={isEditMode ? "Done editing" : "Edit passport"}
-                  >
-                    <svg
-                      className="w-5 h-5"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d={isEditMode 
-                          ? "M5 13l4 4L19 7" 
-                          : "M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
-                        }
-                      />
-                    </svg>
-                  </button>
-                </div>
-              </div>
-            </div>
+                    {/* Passport Cover - Blue */}
+                    <div className="bg-gradient-to-b from-[#1a3a2e] via-[#2a4a3e] to-[#1a3a2e] py-4 px-6 border-b-3 border-[#3D472C]">
+                      <div className="flex items-center justify-between">
+                        <div className="text-[#F5F5DC]">
+                          <h1 className="text-xl md:text-2xl font-serif font-bold">HACKLAHOMA 2026</h1>
+                        </div>
+                        <div className="flex items-center gap-3">
+                          {/* Flip Button */}
+                          <button
+                            onClick={() => setIsFlipped(!isFlipped)}
+                            className="text-[#F5F5DC] hover:text-[#e8e8c7] transition-colors"
+                            title="Flip passport"
+                          >
+                            <svg
+                              className="w-5 h-5"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+                              />
+                            </svg>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
 
             {/* Passport Content - Horizontal Layout */}
             <div className="bg-[#FFFCF5] p-4 md:p-6 relative overflow-hidden">
@@ -535,7 +512,7 @@ const AccountPage: React.FC = () => {
             </div>
 
             {/* Passport Footer - Official Text */}
-            <div className="bg-[#e8e8c7] border-t-3 border-[#575f49] py-3 px-6">
+            <div className="bg-[#e8e8c7] border-t-3 border-[#575f49] py-3 px-6 relative">
               <div className="text-center">
                 <p className="text-[10px] text-[#575f49] font-serif italic mb-1.5">
                   This card certifies that the bearer is a registered participant of Hacklahoma 2026
@@ -544,6 +521,29 @@ const AccountPage: React.FC = () => {
                   HACKLAHOMA 2026 • NORMAN, OKLAHOMA
                 </p>
               </div>
+              {/* Edit Button */}
+              <button
+                onClick={() => setIsEditMode(!isEditMode)}
+                className="absolute top-1/2 -translate-y-1/2 right-6 text-[#575f49] hover:text-[#2a3a1f] transition-colors"
+                title={isEditMode ? "Done editing" : "Edit passport"}
+              >
+                <svg
+                  className="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d={isEditMode
+                      ? "M5 13l4 4L19 7"
+                      : "M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
+                    }
+                  />
+                </svg>
+              </button>
             </div>
               </motion.div>
 
