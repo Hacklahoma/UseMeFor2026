@@ -76,15 +76,20 @@ const RegisterPage: React.FC = () => {
             </motion.div>
           )}
 
-          {showForm && (
-            <>
-              <WelcomeMessage firstName={formData.firstName} lastName={formData.lastName} />
-              <RegistrationForm
-                formData={formData}
-                onFieldChange={updateField}
-              />
-            </>
-          )}
+              {showForm && (
+                <motion.div
+                  initial={{ opacity: 1 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.5 }}
+                >
+                  <WelcomeMessage firstName={formData.firstName} lastName={formData.lastName} />
+                  <RegistrationForm
+                    formData={formData}
+                    onFieldChange={updateField}
+                  />
+                </motion.div>
+              )}
         </motion.div>
       </div>
     </div>

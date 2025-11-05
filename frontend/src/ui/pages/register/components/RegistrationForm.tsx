@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import * as motion from "motion/react-client";
+import { useNavigate } from 'react-router-dom';
 import ConfirmationButtons from './ConfirmationButtons';
 import Modal from './Modal';
 import BeeLogo from '../../../common/assets/BeeLogo.png';
@@ -9,11 +10,13 @@ import { FormData } from '../types';
 interface SignatureComponentProps {
   firstName: string;
   lastName: string;
+  onComplete: () => void;
 }
 
-const SignatureComponent: React.FC<SignatureComponentProps> = ({ firstName, lastName }) => {
+const SignatureComponent: React.FC<SignatureComponentProps> = ({ firstName, lastName, onComplete }) => {
   const [isWriting, setIsWriting] = useState(false);
   const [displayedName, setDisplayedName] = useState('');
+  const [isCompleting, setIsCompleting] = useState(false);
   const fullName = `${firstName} ${lastName}`.trim();
 
   const handleSignatureClick = () => {
@@ -27,11 +30,16 @@ const SignatureComponent: React.FC<SignatureComponentProps> = ({ firstName, last
       setTimeout(() => {
         setDisplayedName(prev => prev + char);
         
-        // When finished, stop writing animation
+        // When finished, stop writing animation and navigate
         if (index === fullName.length - 1) {
           setTimeout(() => {
             setIsWriting(false);
-          }, 300);
+            setIsCompleting(true);
+            // Add a brief delay before navigation to show completion
+            setTimeout(() => {
+              onComplete();
+            }, 800); // Delay before navigation
+          }, 500); // Small delay after animation completes
         }
       }, index * 50); // 50ms per character for smooth animation
     });
@@ -104,6 +112,9 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
   formData,
   onFieldChange,
 }) => {
+  const navigate = useNavigate();
+  const [isNavigating, setIsNavigating] = useState(false);
+  
   const {
     firstName,
     lastName,
@@ -120,6 +131,15 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
     instagram,
     resume,
   } = formData;
+
+  const handleNavigation = () => {
+    setIsNavigating(true);
+    // Small delay to allow fade-out animation
+    setTimeout(() => {
+      navigate('/account', { state: { formData } });
+    }, 300);
+  };
+
   const [showSchoolSection, setShowSchoolSection] = useState(false);
   const [showMajorGradeSection, setShowMajorGradeSection] = useState(false);
   const [showDietarySection, setShowDietarySection] = useState(false);
@@ -196,8 +216,13 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0.95, y: 20 }}
-      animate={{ opacity: 1, scale: 1, y: 0 }}
-      transition={{ duration: 0.8, ease: 'easeOut' }}
+      animate={{ 
+        opacity: isNavigating ? 0 : 1, 
+        scale: isNavigating ? 0.98 : 1, 
+        y: isNavigating ? -10 : 0 
+      }}
+      exit={{ opacity: 0, scale: 0.98, y: -10 }}
+      transition={{ duration: 0.3, ease: 'easeInOut' }}
       className="bg-[#FFFCF5]/95 backdrop-blur-sm rounded-lg shadow-lg p-6 md:p-8 relative"
     >
       {/* Bee Logo in top right corner */}
@@ -519,7 +544,11 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
             transition={{ duration: 0.5, delay: 0.3 }}
             className="pt-6"
           >
-            <SignatureComponent firstName={firstName} lastName={lastName} />
+            <SignatureComponent 
+              firstName={firstName} 
+              lastName={lastName}
+              onComplete={handleNavigation}
+            />
           </motion.div>
         )}
       </div>

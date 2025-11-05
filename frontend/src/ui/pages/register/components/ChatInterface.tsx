@@ -37,6 +37,26 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages, isTyping]);
 
+  // Handle keyboard events for Yes/No buttons
+  useEffect(() => {
+    const showButtons = (stage === 'chat-confirm' || stage === 'chat-email-confirm') && !isTyping && !hideButtons;
+    
+    if (!showButtons || inputDisabled) return;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Only handle if buttons are visible and not disabled
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        onConfirm();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [stage, isTyping, hideButtons, inputDisabled, onConfirm]);
+
   const getPlaceholder = () => {
     if (stage === 'chat-lastname') {
       return "Enter your last name...";
