@@ -3,6 +3,7 @@ import * as motion from "motion/react-client";
 import ConfirmationButtons from './ConfirmationButtons';
 import Modal from './Modal';
 import BeeLogo from '../../../common/assets/BeeLogo.png';
+import { FormData } from '../types';
 
 // Signature Component
 interface SignatureComponentProps {
@@ -95,64 +96,30 @@ const SignatureComponent: React.FC<SignatureComponentProps> = ({ firstName, last
 };
 
 interface RegistrationFormProps {
-  firstName: string;
-  lastName: string;
-  email: string;
-  school: string;
-  major: string;
-  grade: string;
-  dietaryRestriction: string;
-  dietaryOther: string;
-  profilePicture: File | null;
-  github: string;
-  linkedin: string;
-  discord: string;
-  instagram: string;
-  resume: File | null;
-  onFirstNameChange: (firstName: string) => void;
-  onLastNameChange: (lastName: string) => void;
-  onSchoolChange: (school: string) => void;
-  onMajorChange: (major: string) => void;
-  onGradeChange: (grade: string) => void;
-  onDietaryRestrictionChange: (restriction: string) => void;
-  onDietaryOtherChange: (other: string) => void;
-  onProfilePictureChange: (file: File | null) => void;
-  onGithubChange: (github: string) => void;
-  onLinkedinChange: (linkedin: string) => void;
-  onDiscordChange: (discord: string) => void;
-  onInstagramChange: (instagram: string) => void;
-  onResumeChange: (file: File | null) => void;
+  formData: FormData;
+  onFieldChange: <K extends keyof FormData>(field: K, value: FormData[K]) => void;
 }
 
 const RegistrationForm: React.FC<RegistrationFormProps> = ({
-  firstName,
-  lastName,
-  email,
-  school,
-  major,
-  grade,
-  dietaryRestriction,
-  dietaryOther,
-  profilePicture,
-  github,
-  linkedin,
-  discord,
-  instagram,
-  resume,
-  onFirstNameChange,
-  onLastNameChange,
-  onSchoolChange,
-  onMajorChange,
-  onGradeChange,
-  onDietaryRestrictionChange,
-  onDietaryOtherChange,
-  onProfilePictureChange,
-  onGithubChange,
-  onLinkedinChange,
-  onDiscordChange,
-  onInstagramChange,
-  onResumeChange,
+  formData,
+  onFieldChange,
 }) => {
+  const {
+    firstName,
+    lastName,
+    email,
+    school,
+    major,
+    grade,
+    dietaryRestriction,
+    dietaryOther,
+    profilePicture,
+    github,
+    linkedin,
+    discord,
+    instagram,
+    resume,
+  } = formData;
   const [showSchoolSection, setShowSchoolSection] = useState(false);
   const [showMajorGradeSection, setShowMajorGradeSection] = useState(false);
   const [showDietarySection, setShowDietarySection] = useState(false);
@@ -211,12 +178,12 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
     setHasDietaryRestriction(true);
   };
 
-  const handleDietaryNo = () => {
-    setDietaryAnswer('no');
-    setHasDietaryRestriction(false);
-    onDietaryRestrictionChange('');
-    onDietaryOtherChange('');
-  };
+      const handleDietaryNo = () => {
+        setDietaryAnswer('no');
+        setHasDietaryRestriction(false);
+        onFieldChange('dietaryRestriction', '');
+        onFieldChange('dietaryOther', '');
+      };
 
   const dietaryOptions = [
     { value: 'vegetarian', label: 'Vegetarian' },
@@ -265,7 +232,7 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
               id="firstName"
               name="firstName"
               value={firstName}
-              onChange={(e) => onFirstNameChange(e.target.value)}
+              onChange={(e) => onFieldChange('firstName', e.target.value)}
               required
               className="w-full px-4 py-3 border-2 border-[#575f49] rounded bg-[#FFFCF5] text-[#3D472C] focus:outline-none focus:ring-2 focus:ring-[#575f49] focus:border-transparent transition-all"
               placeholder="Enter your first name"
@@ -280,7 +247,7 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
               id="lastName"
               name="lastName"
               value={lastName}
-              onChange={(e) => onLastNameChange(e.target.value)}
+              onChange={(e) => onFieldChange('lastName', e.target.value)}
               required
               className="w-full px-4 py-3 border-2 border-[#575f49] rounded bg-[#FFFCF5] text-[#3D472C] focus:outline-none focus:ring-2 focus:ring-[#575f49] focus:border-transparent transition-all"
               placeholder="Enter your last name"
@@ -314,7 +281,7 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
               id="school"
               name="school"
               value={school}
-              onChange={(e) => onSchoolChange(e.target.value)}
+                  onChange={(e) => onFieldChange('school', e.target.value)}
               required
               className="w-full px-4 py-3 border-2 border-[#575f49] rounded bg-[#FFFCF5] text-[#3D472C] focus:outline-none focus:ring-2 focus:ring-[#575f49] focus:border-transparent transition-all"
               placeholder="Enter your school"
@@ -345,7 +312,7 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
                 id="major"
                 name="major"
                 value={major}
-                onChange={(e) => onMajorChange(e.target.value)}
+                    onChange={(e) => onFieldChange('major', e.target.value)}
                 required
                 className="w-full px-4 py-3 border-2 border-[#575f49] rounded bg-[#FFFCF5] text-[#3D472C] focus:outline-none focus:ring-2 focus:ring-[#575f49] focus:border-transparent transition-all"
                 placeholder="Enter your major"
@@ -366,7 +333,7 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
                 id="grade"
                 name="grade"
                 value={grade}
-                onChange={(e) => onGradeChange(e.target.value)}
+                    onChange={(e) => onFieldChange('grade', e.target.value)}
                 required
                 className="w-full px-4 py-3 border-2 border-[#575f49] rounded bg-[#FFFCF5] text-[#3D472C] focus:outline-none focus:ring-2 focus:ring-[#575f49] focus:border-transparent transition-all"
                 placeholder="Enter your grade"
@@ -428,7 +395,7 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
                     <button
                       key={option.value}
                       type="button"
-                      onClick={() => onDietaryRestrictionChange(option.value)}
+                      onClick={() => onFieldChange('dietaryRestriction', option.value)}
                       className={`flex items-center gap-2 p-3 border-2 border-[#575f49] rounded transition-colors ${
                         dietaryRestriction === option.value
                           ? 'bg-[#575f49] text-[#F5F5DC]'
@@ -440,7 +407,7 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
                         <input
                           type="text"
                           value={dietaryOther}
-                          onChange={(e) => onDietaryOtherChange(e.target.value)}
+                          onChange={(e) => onFieldChange('dietaryOther', e.target.value)}
                           disabled={dietaryRestriction !== 'other'}
                           required={dietaryRestriction === 'other'}
                           placeholder="Please specify"

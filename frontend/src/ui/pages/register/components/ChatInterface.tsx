@@ -4,19 +4,14 @@ import ChatMessage from './ChatMessage';
 import TypingIndicator from './TypingIndicator';
 import ChatInput from './ChatInput';
 import ConfirmationButtons from './ConfirmationButtons';
-
-interface Message {
-  id: string;
-  text: string;
-  sender: 'bot' | 'user';
-}
+import { Message, ChatStage } from '../types';
 
 interface ChatInterfaceProps {
   messages: Message[];
   isTyping: boolean;
   inputValue: string;
   inputDisabled?: boolean;
-  stage: 'chat-name' | 'chat-confirm' | 'chat-lastname' | 'chat-email' | 'chat-email-confirm' | 'form';
+  stage: ChatStage;
   hideButtons?: boolean;
   onInputChange: (value: string) => void;
   onInputSubmit: (e: React.FormEvent) => void;
