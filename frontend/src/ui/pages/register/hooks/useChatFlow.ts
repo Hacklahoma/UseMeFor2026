@@ -12,6 +12,8 @@ interface UseChatFlowReturn {
   inputDisabled: boolean;
   hideButtons: boolean;
   showForm: boolean;
+  showConnecting: boolean;
+  initializeChat: () => void;
   setInputValue: (value: string) => void;
   handleInputSubmit: (e: React.FormEvent, formData: FormData, updateField: (field: keyof FormData, value: any) => void) => void;
   handleConfirm: (formData: FormData) => void;
@@ -23,13 +25,29 @@ interface UseChatFlowReturn {
  * Handles all chat interactions, stage transitions, and bot messages
  */
 export const useChatFlow = (): UseChatFlowReturn => {
-  const [messages, setMessages] = useState<Message[]>([INITIAL_MESSAGE]);
+  const [messages, setMessages] = useState<Message[]>([]);
   const [stage, setStage] = useState<ChatStage>('chat-name');
   const [inputValue, setInputValue] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const [inputDisabled, setInputDisabled] = useState(false);
   const [hideButtons, setHideButtons] = useState(false);
   const [showForm, setShowForm] = useState(false);
+  const [showConnecting, setShowConnecting] = useState(true);
+
+  // Initialize chat after connecting animation
+  const initializeChat = useCallback(() => {
+    setShowConnecting(false);
+    // Show typing indicator first, then add the initial message
+    setIsTyping(true);
+    setTimeout(() => {
+      setIsTyping(false);
+      setMessages([INITIAL_MESSAGE]);
+      // Enable input after bot message appears
+      setTimeout(() => {
+        setInputDisabled(false);
+      }, ANIMATION_TIMINGS.INPUT_ENABLE_DELAY);
+    }, ANIMATION_TIMINGS.TYPING_DELAY);
+  }, []);
 
   const addUserMessage = useCallback((text: string) => {
     setMessages(prev => [...prev, {
@@ -164,6 +182,8 @@ export const useChatFlow = (): UseChatFlowReturn => {
     inputDisabled,
     hideButtons,
     showForm,
+    showConnecting,
+    initializeChat,
     setInputValue,
     handleInputSubmit,
     handleConfirm,

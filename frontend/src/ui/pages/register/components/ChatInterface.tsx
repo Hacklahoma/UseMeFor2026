@@ -99,7 +99,7 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
         {/* Confirmation Buttons - always rendered but hidden when not needed */}
         <motion.div
           className="w-full"
-          initial={{ opacity: 1 }}
+          initial={{ opacity: 0, visibility: 'hidden' }}
           animate={{ 
             opacity: (stage === 'chat-confirm' || stage === 'chat-email-confirm') && !isTyping && !hideButtons ? 1 : 0,
             visibility: (stage === 'chat-confirm' || stage === 'chat-email-confirm') && !isTyping && !hideButtons ? 'visible' : 'hidden'
@@ -121,6 +121,7 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
         {/* Input field - always rendered but hidden when not needed */}
         <motion.div
           className="w-full"
+          initial={{ opacity: 0, visibility: 'hidden' }}
           animate={{ 
             opacity: (stage === 'chat-name' || stage === 'chat-email' || stage === 'chat-lastname') && !isTyping && !hideButtons ? 1 : 0,
             visibility: (stage === 'chat-name' || stage === 'chat-email' || stage === 'chat-lastname') && !isTyping && !hideButtons ? 'visible' : 'hidden'

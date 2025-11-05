@@ -3,6 +3,7 @@ import * as motion from "motion/react-client";
 import Header from './components/Header';
 import ChatInterface from './components/ChatInterface';
 import RegistrationForm from './components/RegistrationForm';
+import ConnectingAnimation from './components/ConnectingAnimation';
 import { Background } from './components/Background';
 import { WelcomeMessage } from './components/WelcomeMessage';
 import { useChatFlow } from './hooks/useChatFlow';
@@ -17,6 +18,8 @@ const RegisterPage: React.FC = () => {
     inputDisabled,
     hideButtons,
     showForm,
+    showConnecting,
+    initializeChat,
     setInputValue,
     handleInputSubmit,
     handleConfirm,
@@ -55,11 +58,16 @@ const RegisterPage: React.FC = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
         >
-          {!showForm && (
+          {showConnecting && (
+            <ConnectingAnimation onComplete={initializeChat} />
+          )}
+
+          {!showForm && !showConnecting && (
             <motion.div
-              initial={{ opacity: 1 }}
-              animate={{ opacity: stage === 'form' ? 0 : 1 }}
-              transition={{ duration: 1, delay: stage === 'form' ? 1 : 0 }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.5 }}
             >
               <ChatInterface
                 messages={messages}
