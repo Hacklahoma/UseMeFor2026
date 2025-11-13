@@ -63,13 +63,14 @@ const LandingView: React.FC = () => {
           showFinalElements ? "opacity-100" : "opacity-0"
         }`}
       >
-        <div className="h-full flex top-1 items-center justify-start px-6 relative">
-          {/* Centered bee icon */}
+        <div className="h-full flex items-center px-6 md:px-12 relative">
+          {/* Bee icon on the left */}
           <a
             href="https://hacklahoma.org"
             target="_blank"
             rel="noopener noreferrer"
-            className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 block"
+            className="flex items-center"
+            aria-label="Hacklahoma home"
           >
             <img
               src={BeeLogo}
@@ -77,37 +78,32 @@ const LandingView: React.FC = () => {
               className="w-11 h-11 object-contain"
             />
           </a>
-          {/* Desktop Navigation - left & stacked */}
-          <nav className="hidden min-[600px]:flex flex-col items-start space-y-[-0.25rem] mt-8 ml-3">
-            <a
-              href="#top"
-              className="text-[#3D472C] hover:text-[#2a3a1f] transition-colors"
-            >
+
+          {/* Desktop Navigation - centered links */}
+          <nav className="hidden md:flex items-center space-x-12 text-[#3D472C] absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+            <a href="#top" className="hover:text-[#2a3a1f] transition-colors">
               home
             </a>
-            <a
-              href="#"
-              className="text-[#3D472C] hover:text-[#2a3a1f] transition-colors"
-            >
-              login
+            <a href="#about" className="hover:text-[#2a3a1f] transition-colors">
+              about
             </a>
-            <a
-              href="#"
-              className="text-[#3D472C] hover:text-[#2a3a1f] transition-colors"
-            >
+            <a href="#faq" className="hover:text-[#2a3a1f] transition-colors">
               faq
             </a>
             <a
-              href="#"
-              className="text-[#3D472C] hover:text-[#2a3a1f] transition-colors"
+              href="#sponsors"
+              className="hover:text-[#2a3a1f] transition-colors"
             >
-              apply
+              sponsors
+            </a>
+            <a href="#login" className="hover:text-[#2a3a1f] transition-colors">
+              login
             </a>
           </nav>
 
-          {/* Mobile Menu Button - only on thin screens */}
+          {/* Mobile Menu Button - centered on small screens */}
           <button
-            className="min-[600px]:hidden flex flex-col space-y-1"
+            className="md:hidden flex flex-col space-y-1 absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             aria-label="Toggle mobile menu"
           >
@@ -131,7 +127,7 @@ const LandingView: React.FC = () => {
 
         {/* Mobile Menu Dropdown */}
         <div
-          className={`min-[600px]:hidden absolute top-20 left-0 w-full bg-[#FFFCF5] transition-all duration-300 ${
+          className={`md:hidden absolute top-20 left-0 w-full bg-[#FFFCF5] transition-all duration-300 ${
             isMobileMenuOpen
               ? "opacity-100 translate-y-0"
               : "opacity-0 -translate-y-4 pointer-events-none"
@@ -145,22 +141,28 @@ const LandingView: React.FC = () => {
               home
             </a>
             <a
-              href="#"
+              href="#about"
               className="px-0 py-1 text-[#3D472C] hover:bg-[#e8e8c7] transition-colors"
             >
-              login
+              about
             </a>
             <a
-              href="#"
+              href="#faq"
               className="px-0 py-1 text-[#3D472C] hover:bg-[#e8e8c7] transition-colors"
             >
               faq
             </a>
             <a
-              href="#"
+              href="#sponsors"
               className="px-0 py-1 text-[#3D472C] hover:bg-[#e8e8c7] transition-colors"
             >
-              apply
+              sponsors
+            </a>
+            <a
+              href="#login"
+              className="px-0 py-1 text-[#3D472C] hover:bg-[#e8e8c7] transition-colors"
+            >
+              login
             </a>
           </nav>
         </div>

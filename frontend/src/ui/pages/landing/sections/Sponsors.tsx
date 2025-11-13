@@ -47,21 +47,24 @@ const Sponsors: React.FC = () => {
         </div>
 
         {/* Sponsors Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 lg:gap-10">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8 lg:gap-10">
           {sponsorLogos.map((sponsor, index) => (
             <div
               key={index}
-              className={`rounded-lg p-6 md:p-8 lg:p-10 h-32 md:h-36 lg:h-40 flex items-center justify-center ${
+              className={`rounded-lg p-4 md:p-6 lg:p-6 h-36 md:h-40 lg:h-44 flex items-center justify-center ${
                 // Center items for different screen sizes
                 index === sponsorLogos.length - 1 &&
                 sponsorLogos.length % 2 === 1
                   ? "sm:col-span-2 sm:max-w-md sm:mx-auto"
                   : index === sponsorLogos.length - 1 &&
-                    sponsorLogos.length % 3 === 1
-                  ? "lg:col-span-3 lg:max-w-sm lg:mx-auto"
+                    sponsorLogos.length % 4 === 1
+                  ? "lg:col-span-4 lg:max-w-sm lg:mx-auto"
                   : index === sponsorLogos.length - 1 &&
-                    sponsorLogos.length % 3 === 2
+                    sponsorLogos.length % 4 === 2
                   ? "lg:col-span-2 lg:max-w-md lg:mx-auto"
+                  : index === sponsorLogos.length - 1 &&
+                    sponsorLogos.length % 4 === 3
+                  ? "lg:col-span-3 lg:max-w-lg lg:mx-auto"
                   : ""
               }`}
             >
@@ -75,14 +78,14 @@ const Sponsors: React.FC = () => {
                   <img
                     src={sponsor.src}
                     alt={sponsor.alt}
-                    className="w-full h-full max-w-[200px] max-h-[80px] object-contain"
+                    className="w-full h-full max-w-[260px] max-h-[140px] object-contain"
                   />
                 </a>
               ) : (
                 <img
                   src={sponsor.src}
                   alt={sponsor.alt}
-                  className="w-full h-full max-w-[200px] max-h-[80px] object-contain"
+                  className="w-full h-full max-w-[260px] max-h-[140px] object-contain"
                 />
               )}
             </div>
