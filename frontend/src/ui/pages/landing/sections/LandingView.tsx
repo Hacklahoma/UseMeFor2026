@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import BeeLogo from "../../../common/assets/BeeLogo.png";
 import MLHBanner2026 from "../../../common/assets/MLHBanner2026.png";
 import Postcard from "../../../common/assets/Postcard.png";
-import MapOutline from "../../../common/assets/OK_Norman_706465_1936_625001.png";
 import Mountain from "../../../common/assets/mountains.png";
 const LandingView: React.FC = () => {
   const [displayedText, setDisplayedText] = useState("");
