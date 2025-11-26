@@ -4,6 +4,9 @@ import NickLogo from "../../../common/assets/sponsors/Nick.png";
 import BoeingLogo from "../../../common/assets/sponsors/Boeing.png";
 import HomeCreationsLogo from "../../../common/assets/sponsors/HomeCreations.png";
 import NorthropGrummanLogo from "../../../common/assets/sponsors/NorthropGrumman.png";
+import WilliamsLogo from "../../../common/assets/sponsors/Williams.png";
+import PaycomLogo from "../../../common/assets/sponsors/Paycom.png";
+import CocaColaLogo from "../../../common/assets/sponsors/CocaCola.png";
 
 interface SponsorLogo {
   src: string;
@@ -15,23 +18,38 @@ interface SponsorLogo {
 const sponsorLogos: SponsorLogo[] = [
   {
     src: HomeCreationsLogo,
-    alt: "Sponsor 1",
+    alt: "Sponsor 1 Home Creations",
     href: "https://www.homecreations.com/",
   },
   {
     src: BoeingLogo,
-    alt: "Sponsor 2",
+    alt: "Sponsor 2 Boeing",
     href: "https://www.boeing.com/",
   },
   {
     src: NickLogo,
-    alt: "Sponsor 3",
+    alt: "Sponsor 3 Nicholas Gavalas",
     href: "https://www.linkedin.com/in/nicholas-gavalas/",
   },
   {
     src: NorthropGrummanLogo,
-    alt: "Sponsor 4",
+    alt: "Sponsor 4 Northrop Grumman",
     href: "https://www.northropgrumman.com/",
+  },
+  {
+    src: WilliamsLogo,
+    alt: "Sponsor 5 Williams",
+    href: "https://www.williams.com/",
+  },
+  {
+    src: PaycomLogo,
+    alt: "Sponsor 6 Paycom",
+    href: "https://www.paycom.com/",
+  },
+  {
+    src: CocaColaLogo,
+    alt: "Sponsor 7 Coca-Cola",
+    href: "https://www.coca-cola.com/",
   },
 ];
 
@@ -52,19 +70,10 @@ const Sponsors: React.FC = () => {
             <div
               key={sponsor.href ? sponsor.href : `${sponsor.src}-${index}`}
               className={`rounded-lg p-4 md:p-6 lg:p-6 h-36 md:h-40 lg:h-44 flex items-center justify-center ${
-                // Center items for different screen sizes
+                // Center items for small screen (2 columns) when odd number, but not on desktop
                 index === sponsorLogos.length - 1 &&
                 sponsorLogos.length % 2 === 1
-                  ? "sm:col-span-2 sm:max-w-md sm:mx-auto"
-                  : index === sponsorLogos.length - 1 &&
-                    sponsorLogos.length % 4 === 1
-                  ? "lg:col-span-4 lg:max-w-sm lg:mx-auto"
-                  : index === sponsorLogos.length - 1 &&
-                    sponsorLogos.length % 4 === 2
-                  ? "lg:col-span-2 lg:max-w-md lg:mx-auto"
-                  : index === sponsorLogos.length - 1 &&
-                    sponsorLogos.length % 4 === 3
-                  ? "lg:col-span-3 lg:max-w-lg lg:mx-auto"
+                  ? "sm:col-span-2 sm:max-w-md sm:mx-auto lg:col-span-1 lg:max-w-none lg:mx-0"
                   : ""
               }`}
             >
@@ -78,14 +87,14 @@ const Sponsors: React.FC = () => {
                   <img
                     src={sponsor.src}
                     alt={sponsor.alt}
-                    className="w-full h-full max-w-[260px] max-h-[140px] object-contain"
+                    className="w-[240px] h-auto max-h-[140px] object-contain"
                   />
                 </a>
               ) : (
                 <img
                   src={sponsor.src}
                   alt={sponsor.alt}
-                  className="w-full h-full max-w-[260px] max-h-[140px] object-contain"
+                  className="w-[240px] h-auto max-h-[140px] object-contain"
                 />
               )}
             </div>

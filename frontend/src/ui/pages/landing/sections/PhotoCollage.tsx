@@ -64,7 +64,7 @@ const PhotoCollage: React.FC = () => {
       {/* Proper flexbox container for centering content */}
       <div className="flexbox-container flex flex-col justify-center items-center h-full min-h-[calc(100vh-8rem)] gap-8 md:gap-12 lg:gap-[8rem]">
         {/* Quote section - now properly positioned in flex layout */}
-        <div className="px-4 sm:px-6 z-20 max-w-xs sm:max-w-sm md:max-w-2xl lg:max-w-4xl">
+        <div className="px-4 sm:px-6 z-20 max-w-xs sm:max-w-sm md:max-w-2xl lg:max-w-4xl mb-8">
           <p className="text-center text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl font-medium text-[#3D472C] leading-relaxed">
             That's why we're giving you free food, merch, and 24 hours in
             Norman, Oklahoma to make something cool!
