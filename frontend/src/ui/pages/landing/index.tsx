@@ -5,6 +5,7 @@ import SplashQuote from "./sections/SplashQuote";
 import PhotoCollage from "./sections/PhotoCollage";
 import About from "../about/sections/About";
 import Sponsors from "./sections/Sponsors";
+import FAQPages from "../faq/section/CoverFront";
 const LandingPage: React.FC = () => {
 
   return (
@@ -22,6 +23,7 @@ const LandingPage: React.FC = () => {
       <SplashQuote />
       <PhotoCollage />
       <About />
+      <FAQPages />
       <Sponsors />
     </div>
   );
