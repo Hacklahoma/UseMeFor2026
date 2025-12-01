@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 // Uses global background from page wrapper
 
 const SplashQuote: React.FC = () => {

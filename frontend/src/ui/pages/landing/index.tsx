@@ -1,10 +1,10 @@
-import React from 'react';
-import MapOutline from '../../common/assets/OK_Norman_706465_1936_625001.png';
-import LandingView from './sections/LandingView';
-import SplashQuote from './sections/SplashQuote';
-import PhotoCollage from './sections/PhotoCollage';
-import About from '../about/sections/About';
-
+import React from "react";
+import MapOutline from "../../common/assets/OK_Norman_706465_1936_625001.png";
+import LandingView from "./sections/LandingView";
+import SplashQuote from "./sections/SplashQuote";
+import PhotoCollage from "./sections/PhotoCollage";
+import About from "../about/sections/About";
+import Sponsors from "./sections/Sponsors";
 const LandingPage: React.FC = () => {
 
   return (
@@ -18,11 +18,11 @@ const LandingPage: React.FC = () => {
         />
         <div className="absolute inset-0 bg-[#FFFCF5]/15" aria-hidden />
       </div>
-
       <LandingView />
       <SplashQuote />
       <PhotoCollage />
       <About />
+      <Sponsors />
     </div>
   );
 };

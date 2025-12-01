@@ -1,5 +1,5 @@
-import React from 'react';
-import About from './sections/About';
+import React from "react";
+import About from "./sections/About";
 
 const AboutPage: React.FC = () => {
   return (
@@ -10,5 +10,3 @@ const AboutPage: React.FC = () => {
 };
 
 export default AboutPage;
-
-
