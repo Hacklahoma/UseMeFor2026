@@ -35,8 +35,11 @@ import {
 import { photoCollageCardVariants } from './photoCollageComponents/photoCollageFramerVariants';
 import {
   initializeCards,
+  executeForwardShuffle,
+  executeBackwardShuffle,
 } from './photoCollageComponents/cardShuffleLogic';
 import { getPhotoData, photoImages } from './photoCollageComponents/photoData';
+import { SHUFFLE_DELAY } from './photoCollageComponents/cardConstants';
 
 // Component imports
 import { NavigationButton } from './photoCollageComponents/NavigationButton';
@@ -74,7 +77,11 @@ const PhotoCollage: React.FC = () => {
     [CardId.CARD_E]: AnimationState.OFFSCREEN,
     [CardId.CARD_F]: AnimationState.OFFSCREEN,
   });
-  
+
+  // Touch swipe detection for mobile
+  const touchStartX = useRef<number>(0);
+  const touchStartY = useRef<number>(0);
+
   // Debug: Toggle fixed image visibility
   const [showDebugImage, setShowDebugImage] = useState(false);
 
@@ -121,7 +128,7 @@ const PhotoCollage: React.FC = () => {
     const updatedCards = currentCards.map(c => ({ ...c }));
     const centerBackCard = updatedCards.find(c => c.position === 'centerBack');
     const centerCard = updatedCards.find(c => c.position === 'center');
-    
+
     if (centerCard && centerBackCard) {
       if (centerCard.currentPhotoIndex === 0) {
         centerBackCard.currentPhotoIndex = photoImages.length - 1; // Wrap to last photo
@@ -129,8 +136,100 @@ const PhotoCollage: React.FC = () => {
         centerBackCard.currentPhotoIndex = centerCard.currentPhotoIndex - 1; // Move to previous photo
       }
     }
-    
+
     return updatedCards;
+  };
+
+  /**
+   * Handle touch start event for swipe detection
+   */
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX;
+    touchStartY.current = e.touches[0].clientY;
+  };
+
+  /**
+   * Handle touch end event for swipe detection
+   * Detects horizontal swipe direction and triggers appropriate shuffle
+   */
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    // Skip if entrance animation hasn't completed or already animating
+    if (!hasCompletedEntrance || isAnimatingRef.current || buttonsDisabled) return;
+
+    const touchEndX = e.changedTouches[0].clientX;
+    const touchEndY = e.changedTouches[0].clientY;
+
+    const deltaX = touchEndX - touchStartX.current;
+    const deltaY = touchEndY - touchStartY.current;
+
+    // Minimum swipe distance threshold (in pixels)
+    const minSwipeDistance = 50;
+
+    // Check if this is primarily a horizontal swipe
+    // (horizontal distance must be greater than vertical distance)
+    if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > minSwipeDistance) {
+      if (deltaX > 0) {
+        // Swipe right - trigger backward shuffle (same as left button)
+        handleBackwardShuffle();
+      } else {
+        // Swipe left - trigger forward shuffle (same as right button)
+        handleForwardShuffle();
+      }
+    }
+  };
+
+  /**
+   * Execute forward shuffle (swipe left or right button click)
+   */
+  const handleForwardShuffle = () => {
+    // Synchronous check using ref (prevents race conditions)
+    if (isAnimatingRef.current || buttonsDisabled) return;
+
+    // Set ref immediately (synchronous) - this blocks all subsequent clicks/swipes
+    isAnimatingRef.current = true;
+
+    const delay = SHUFFLE_DELAY + 100;
+    setButtonsDisabled(true);
+    setTimeout(() => {
+      setButtonsDisabled(false);
+      isAnimatingRef.current = false;
+    }, delay);
+
+    const shuffleResult = executeForwardShuffle(cards);
+
+    setCards(shuffleResult.cardsWithOldZIndex);
+    setAnimationStates(shuffleResult.animationStates);
+    setTimeout(() => setCards(shuffleResult.cardsWithNewZIndex), SHUFFLE_DELAY);
+    setTimeout(() => {
+      const updatedCards = swapPhotoOnCardID(shuffleResult.flyingCardId, shuffleResult.cardsWithNewZIndex);
+      setCards(updatedCards);
+    }, delay);
+  };
+
+  /**
+   * Execute backward shuffle (swipe right or left button click)
+   */
+  const handleBackwardShuffle = () => {
+    // Synchronous check using ref (prevents race conditions)
+    if (isAnimatingRef.current || buttonsDisabled) return;
+
+    // Set ref immediately (synchronous) - this blocks all subsequent clicks/swipes
+    isAnimatingRef.current = true;
+
+    const delay = SHUFFLE_DELAY;
+    setButtonsDisabled(true);
+    setTimeout(() => {
+      setButtonsDisabled(false);
+      isAnimatingRef.current = false;
+    }, delay);
+
+    // Swap photo BEFORE shuffle logic executes
+    const cardsWithUpdatedPhoto = swapPhotoBackShuffle(cards);
+    const shuffleResult = executeBackwardShuffle(cardsWithUpdatedPhoto);
+
+    setCards(shuffleResult.cardsWithOldZIndex);
+    setAnimationStates(shuffleResult.animationStates);
+    setTimeout(() => setCards(shuffleResult.cardsWithNewZIndex), delay / 2);
   };
 
   return (
@@ -147,7 +246,7 @@ const PhotoCollage: React.FC = () => {
         </div>
 
         {/* Photo collage with navigation arrows */}
-        <div className="photo-collage-parent-container relative w-full z-10 flex items-center justify-center">
+        <div className="photo-collage-parent-container relative w-full z-10 flex items-center justify-center pt-[10rem] md:pt-[5rem]">
           
           {/* Left arrow button - triggers backward shuffle */}
           <NavigationButton
@@ -165,11 +264,13 @@ const PhotoCollage: React.FC = () => {
           />
 
           {/* Photo collage container */}
-          <motion.div 
+          <motion.div
             className="photo-collage-container relative w-1/2 flex-shrink-0 h-[16rem] md:h-[32rem] lg:h-[40rem] xl:h-[48rem] overflow-visible"
             onViewportEnter={() => setIsInView(true)}
             onViewportLeave={() => setIsInView(false)}
             viewport={{ amount: 0.8 }}
+            onTouchStart={handleTouchStart}
+            onTouchEnd={handleTouchEnd}
           >
             {/* Render all 6 cards based on their current positions */}
             {cards.map((card) => {
