@@ -9,37 +9,18 @@
 import React from 'react';
 import { VintagePostcard } from './VintagePostcard';
 
-// Import all photo images - TESTING (numbered images for easy tracking)
-import IMG_1 from '../../../../common/assets/photoCollageImages/1.png';
-import IMG_2 from '../../../../common/assets/photoCollageImages/2.png';
-import IMG_3 from '../../../../common/assets/photoCollageImages/3.png';
-import IMG_4 from '../../../../common/assets/photoCollageImages/4.png';
-import IMG_5 from '../../../../common/assets/photoCollageImages/5.png';
-import IMG_6 from '../../../../common/assets/photoCollageImages/6.png';
-import IMG_7 from '../../../../common/assets/photoCollageImages/7.png';
-import IMG_8 from '../../../../common/assets/photoCollageImages/8.png';
-import IMG_9 from '../../../../common/assets/photoCollageImages/9.png';
-import IMG_10 from '../../../../common/assets/photoCollageImages/10.png';
-import IMG_11 from '../../../../common/assets/photoCollageImages/11.png';
-import IMG_12 from '../../../../common/assets/photoCollageImages/12.png';
-import IMG_13 from '../../../../common/assets/photoCollageImages/13.png';
-import IMG_14 from '../../../../common/assets/photoCollageImages/14.png';
-import IMG_15 from '../../../../common/assets/photoCollageImages/15.png';
-import IMG_16 from '../../../../common/assets/photoCollageImages/16.png';
-
-// COMMENTED OUT - Original photo images
-import IMG_1249 from '../../../../common/assets/photoCollageImages/IMG_1249.png';
-import IMG_1302 from '../../../../common/assets/photoCollageImages/IMG_1302.png';
-import IMG_1326 from '../../../../common/assets/photoCollageImages/IMG_1326.png';
-import IMG_1353 from '../../../../common/assets/photoCollageImages/IMG_1353.png';
-import IMG_1372 from '../../../../common/assets/photoCollageImages/IMG_1372.png';
-import IMG_1382 from '../../../../common/assets/photoCollageImages/IMG_1382.png';
-import IMG_1566 from '../../../../common/assets/photoCollageImages/IMG_1566.png';
-import IMG_1624 from '../../../../common/assets/photoCollageImages/IMG_1624.png';
-import IMG_1709 from '../../../../common/assets/photoCollageImages/IMG_1709.png';
-import IMG_1738 from '../../../../common/assets/photoCollageImages/IMG_1738.png';
-import IMG_1749 from '../../../../common/assets/photoCollageImages/IMG_1749.png';
-import IMG_1834 from '../../../../common/assets/photoCollageImages/IMG_1834.png';
+import IMG_1249 from '../../../../common/assets/photoCollageImages/IMG_1249.webp';
+import IMG_1302 from '../../../../common/assets/photoCollageImages/IMG_1302.webp';
+import IMG_1326 from '../../../../common/assets/photoCollageImages/IMG_1326.webp';
+import IMG_1353 from '../../../../common/assets/photoCollageImages/IMG_1353.webp';
+import IMG_1372 from '../../../../common/assets/photoCollageImages/IMG_1372.webp';
+import IMG_1382 from '../../../../common/assets/photoCollageImages/IMG_1382.webp';
+import IMG_1566 from '../../../../common/assets/photoCollageImages/IMG_1566.webp';
+import IMG_1624 from '../../../../common/assets/photoCollageImages/IMG_1624.webp';
+import IMG_1709 from '../../../../common/assets/photoCollageImages/IMG_1709.webp';
+import IMG_1738 from '../../../../common/assets/photoCollageImages/IMG_1738.webp';
+import IMG_1749 from '../../../../common/assets/photoCollageImages/IMG_1749.webp';
+import IMG_1834 from '../../../../common/assets/photoCollageImages/IMG_1834.webp';
 
 // Fallback image for missing cards
 import Postcard from '../../../../common/assets/Postcard.png';
@@ -55,96 +36,6 @@ export interface PhotoData {
   /** Footer text for the photo */
   footer: string;
 }
-
-// /**
-//  * Array of photo data for each card in the collage
-//  * Index corresponds to card number (0-15 for cards 1-16)
-//  * Additional cards beyond this array will use the fallback Postcard.png
-//  * 
-//  * TESTING MODE: Using numbered images (1-16) for easy tracking of photo rotation
-//  */
-// export const photoImages: PhotoData[] = [
-//   {
-//     path: IMG_1,
-//     title: 'Photo #1, Norman, Okla.',
-//     footer: 'HK2024-001',
-//   },
-//   {
-//     path: IMG_2,
-//     title: 'Photo #2, Norman, Okla.',
-//     footer: 'HK2024-002',
-//   },
-//   {
-//     path: IMG_3,
-//     title: 'Photo #3, Norman, Okla.',
-//     footer: 'HK2024-003',
-//   },
-//   {
-//     path: IMG_4,
-//     title: 'Photo #4, Norman, Okla.',
-//     footer: 'HK2024-004',
-//   },
-//   {
-//     path: IMG_5,
-//     title: 'Photo #5, Norman, Okla.',
-//     footer: 'HK2024-005',
-//   },
-//   {
-//     path: IMG_6,
-//     title: 'Photo #6, Norman, Okla.',
-//     footer: 'HK2024-006',
-//   },
-//   {
-//     path: IMG_7,
-//     title: 'Photo #7, Norman, Okla.',
-//     footer: 'HK2024-007',
-//   },
-//   {
-//     path: IMG_8,
-//     title: 'Photo #8, Norman, Okla.',
-//     footer: 'HK2024-008',
-//   },
-//   {
-//     path: IMG_9,
-//     title: 'Photo #9, Norman, Okla.',
-//     footer: 'HK2024-009',
-//   },
-//   {
-//     path: IMG_10,
-//     title: 'Photo #10, Norman, Okla.',
-//     footer: 'HK2024-010',
-//   },
-//   {
-//     path: IMG_11,
-//     title: 'Photo #11, Norman, Okla.',
-//     footer: 'HK2024-011',
-//   },
-//   {
-//     path: IMG_12,
-//     title: 'Photo #12, Norman, Okla.',
-//     footer: 'HK2024-012',
-//   },
-//   {
-//     path: IMG_13,
-//     title: 'Photo #13, Norman, Okla.',
-//     footer: 'HK2024-013',
-//   },
-//   {
-//     path: IMG_14,
-//     title: 'Photo #14, Norman, Okla.',
-//     footer: 'HK2024-014',
-//   },
-//   {
-//     path: IMG_15,
-//     title: 'Photo #15, Norman, Okla.',
-//     footer: 'HK2024-015',
-//   },
-//   {
-//     path: IMG_16,
-//     title: 'Photo #16, Norman, Okla.',
-//     footer: 'HK2024-016',
-//   },
-// ];
 
 //COMMENTED OUT - Original photo data
 export const photoImages: PhotoData[] = [
