@@ -66,10 +66,7 @@ const PhotoCollage: React.FC = () => {
   
   // Use ref for immediate synchronous check (prevents race conditions)
   const isAnimatingRef = useRef(false);
-  
-  // Track which cards are in flying state (to know when swapCenterBack should be called)
-  const flyingCardsRef = useRef<Set<CardId>>(new Set());
-  
+
   // Track animation state for each card
   const [animationStates, setAnimationStates] = useState<CardAnimationMap>({
     [CardId.CARD_A]: AnimationState.OFFSCREEN,
@@ -228,15 +225,15 @@ const PhotoCollage: React.FC = () => {
                         [CardId.CARD_F]: AnimationState.MOVE_TO_POSITION,
                       });
                     }
-                    
-                    // // Sequence: First check if fly animation completes
-                    // if (definition === AnimationState.FLY_LEFT || definition === AnimationState.FLY_RIGHT) {
-                    //   // Mark this card as having flown (so we know to swap photo when it reaches centerBack)
-                    //   flyingCardsRef.current.add(card.id);
-                    //   // Fly animation completed
-                    //   setCards(swapPhotoOnCardID(card.id, cards));
-                    //   flyingCardsRef.current.delete(card.id);
-                    // }
+
+                    // Reset fly animations to MOVE_TO_POSITION after completion
+                    // This ensures the next fly animation will trigger (state change detection)
+                    if (definition === AnimationState.FLY_LEFT || definition === AnimationState.FLY_RIGHT) {
+                      setAnimationStates(prevStates => ({
+                        ...prevStates,
+                        [card.id]: AnimationState.MOVE_TO_POSITION,
+                      }));
+                    }
                   }}
                 >
                   <VintagePostcard
