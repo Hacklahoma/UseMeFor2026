@@ -26,24 +26,18 @@ import {
   CardId,
   CardAnimationMap,
   AnimationState,
-} from './photoCollageComponents/photoCollageTypes';
+  getPositionConfig,
+} from './photoCollageComponents/Card';
 
 // Logic and data imports
-import {
-  getPositionConfig,
-} from './photoCollageComponents/cardPositions';
-import { photoCollageCardVariants } from './photoCollageComponents/photoCollageFramerVariants';
-import {
-  initializeCards,
-  executeForwardShuffle,
-  executeBackwardShuffle,
-} from './photoCollageComponents/cardShuffleLogic';
-import { getPhotoData, photoImages } from './photoCollageComponents/photoData';
-import { SHUFFLE_DELAY } from './photoCollageComponents/cardConstants';
+import { photoCollageCardVariants } from './photoCollageComponents/CardFramerVariants';
+import { initializeCards, executeForwardShuffle, executeBackwardShuffle } from './photoCollageComponents/CardShuffleLogic';
+import { getPhotoData, photoImages } from './photoCollageComponents/PhotoGallery';
+import configSettings from './photoCollageComponents/Config';
 
 // Component imports
-import { NavigationButton } from './photoCollageComponents/NavigationButton';
-import { VintagePostcard } from './photoCollageComponents/VintagePostcard';
+import { NavigationButton } from './photoCollageComponents/ShuffleButton';
+import { VintagePostcard } from './photoCollageComponents/PostCard';
 
 /**
  * Main Photo Collage Component
@@ -58,14 +52,12 @@ const PhotoCollage: React.FC = () => {
   // Track whether the initial entrance animation has completed
   const [hasCompletedEntrance, setHasCompletedEntrance] = useState(false);
   
-  // Track whether button animations have completed
+  // Button animation states
   const [leftButtonAnimationComplete, setLeftButtonAnimationComplete] = useState(false);
   const [rightButtonAnimationComplete, setRightButtonAnimationComplete] = useState(false);
-  
-  // Track whether buttons are disabled (for click throttling)
   const [buttonsDisabled, setButtonsDisabled] = useState(false);
   
-  // Use ref for immediate synchronous check (prevents race conditions)
+  // Ref for immediate synchronous check (prevents race conditions)
   const isAnimatingRef = useRef(false);
 
   // Track animation state for each card
@@ -81,9 +73,6 @@ const PhotoCollage: React.FC = () => {
   // Touch swipe detection for mobile
   const touchStartX = useRef<number>(0);
   const touchStartY = useRef<number>(0);
-
-  // Debug: Toggle fixed image visibility
-  const [showDebugImage, setShowDebugImage] = useState(false);
 
   /**
    * Trigger entrance animation when component comes into view
@@ -188,7 +177,7 @@ const PhotoCollage: React.FC = () => {
     // Set ref immediately (synchronous) - this blocks all subsequent clicks/swipes
     isAnimatingRef.current = true;
 
-    const delay = SHUFFLE_DELAY + 100;
+    const delay = configSettings.SHUFFLE_DELAY + 100;
     setButtonsDisabled(true);
     setTimeout(() => {
       setButtonsDisabled(false);
@@ -199,7 +188,7 @@ const PhotoCollage: React.FC = () => {
 
     setCards(shuffleResult.cardsWithOldZIndex);
     setAnimationStates(shuffleResult.animationStates);
-    setTimeout(() => setCards(shuffleResult.cardsWithNewZIndex), SHUFFLE_DELAY);
+    setTimeout(() => setCards(shuffleResult.cardsWithNewZIndex), configSettings.SHUFFLE_DELAY);
     setTimeout(() => {
       const updatedCards = swapPhotoOnCardID(shuffleResult.flyingCardId, shuffleResult.cardsWithNewZIndex);
       setCards(updatedCards);
@@ -215,8 +204,8 @@ const PhotoCollage: React.FC = () => {
 
     // Set ref immediately (synchronous) - this blocks all subsequent clicks/swipes
     isAnimatingRef.current = true;
-
-    const delay = SHUFFLE_DELAY;
+    
+    const delay = configSettings.SHUFFLE_DELAY;
     setButtonsDisabled(true);
     setTimeout(() => {
       setButtonsDisabled(false);
@@ -282,7 +271,10 @@ const PhotoCollage: React.FC = () => {
               
               // Calculate stagger delay for initial entrance animation
               // Use max(0, ...) to ensure delay is never negative (for z-index 0)
-              const entranceDelay = Math.max(0, (card.zIndex - 1) * 0.15);
+              let entranceDelay = 0;
+              if (!hasCompletedEntrance) {
+                entranceDelay = Math.max(0, (card.zIndex - 1) * 0.15);
+              }
               
               // Determine which photo to display for this card
               // For now, all cards display their currentPhotoIndex (static photos)
