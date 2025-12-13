@@ -17,6 +17,7 @@ export type Sticker = {
   hoverMoveY?: number;   // pixels to move on hover
   hoverRotate?: number;  // additional rotation on hover (degrees)
   hoverScale?: number;   // scale multiplier on hover
+  hoverSpin?: boolean;   // continuous rotation animation on hover
 };
 
 type FlipSpreadProps = {
@@ -49,7 +50,7 @@ const FlipSpread: React.FC<FlipSpreadProps> = ({
   leftStickers = [],
   rightStickers = [],
   nextRightStickers = [],
-  prevLeftStickers = [],
+
   onAdvance,
   onBack,
   onFinish,
@@ -198,8 +199,10 @@ const FlipSpread: React.FC<FlipSpreadProps> = ({
   /* ---------------- STICKER RENDERER ---------------- */
   const StickerItem = ({ sticker }: { sticker: Sticker }) => {
     const imgRef = useRef<HTMLImageElement | null>(null);
+    const spinTweenRef = useRef<gsap.core.Tween | null>(null);
     const hasHover = sticker.hoverMoveX !== undefined || sticker.hoverMoveY !== undefined || 
-                    sticker.hoverRotate !== undefined || sticker.hoverScale !== undefined;
+                    sticker.hoverRotate !== undefined || sticker.hoverScale !== undefined || 
+                    sticker.hoverSpin === true;
     
     const baseTransform = `
       translate(-50%, -50%)
@@ -221,21 +224,49 @@ const FlipSpread: React.FC<FlipSpreadProps> = ({
           const target = imgRef.current;
           const moveX = sticker.hoverMoveX ?? 0;
           const moveY = sticker.hoverMoveY ?? 0;
-          const rotate = (sticker.rotate ?? 0) + (sticker.hoverRotate ?? 0);
+          const baseRotation = sticker.rotate ?? 0;
+          const rotate = baseRotation + (sticker.hoverRotate ?? 0);
           const scale = (sticker.scale ?? 1) * (sticker.hoverScale ?? 1);
           
-          gsap.to(target, {
-            x: moveX,
-            y: moveY,
-            rotation: rotate,
-            scale: scale,
-            duration: 0.3,
-            ease: "power2.out",
-          });
+          // Kill any existing spin animation
+          spinTweenRef.current?.kill();
+          
+          if (sticker.hoverSpin) {
+            // Continuous spin animation
+            gsap.to(target, {
+              x: moveX,
+              y: moveY,
+              scale: scale,
+              duration: 0.5,
+              ease: "power2.out",
+            });
+            
+            // Start continuous rotation from base rotation
+            spinTweenRef.current = gsap.to(target, {
+              rotation: baseRotation + 360,
+              duration: 2,
+              ease: "none",
+              repeat: -1,
+            });
+          } else {
+            // Regular hover animation
+            gsap.to(target, {
+              x: moveX,
+              y: moveY,
+              rotation: rotate,
+              scale: scale,
+              duration: 0.3,
+              ease: "power2.out",
+            });
+          }
         }}
         onMouseLeave={() => {
           if (!hasHover || !imgRef.current) return;
           const target = imgRef.current;
+          
+          // Kill spin animation
+          spinTweenRef.current?.kill();
+          spinTweenRef.current = null;
           
           gsap.to(target, {
             x: 0,
@@ -278,7 +309,7 @@ const FlipSpread: React.FC<FlipSpreadProps> = ({
         <div
           className="absolute inset-0 pointer-events-none"
           style={{
-            background: "linear-gradient(to right, rgba(0,0,0,0) 0%, rgba(0,0,0,0.15) 95%, rgba(0,0,0,0.3) 100%)",
+            background: "linear-gradient(to right, rgba(0,0,0,0) 0%, rgba(0,0,0,0.08) 90%, rgba(0,0,0,0.4) 100%)",
             zIndex: 1,
           }}
         />
@@ -292,7 +323,7 @@ const FlipSpread: React.FC<FlipSpreadProps> = ({
         <div
           className="absolute inset-0 pointer-events-none"
           style={{
-            background: "linear-gradient(to left, rgba(0,0,0,0) 0%, rgba(0,0,0,0.15) 95%, rgba(0,0,0,0.3) 100%)",
+            background: "linear-gradient(to left, rgba(0,0,0,0) 0%, rgba(0,0,0,0.08) 90%, rgba(0,0,0,0.4) 100%)",
             zIndex: 1,
           }}
         />
@@ -361,7 +392,7 @@ const FlipSpread: React.FC<FlipSpreadProps> = ({
           <div
             className="absolute inset-0 pointer-events-none"
             style={{
-              background: "linear-gradient(to left, rgba(0,0,0,0) 0%, rgba(0,0,0,0.15) 95%, rgba(0,0,0,0.3) 100%)",
+              background: "linear-gradient(to left, rgba(0,0,0,0) 0%, rgba(0,0,0,0.15) 95%, rgba(0,0,0,0.3) 100%)", // Change percentage to fix the shadow
               zIndex: 1,
             }}
           />

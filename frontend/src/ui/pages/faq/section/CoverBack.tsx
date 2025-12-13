@@ -39,6 +39,15 @@ const CoverBack: React.FC<CoverBackProps> = ({ side = "inside" }) => {
         }}
       >
         <img src={CoverBackImage} alt="Back cover" className="w-full h-full object-fill" />
+        {/* Text overlay */}
+        <div
+          className="absolute inset-0 flex items-start justify-center pt-12 pointer-events-none"
+          style={{ zIndex: 10 }}
+        >
+          <p className="text-center font-serif text-xl md:text-2xl font-bold text-[#3D472C] drop-shadow-lg">
+            Live Schedule coming soon....
+          </p>
+        </div>
       </div>
     </div>
   );

@@ -29,13 +29,49 @@ import RightTwoExclam from "../../common/assets/faq/rightp/right_2_exclam.png";
 import RightTwoQ from "../../common/assets/faq/rightp/right_2_q.png";
 import RightTwoA from "../../common/assets/faq/rightp/right_2_a.png";
 import RightTwoText from "../../common/assets/faq/rightp/right_2_texts.png";
+//right page (index 2) stickers
+import RightThreeQ from "../../common/assets/faq/rightp/right_3_q.png";
+import RightThreeA from "../../common/assets/faq/rightp/right_3_a.png";
+import RightThreeTicket from "../../common/assets/faq/rightp/right_3_ticket.png";
+import RightThreeTicket2 from "../../common/assets/faq/rightp/right_3_ticket2.png";
+import RightThreeTicket3 from "../../common/assets/faq/rightp/right_3_ticket3.png";
+import RightThreeFish from "../../common/assets/faq/rightp/right_3_fish.png";
 
+// right page (index 3) stickers
+import RightFourQ from "../../common/assets/faq/rightp/right_4_q.png";
+import RightFourA from "../../common/assets/faq/rightp/right_4_a.png";
+import RightFourQ2 from "../../common/assets/faq/rightp/right_4_q2.png";
+import RightFourA2 from "../../common/assets/faq/rightp/right_4_a2.png";
+import RightFourFlower from "../../common/assets/faq/rightp/right_4_flower.png";
+import RightFourPlant from "../../common/assets/faq/rightp/right_4_plant.png";
+import RightFourSketch from "../../common/assets/faq/rightp/right_4_sketch.png";
+import RightFourStar from "../../common/assets/faq/rightp/right_4_star.png";
 
 // Left page (index 0)stickers
 import LeftOnePhotoCard from "../../common/assets/faq/leftp/left_1_photocard.png";
 import LeftOneHeart from "../../common/assets/faq/leftp/left_1_heart.png";
 import LeftOneDate from "../../common/assets/faq/leftp/left_1_date.png";
 import LeftOneStar from "../../common/assets/faq/leftp/left_1_star.png";
+
+// Left page (index 1) stickers
+import LeftTwoQ from "../../common/assets/faq/leftp/left_2_q.png";
+import LeftTwoA from "../../common/assets/faq/leftp/left_2_a.png";
+import LeftTwoFlowers from "../../common/assets/faq/leftp/left_2_flower.png";
+import LeftTwoFlower2 from "../../common/assets/faq/leftp/left_2_flower.png";
+import LeftTwoFlowerStem from "../../common/assets/faq/leftp/left_2_flowerstem.png";
+import LeftTwoButterfly from "../../common/assets/faq/leftp/left_2_butterfly.png";
+import LeftTwoStamp from "../../common/assets/faq/leftp/left_2_stamp.png";
+
+// Left page (index 2) stickers
+import LeftThreeQ from "../../common/assets/faq/leftp/left_3_q.png";
+import LeftThreeA from "../../common/assets/faq/leftp/left_3_a.png";
+import LeftThreeTicket from "../../common/assets/faq/leftp/left_3_ticket.png";
+import LeftThreeStamp from "../../common/assets/faq/leftp/left_3_stamp.png";
+import LeftThreeStar from "../../common/assets/faq/leftp/left_3_stars.png";
+import LeftThreePriority from "../../common/assets/faq/leftp/left_3_priority.png";
+import LeftThreePriorityA from "../../common/assets/faq/leftp/left_3_priorities_a.png";
+
+// 
 
 type Mode = "frontClosed" | "open" | "backClosed";
 
@@ -123,6 +159,10 @@ const FaqPages: React.FC = () => {
           y: 76, // %
           rotate: -10,
           scale: .50,
+          hoverMoveX: -8,
+          hoverMoveY: -5,
+          hoverRotate: -10,
+          hoverScale: 1,
         },
         {
           id: "stars",
@@ -200,16 +240,118 @@ const FaqPages: React.FC = () => {
         },
       ];
     }
-    
+    if (rightIndex === 2) {
+      return [
+        {
+          id: "right-three-q",
+          src: RightThreeQ,
+          x: 63, // %
+          y: 80, // %
+          rotate: -2,
+          scale: 0.7,
+          onClick: () => setPopupImage(RightThreeA),
+        },
+        {
+          id: "right-three-ticket",
+          src: RightThreeTicket,
+          x: 50, // %
+          y: 25, // %
+          rotate: -5,
+          scale: .9,
+        },  
+          {
+            id: "right-three-ticket2",
+            src: RightThreeTicket2,
+            x: 17, // %
+            y: 80, // %
+            rotate: -5,
+            scale: 0.50,
+          },
+          {
+            id: "right-three-ticket3",
+            src: RightThreeTicket3,
+            x: 35, // %
+            y: 54, // %
+            rotate: -5,
+            scale: 0.35,
+          },
+          {
+            id: "right-three-fish",
+            src: RightThreeFish,
+            x: 65, // %
+            y: 40, // %
+            rotate: 0,
+            scale: 0.6,
+            hoverMoveX: -10,
+            hoverMoveY: -20,
+            hoverRotate: -20,
+            hoverScale: 1,
+          },
+      ];
+    }
+    if (rightIndex === 3) {
+      return [
+        {
+          id: "right-four-q",
+          src: RightFourQ,
+          x: 66, // %
+          y: 20, // %
+          rotate: 0,
+          scale: 0.7,
+          onClick: () => setPopupImage(RightFourA),
+        },
+        {
+          id: "right-four-q2",
+          src: RightFourQ2,
+          x: 35, // %
+          y: 75, // %
+          rotate: -2,
+          scale: 0.8,
+          onClick: () => setPopupImage(RightFourA2),
+        },
+        {
+          id: "right-four-flower",
+          src: RightFourFlower,
+          x: 33, // %
+          y: 35, // %
+          rotate: -2,
+          scale: 0.37,
+          hoverSpin: true,
+        },
+        
+        {
+          id: "right-four-plant",
+          src: RightFourPlant,
+          x: 63, // %
+          y: 88, // %
+          rotate: 0,
+          scale: 0.8,
+        },
+        {
+          id: "right-four-sketch",
+          src: RightFourSketch,
+          x: 83, // %
+          y:40, // %
+          rotate: -2,
+          scale: 0.4,
+        },
+        {
+          id: "right-four-star",
+          src: RightFourStar,
+          x: 2, // %
+          y: 2, // %
+          rotate: 0,
+          scale: .5,
+        },
+      ];
+    }
     return [];
+
   }, [rightIndex]);
 
   // Left page stickers - customize based on leftIndex
   const leftStickers: Sticker[] = useMemo(() => {
-    // Example: Add stickers to the first brown page (index 0)
-    // if (leftIndex !== 0) return [];
-    
-    // Example: Add stickers to white paper (index 1)
+   
     if (leftIndex === 0 ) {
       return [
         {
@@ -248,7 +390,114 @@ const FaqPages: React.FC = () => {
         },
       ];
     }
-    
+    if (leftIndex === 1) {
+      return [
+        { 
+          id: "left-two-flower-stem",
+          src: LeftTwoFlowerStem,
+          x: 42, // %
+          y: 30, // %
+          rotate: 0,
+          scale: 0.8,
+         
+        },
+        {
+          id: "left-two-q",
+          src: LeftTwoQ,
+          x: 37, // %
+          y: 70, // %
+          rotate: 0,
+          scale: 0.8,
+          onClick: () => setPopupImage(LeftTwoA),
+        },
+        {
+          id: "left-two-flowers",
+          src: LeftTwoFlowers,
+          x: 75, // %
+          y: 82, // %
+          rotate: 0,
+          scale: 0.48,
+          hoverSpin: true,
+        },
+        {
+          id: "left-two-flower-2",
+          src: LeftTwoFlower2,
+          x: 85, // %
+          y: 63, // %
+          rotate: 0,
+          scale: 0.2,
+          hoverSpin: true,
+        },
+        {
+          id: "left-two-butterfly",
+          src: LeftTwoButterfly,
+          x: 75, // %
+          y: 20, // %
+          rotate: 0,
+          scale: 0.4,
+          hoverMoveX: -8,
+          hoverMoveY: -5,
+          hoverRotate: -10,
+          hoverScale: 1,
+        },
+        {
+          id: "left-two-stamp",
+          src: LeftTwoStamp,
+          x: 20, // %
+          y: 45, // %
+          rotate: 0,
+          scale: 0.38,
+        
+        },
+      ];
+    }
+    if (leftIndex === 2) {
+      return [
+        {
+          id: "left-three-q",
+          src: LeftThreeQ,
+          x: 49, // %
+          y: 64, // %
+          rotate: 0,
+          scale: 1,
+          onClick: () => setPopupImage(LeftThreeA),
+        },
+        {
+          id: "left-three-stamp",
+          src: LeftThreeStamp,
+          x: 87, // %
+          y: 15, // %
+          rotate: 0,
+          scale: 0.45,
+        },
+        {
+          id: "left-three-star",
+          src: LeftThreeStar,
+          x: 65, // %
+          y: 30, // %
+          rotate: 0,
+          scale: 0.5,
+        },
+        {
+          id: "left-three-priority",
+          src: LeftThreePriority,
+          x: 20, // %
+          y: 28, // %
+          rotate: 0,
+          scale: 0.7,
+          onClick: () => setPopupImage(LeftThreePriorityA),
+        },
+        
+        {
+          id: "left-three-ticket",
+          src: LeftThreeTicket,
+          x: 20, // %
+          y: 65, // %
+          rotate: 0,
+          scale: 0.38,
+        },
+      ];
+    }
     return [];
   }, [leftIndex]);
 
