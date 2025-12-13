@@ -2,7 +2,7 @@ import React from "react";
 import MapOutline from "../../common/assets/OK_Norman_706465_1936_625001.png";
 import LandingView from "./sections/LandingView";
 import SplashQuote from "./sections/SplashQuote";
-import PhotoCollage from "./sections/PhotoCollage";
+import PhotoCollage from "./components/photoCollage/PhotoCollage";
 import About from "../about/sections/About";
 import Sponsors from "./sections/Sponsors";
 const LandingPage: React.FC = () => {
