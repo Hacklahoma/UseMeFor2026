@@ -5,7 +5,7 @@ import SplashQuote from "./sections/SplashQuote";
 import PhotoCollage from "./sections/PhotoCollage";
 import About from "../about/sections/About";
 import Sponsors from "./sections/Sponsors";
-import FAQPages from "../faq/section/CoverFront";
+import FAQPages from "../faq";
 const LandingPage: React.FC = () => {
 
   return (
