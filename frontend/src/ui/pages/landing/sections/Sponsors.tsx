@@ -7,6 +7,7 @@ import NorthropGrummanLogo from "../../../common/assets/sponsors/NorthropGrumman
 import WilliamsLogo from "../../../common/assets/sponsors/Williams.png";
 import PaycomLogo from "../../../common/assets/sponsors/Paycom.png";
 import CocaColaLogo from "../../../common/assets/sponsors/CocaCola.png";
+import AmericanFidelityLogo from "../../../common/assets/sponsors/AmericanFidelity.png";
 
 interface SponsorLogo {
   src: string;
@@ -50,6 +51,11 @@ const sponsorLogos: SponsorLogo[] = [
     src: CocaColaLogo,
     alt: "Sponsor 7 Coca-Cola",
     href: "https://www.coca-cola.com/",
+  },
+  {
+    src: AmericanFidelityLogo,
+    alt: "Sponsor 8 American Fidelity",
+    href: "https://www.americanfidelity.com/",
   },
 ];
 
