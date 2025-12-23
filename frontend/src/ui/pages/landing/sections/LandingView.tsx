@@ -60,6 +60,10 @@ const LandingView: React.FC = () => {
       <header
         className={`fixed top-0 left-0 h-20 w-full bg-gradient-to-b from-[#FFFCF5] via-[#FFFCF5] to-transparent z-50 transition-opacity duration-1000 ease-in-out ${
           showFinalElements ? "opacity-100" : "opacity-0"
+        } ${
+          isMobileMenuOpen
+            ? "bg-[#FFFCF5]"
+            : "bg-gradient-to-b from-[#FFFCF5] via-[#FFFCF5] to-transparent"
         }`}
       >
         <div className="h-full flex items-center px-6 md:px-12 relative">
