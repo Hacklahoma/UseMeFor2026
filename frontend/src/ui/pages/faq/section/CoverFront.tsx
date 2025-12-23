@@ -1,6 +1,5 @@
 import React from "react";
 import CoverFrontImage from "../../../common/assets/faq/cover_front.png";
-import CoverBackImage from "../../../common/assets/faq/cover_back.png";
 import Stars1 from "../../../common/assets/faq/stars1.png";
 import Stars2 from "../../../common/assets/faq/stars2.png";
 import LetterH from "../../../common/assets/faq/letters/h.png";
@@ -77,16 +76,6 @@ const CoverFront: React.FC = () => {
         ))}
       </div>
 
-      {/* INSIDE front cover (back of front cover) */}
-      {/* <div
-        className="absolute inset-0 overflow-hidden rounded-xl"
-        style={{
-          backfaceVisibility: "hidden",
-          transform: `rotateY(180deg) translateZ(${THICKNESS}px)`,
-        }}
-      >
-        <img src={CoverBackImage} alt="Inside front cover" className="w-full h-full object-fill" />
-      </div> */}
     </div>
   );
 };

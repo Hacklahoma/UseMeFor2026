@@ -113,6 +113,15 @@ const FaqPages: React.FC = () => {
   const popupRef = useRef<HTMLDivElement | null>(null);
   const popupContentRef = useRef<HTMLDivElement | null>(null);
 
+  // Mobile: show pages in a popup viewer instead of the 2-page book spread
+  const [isMobile, setIsMobile] = useState(false);
+  const [mobileViewerOpen, setMobileViewerOpen] = useState(false);
+  const [mobilePageIndex, setMobilePageIndex] = useState(0);
+  const mobileViewerRef = useRef<HTMLDivElement | null>(null);
+  const mobileViewerContentRef = useRef<HTMLDivElement | null>(null);
+  const mobilePageImageRef = useRef<HTMLImageElement | null>(null);
+  const mobilePageContainerRef = useRef<HTMLDivElement | null>(null);
+
   const rightSrc = rightPages[rightIndex];
   const nextRightSrc =
     rightIndex + 1 < rightPages.length ? rightPages[rightIndex + 1] : undefined;
@@ -507,6 +516,430 @@ const FaqPages: React.FC = () => {
   // Prev-left stickers (for backward underface) (usually none)
   const prevLeftStickers: Sticker[] = useMemo(() => [], []);
 
+  // Helper functions to get stickers by index (for mobile pages)
+  const getRightStickersByIndex = (idx: number): Sticker[] => {
+    if (idx === 0) {
+      return [
+        {
+          id: "cost-q",
+          src: CostQ,
+          x: 37,
+          y: 70,
+          rotate: 0,
+          scale: 0.8,
+          mobileScale: 0.28, // Adjust this value (0-1) to scale this sticker on mobile
+          onClick: () => setPopupImage(CostA),
+        },
+        {
+          id: "hack-q",
+          src: HackQ,
+          x: 62,
+          y: 29,
+          rotate: -15,
+          scale: 0.68,
+          mobileScale: 0.55, // Adjust this value (0-1) to scale this sticker on mobile
+          onClick: () => setPopupImage(HackA),
+        },
+        {
+          id: "lightbulb",
+          src: Lightbulb,
+          x: 74,
+          y: 76,
+          rotate: -10,
+          scale: 0.50,
+          mobileScale: 0.35, // Adjust this value (0-1) to scale this sticker on mobile
+          hoverMoveX: -8,
+          hoverMoveY: -5,
+          hoverRotate: -10,
+          hoverScale: 1,
+        },
+        {
+          id: "stars",
+          src: Stars1,
+          x: 25,
+          y: 19,
+          rotate: -10,
+          scale: 0.4,
+          mobileScale: 0.3, // Adjust this value (0-1) to scale this sticker on mobile
+        },
+      ];
+    }
+    if (idx === 1) {
+      return [
+        {
+          id: "right-two-airplane",
+          src: RightTwoAirplane,
+          x: 40,
+          y: 55,
+          rotate: 10,
+          scale: 1.0,
+          mobileScale: 0.35,
+        },
+        {
+          id: "right-two-sandwich",
+          src: RightTwoSandwich,
+          x: 15,
+          y: 25,
+          rotate: -5,
+          scale: 0.40,
+          mobileScale: 0.5, // Adjust this value (0-1) to scale this sticker on mobile
+          hoverMoveX: 5,
+          hoverMoveY: -8,
+          hoverRotate: 15,
+          hoverScale: 1.15,
+        },
+        {
+          id: "right-two-croissant",
+          src: RightTwoCroissant,
+          x: 42,
+          y: 15,
+          rotate: 10,
+          scale: 0.40,
+          mobileScale: 0.55, // Adjust this value (0-1) to scale this sticker on mobile
+          hoverMoveX: -8,
+          hoverMoveY: -5,
+          hoverRotate: -10,
+          hoverScale: 1.2,
+        },
+        {
+          id: "right-two-q",
+          src: RightTwoQ,
+          x: 63,
+          y: 80,
+          rotate: 8,
+          scale: 0.65,
+          mobileScale: 0.55,
+          onClick: () => setPopupImage(RightTwoA),
+        },
+        {
+          id: "right-two-exclam",
+          src: RightTwoExclam,
+          x: 33,
+          y: 53,
+          rotate: -10,
+          scale: 0.3,
+          hoverMoveX: -8,
+          hoverMoveY: -5,
+          hoverRotate: -10,
+          hoverScale: 1,
+        },
+        {
+          id: "right-two-text",
+          src: RightTwoText,
+          x: 32,
+          y: 36,
+          rotate: 0,
+          scale: 0.43,
+          mobileScale: 0.7,
+        },
+      ];
+    }
+    if (idx === 2) {
+      return [
+        {
+          id: "right-three-q",
+          src: RightThreeQ,
+          x: 63,
+          y: 80,
+          rotate: -2,
+          scale: 0.7,
+          mobileScale: 0.6,
+          onClick: () => setPopupImage(RightThreeA),
+        },
+        {
+          id: "right-three-ticket",
+          src: RightThreeTicket,
+          x: 50,
+          y: 25,
+          rotate: -5,
+          scale: 0.9,
+          mobileScale: 0.7,
+        },
+        {
+          id: "right-three-ticket2",
+          src: RightThreeTicket2,
+          x: 17,
+          y: 80,
+          rotate: -5,
+          scale: 0.50,
+          mobileScale: 0.5,
+        },
+        {
+          id: "right-three-ticket3",
+          src: RightThreeTicket3,
+          x: 35,
+          y: 54,
+          rotate: -5,
+          scale: 0.35,
+          mobileScale: 0.7,
+        },
+        {
+          id: "right-three-fish",
+          src: RightThreeFish,
+          x: 65,
+          y: 45,
+          rotate: 0,
+          scale: 0.6,
+          mobileScale: 0.7,
+          hoverMoveX: -10,
+          hoverMoveY: -20,
+          hoverRotate: -20,
+          hoverScale: 1,
+        },
+      ];
+    }
+    if (idx === 3) {
+      return [
+        {
+          id: "right-four-q",
+          src: RightFourQ,
+          x: 66,
+          y: 24,
+          rotate: 0,
+          scale: 0.7,
+          mobileScale: 0.6,
+          onClick: () => setPopupImage(RightFourA),
+        },
+        {
+          id: "right-four-q2",
+          src: RightFourQ2,
+          x: 35,
+          y: 75,
+          rotate: -2,
+          scale: 0.8,
+          mobileScale: 0.6,
+          onClick: () => setPopupImage(RightFourA2),
+        },
+        {
+          id: "right-four-flower",
+          src: RightFourFlower,
+          x: 33,
+          y: 35,
+          rotate: -2,
+          scale: 0.37,
+          mobileScale: 0.6,
+          hoverSpin: true,
+        },
+        {
+          id: "right-four-plant",
+          src: RightFourPlant,
+          x: 63,
+          y: 85,
+          rotate: 0,
+          scale: 0.8,
+          mobileScale: 0.6,
+        },
+        {
+          id: "right-four-sketch",
+          src: RightFourSketch,
+          x: 83,
+          y: 40,
+          rotate: -2,
+          scale: 0.4,
+          mobileScale: 0.6,
+        },
+        {
+          id: "right-four-star",
+          src: RightFourStar,
+          x: 2,
+          y: 12,
+          rotate: 0,
+          scale: 0.5,
+          mobileScale: 0.6,
+        },
+      ];
+    }
+    return [];
+  };
+
+  const getLeftStickersByIndex = (idx: number): Sticker[] => {
+    if (idx === 0) {
+      return [
+        {
+          id: "left-one-photo-card",
+          src: LeftOnePhotoCard,
+          x: 47,
+          y: 50,
+          rotate: 10,
+          scale: 0.9,
+          mobileScale: 0.8,
+          onClick: () => setPopupImage(LeftOnePhotoCard),
+        },
+        {
+          id: "left-one-heart",
+          src: LeftOneHeart,
+          x: 13,
+          y: 82,
+          rotate: 15,
+          scale: 0.25,
+          mobileScale: 0.5,
+
+        },
+        {
+          id: "left-one-date",
+          src: LeftOneDate,
+          x: 60,
+          y: 83,
+          rotate: 0,
+          scale: 0.7,
+          mobileScale: 0.55,
+        },
+        {
+          id: "left-one-star",
+          src: LeftOneStar,
+          x: 80,
+          y: 20,
+          rotate: 0,
+          scale: 0.5,
+        },
+      ];
+    }
+    if (idx === 1) {
+      return [
+        {
+          id: "left-two-flower-stem",
+          src: LeftTwoFlowerStem,
+          x: 42,
+          y: 30,
+          rotate: 0,
+          scale: 0.8,
+          mobileScale: 0.6,
+        },
+        {
+          id: "left-two-q",
+          src: LeftTwoQ,
+          x: 39,
+          y: 67,
+          rotate: 0,
+          scale: 0.8,
+          mobileScale: 0.7,
+          onClick: () => setPopupImage(LeftTwoA),
+        },
+        {
+          id: "left-two-flowers",
+          src: LeftTwoFlowers,
+          x: 75,
+          y: 82,
+          rotate: 0,
+          scale: 0.48,
+          mobileScale: 0.55,
+          hoverSpin: true,
+        },
+        {
+          id: "left-two-flower-2",
+          src: LeftTwoFlower2,
+          x: 85,
+          y: 63,
+          rotate: 0,
+          mobileScale: 0.6,
+          scale: 0.2,
+          hoverSpin: true,
+        },
+        {
+          id: "left-two-butterfly",
+          src: LeftTwoButterfly,
+          x: 75,
+          y: 20,
+          rotate: 0,
+          scale: 0.4,
+          mobileScale: 0.6,
+          hoverMoveX: -8,
+          hoverMoveY: -5,
+          hoverRotate: -10,
+          hoverScale: 1,
+        },
+        {
+          id: "left-two-stamp",
+          src: LeftTwoStamp,
+          x: 20,
+          y: 45,
+          rotate: 0,
+          scale: 0.38,
+          mobileScale: 0.6,
+        },
+      ];
+    }
+    if (idx === 2) {
+      return [
+        {
+          id: "left-three-q",
+          src: LeftThreeQ,
+          x: 49,
+          y: 64,
+          rotate: 0,
+          scale: 1,
+          mobileScale: 0.385,
+          onClick: () => setPopupImage(LeftThreeA),
+        },
+        {
+          id: "left-three-stamp",
+          src: LeftThreeStamp,
+          x: 87,
+          y: 20,
+          rotate: 0,
+          scale: 0.45,
+        },
+        {
+          id: "left-three-star",
+          src: LeftThreeStar,
+          x: 65,
+          y: 30,
+          rotate: 0,
+          scale: 0.5,
+        },
+        {
+          id: "left-three-priority",
+          src: LeftThreePriority,
+          x: 20,
+          y: 30,
+          rotate: 0,
+          scale: 0.7,
+          mobileScale: 0.6,
+          onClick: () => setPopupImage(LeftThreePriorityA),
+        },
+        {
+          id: "left-three-ticket",
+          src: LeftThreeTicket,
+          x: 20,
+          y: 65,
+          rotate: 0,
+          scale: 0.38,
+        },
+      ];
+    }
+    return [];
+  };
+
+  type MobilePage = {
+    id: string;
+    src: string;
+    stickers: Sticker[];
+    title?: string;
+  };
+
+  const mobilePages: MobilePage[] = useMemo(() => {
+    const pages: MobilePage[] = [
+      { id: "inside-front", src: InsideFrontCover, stickers: [], title: "Inside cover" }
+    ];
+
+    rightPages.forEach((src, i) => {
+      pages.push({ 
+        id: `right-${i}`, 
+        src, 
+        stickers: getRightStickersByIndex(i), 
+        title: `Page ${i + 1}` 
+      });
+      pages.push({ 
+        id: `left-${i}`, 
+        src, 
+        stickers: getLeftStickersByIndex(i), 
+        title: `Page ${i + 1} (left)` 
+      });
+    });
+
+    return pages;
+  }, [rightPages]);
+
   // ----------------------------
   // Page state actions
   // ----------------------------
@@ -751,6 +1184,261 @@ const FaqPages: React.FC = () => {
     cover.addEventListener("click", onClick);
     return () => cover.removeEventListener("click", onClick);
   }, [mode]);
+
+  // Mobile breakpoint detection
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const mq = window.matchMedia("(max-width: 639px)");
+    const update = () => setIsMobile(mq.matches);
+    update();
+    const legacy = mq as unknown as {
+      addListener?: (cb: () => void) => void;
+      removeListener?: (cb: () => void) => void;
+    };
+    if (mq.addEventListener) mq.addEventListener("change", update);
+    else if (legacy.addListener) legacy.addListener(update);
+
+    return () => {
+      if (mq.removeEventListener) mq.removeEventListener("change", update);
+      else if (legacy.removeListener) legacy.removeListener(update);
+    };
+  }, []);
+
+  // Animate + ESC close for mobile viewer
+  useEffect(() => {
+    if (!mobileViewerOpen) return;
+
+    const originalOverflow = document.body.style.overflow;
+    const originalPaddingRight = document.body.style.paddingRight;
+    const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+    document.body.style.overflow = "hidden";
+    document.body.style.paddingRight = `${scrollbarWidth}px`;
+
+    if (mobileViewerRef.current && mobileViewerContentRef.current) {
+      gsap.fromTo(
+        mobileViewerRef.current,
+        { opacity: 0 },
+        { opacity: 1, duration: 0.2, ease: "power2.out" }
+      );
+      gsap.fromTo(
+        mobileViewerContentRef.current,
+        { scale: 0.95, opacity: 0 },
+        { scale: 1, opacity: 1, duration: 0.25, ease: "power2.out" }
+      );
+    }
+
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setMobileViewerOpen(false);
+    };
+    window.addEventListener("keydown", onKey);
+
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      document.body.style.overflow = originalOverflow;
+      document.body.style.paddingRight = originalPaddingRight;
+    };
+  }, [mobileViewerOpen]);
+
+  // If switching from mobile -> desktop, ensure modal is closed
+  useEffect(() => {
+    if (!isMobile) setMobileViewerOpen(false);
+  }, [isMobile]);
+
+  // Mobile-only UI: pages as a popup viewer (no book spread)
+  if (isMobile) {
+    const current = mobilePages[Math.max(0, Math.min(mobilePageIndex, mobilePages.length - 1))];
+    const canPrev = mobilePageIndex > 0;
+    const canNext = mobilePageIndex < mobilePages.length - 1;
+
+    return (
+      <div
+        ref={containerRef}
+        id="faq"
+        className="min-h-screen flex items-center justify-center py-16 px-4 relative overflow-visible"
+      >
+        <button
+          type="button"
+          className="relative w-[85vw] max-w-[340px] aspect-[3/4]"
+          onClick={() => {
+            setMobilePageIndex(0);
+            setMobileViewerOpen(true);
+          }}
+          aria-label="Open FAQ pages"
+        >
+          <div className="absolute inset-0" style={{ transformStyle: "preserve-3d" }}>
+            <CoverFront />
+            <div className="absolute inset-0 flex items-end justify-center pb-4 pointer-events-none">
+              <div className="px-3 py-1.5 rounded-full bg-black/40 text-white text-sm font-semibold backdrop-blur">
+                Tap to view pages
+              </div>
+            </div>
+          </div>
+        </button>
+
+        {mobileViewerOpen && (
+          <div
+            ref={mobileViewerRef}
+            className="fixed inset-0 z-[9998] flex flex-col bg-black/70 backdrop-blur-sm"
+            style={{ width: "100vw", height: "100vh", margin: 0, padding: 0 }}
+            onClick={() => setMobileViewerOpen(false)}
+          >
+            <div
+              ref={mobileViewerContentRef}
+              className="relative w-full h-full flex flex-col"
+              style={{ width: "100%", height: "100%", margin: 0 }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* Header: title + page number */}
+              <div className="flex items-center justify-between gap-2 px-4 pt-2 pb-2 shrink-0" style={{ minHeight: "48px" }}>
+                <div className="text-white/90 text-sm font-semibold truncate">
+                  {current.title ?? "FAQ page"}
+                </div>
+                <div className="text-white/90 text-sm font-semibold shrink-0">
+                  {mobilePageIndex + 1} / {mobilePages.length}
+                </div>
+              </div>
+
+              {/* Page: fill remaining space, stickers scale with image */}
+              <div className="flex-1 relative w-full min-h-0 flex items-center justify-center" style={{ padding: "8px" }}>
+                <div 
+                  ref={mobilePageContainerRef}
+                  className="relative"
+                  style={{ 
+                    width: "100%",
+                    height: "100%",
+                    maxWidth: "100%",
+                    maxHeight: "100%",
+                    aspectRatio: "3 / 4"
+                  }}
+                >
+                  <img
+                    ref={mobilePageImageRef}
+                    src={current.src}
+                    alt={current.title ?? "FAQ page"}
+                    className="absolute inset-0 w-full h-full object-contain"
+                    draggable={false}
+                  />
+
+                  {/* Stickers overlay - positioned relative to page image using percentages */}
+                  {/* Container matches the image dimensions exactly, so percentage positioning scales correctly */}
+                  {/* Mobile scale factor to reduce sticker sizes for mobile screens */}
+                  <div 
+                    className="absolute inset-0"
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                    }}
+                  >
+                    {current.stickers.map((s) => {
+                      // Each sticker can have its own mobileScale, otherwise use default
+                      const defaultMobileScale = 0.5;
+                      const mobileScale = s.mobileScale ?? defaultMobileScale;
+                      const finalScale = (s.scale ?? 1) * mobileScale;
+                      
+                      return (
+                        <button
+                          key={s.id}
+                          type="button"
+                          className="absolute"
+                          style={{
+                            left: `${s.x}%`,
+                            top: `${s.y}%`,
+                            transform: `translate(-50%, -50%) rotate(${s.rotate ?? 0}deg) scale(${finalScale})`,
+                            transformOrigin: "center center",
+                            background: "transparent",
+                            border: "none",
+                            padding: 0,
+                            cursor: s.onClick ? "pointer" : "default",
+                            filter: "drop-shadow(0 6px 10px rgba(0,0,0,.25))",
+                          }}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            s.onClick?.();
+                          }}
+                          aria-label={s.id}
+                        >
+                          <img 
+                            src={s.src} 
+                            alt="" 
+                            draggable={false} 
+                            style={{ display: "block", maxWidth: "none" }}
+                          />
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
+
+              {/* Navigation buttons */}
+              <div className="flex items-center justify-between gap-3 px-4 pb-2 shrink-0" style={{ minHeight: "56px" }}>
+                <button
+                  type="button"
+                  className={`px-3 py-2 rounded-lg text-sm font-semibold ${
+                    canPrev ? "bg-white text-gray-900" : "bg-white/30 text-white/60"
+                  }`}
+                  disabled={!canPrev}
+                  onClick={() => setMobilePageIndex((p) => Math.max(0, p - 1))}
+                >
+                  Prev
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setMobileViewerOpen(false)}
+                  className="shrink-0 w-10 h-10 flex items-center justify-center bg-white/90 hover:bg-white rounded-full text-2xl font-bold text-gray-800 shadow-lg transition-colors cursor-pointer"
+                  aria-label="Close pages"
+                >
+                  ×
+                </button>
+
+                <button
+                  type="button"
+                  className={`px-3 py-2 rounded-lg text-sm font-semibold ${
+                    canNext ? "bg-white text-gray-900" : "bg-white/30 text-white/60"
+                  }`}
+                  disabled={!canNext}
+                  onClick={() => setMobilePageIndex((p) => Math.min(mobilePages.length - 1, p + 1))}
+                >
+                  Next
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Popup modal for sticker Q/A images */}
+        {popupImage && (
+          <div
+            ref={popupRef}
+            className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 backdrop-blur-sm"
+            onClick={closePopup}
+          >
+            <div
+              ref={popupContentRef}
+              className="relative max-w-[95vw] sm:max-w-[90vw] max-h-[90vh] p-4 sm:p-6 md:p-8"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <img
+                src={popupImage}
+                alt="Popup"
+                className="max-w-full max-h-[90vh] object-contain drop-shadow-2xl rounded-lg"
+                draggable={false}
+              />
+              <button
+                onClick={closePopup}
+                className="absolute top-2 right-2 sm:top-3 sm:right-3 w-10 h-10 sm:w-11 sm:h-11 flex items-center justify-center bg-white/90 hover:bg-white rounded-full text-2xl font-bold text-gray-800 shadow-lg transition-colors cursor-pointer"
+                style={{ zIndex: 10000 }}
+                aria-label="Close popup"
+              >
+                ×
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+    );
+  }
 
   return (
     <div

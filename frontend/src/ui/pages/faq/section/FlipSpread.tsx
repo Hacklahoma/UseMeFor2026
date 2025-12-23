@@ -18,6 +18,8 @@ export type Sticker = {
   hoverRotate?: number;  // additional rotation on hover (degrees)
   hoverScale?: number;   // scale multiplier on hover
   hoverSpin?: boolean;   // continuous rotation animation on hover
+  // Mobile-specific scaling
+  mobileScale?: number;  // scale multiplier for mobile 
 };
 
 type FlipSpreadProps = {
