@@ -20,6 +20,8 @@ export type Sticker = {
   hoverSpin?: boolean;   // continuous rotation animation on hover
   // Mobile-specific scaling
   mobileScale?: number;  // scale multiplier for mobile 
+  // Z-index override
+  zIndex?: number;  // custom z-index for layering
 };
 
 type FlipSpreadProps = {
@@ -288,6 +290,7 @@ const FlipSpread: React.FC<FlipSpreadProps> = ({
           cursor: sticker.onClick ? "pointer" : hasHover ? "pointer" : "default",
           filter: "drop-shadow(0 6px 10px rgba(0,0,0,.25))",
           willChange: "transform",
+          zIndex: sticker.zIndex,
         }}
       />
     );

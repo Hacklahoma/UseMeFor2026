@@ -494,6 +494,7 @@ const FaqPages: React.FC = () => {
           y: 28, // %
           rotate: 0,
           scale: 0.7,
+          zIndex: 100,
           onClick: () => setPopupImage(LeftThreePriorityA),
         },
         
