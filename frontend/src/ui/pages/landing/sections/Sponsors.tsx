@@ -1,6 +1,6 @@
 import React from "react";
 
-import NickLogo from "../../../common/assets/sponsors/Nick.png";
+import NicholasGavalasLogo from "../../../common/assets/sponsors/NicholasGavalas.png";
 import BoeingLogo from "../../../common/assets/sponsors/Boeing.png";
 import HomeCreationsLogo from "../../../common/assets/sponsors/HomeCreations.png";
 import NorthropGrummanLogo from "../../../common/assets/sponsors/NorthropGrumman.png";
@@ -27,7 +27,7 @@ const sponsorLogos: SponsorLogo[] = [
     href: "https://www.boeing.com/",
   },
   {
-    src: NickLogo,
+    src: NicholasGavalasLogo,
     alt: "Sponsor 3 Nicholas Gavalas",
     href: "https://www.linkedin.com/in/nicholas-gavalas/",
   },
