@@ -18,20 +18,39 @@ function openDB(): Promise<IDBDatabase> {
 async function saveBlobToIDB(key: string, blob: Blob) {
   const db = await openDB();
   return new Promise<void>((resolve, reject) => {
-    const tx = db.transaction('images', 'readwrite');
-    tx.objectStore('images').put(blob, key);
-    tx.oncomplete = () => resolve();
-    tx.onerror = () => reject(tx.error);
+    try {
+      const tx = db.transaction('images', 'readwrite');
+      const store = tx.objectStore('images');
+      const req = store.put(blob, key);
+      req.onsuccess = () => {
+        resolve();
+      };
+      req.onerror = () => {
+        console.error('IDB put error', req.error);
+        reject(req.error);
+      };
+      tx.onabort = () => reject(tx.error || new Error('transaction aborted'));
+      tx.onerror = () => reject(tx.error || new Error('transaction error'));
+    } catch (err) {
+      reject(err);
+    }
   });
 }
 
 async function getBlobFromIDB(key: string) {
   const db = await openDB();
   return new Promise<Blob | undefined>((resolve, reject) => {
-    const tx = db.transaction('images', 'readonly');
-    const req = tx.objectStore('images').get(key);
-    req.onsuccess = () => resolve(req.result as Blob | undefined);
-    req.onerror = () => reject(req.error);
+    try {
+      const tx = db.transaction('images', 'readonly');
+      const req = tx.objectStore('images').get(key);
+      req.onsuccess = () => resolve(req.result as Blob | undefined);
+      req.onerror = () => {
+        console.error('IDB get error', req.error);
+        reject(req.error);
+      };
+    } catch (err) {
+      reject(err);
+    }
   });
 }
 
@@ -152,7 +171,19 @@ export default function SelfieCapture({
     const url = URL.createObjectURL(blob);
     setPreviewUrl(url);
 
-    await saveBlobToIDB(id, blob);
+    try {
+      await saveBlobToIDB(id, blob);
+      // verify save by reading it back (debugging help)
+      try {
+        const saved = await getBlobFromIDB(id);
+        if (!saved) console.warn('Saved blob not found after save');
+      } catch (readErr) {
+        console.warn('Error reading back saved blob', readErr);
+      }
+    } catch (err) {
+      console.error('Failed to save selfie to IndexedDB', err);
+    }
+
     stopCamera();
   }
 
@@ -181,7 +212,7 @@ export default function SelfieCapture({
 <div className="absolute inset-0 z-20 flex items-end justify-center  translate-y-[-5%] -translate-x-[0%]">
   {!isCameraOn ? (
     <button
-      onClick={() => startCamera(true)}
+      onClick={() => startCamera()}
       className="
         bg-white/90 shadow rounded
         text-[8px] sm:text-sm
