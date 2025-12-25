@@ -112,80 +112,87 @@ export default function SelfieCapture({
   }
 
   function stopCamera() {
-    streamRef.current?.getTracks().forEach(t => t.stop());
+  const s = streamRef.current;
+  if (s) {
+    s.getTracks().forEach((t) => t.stop());
     streamRef.current = null;
-    if (videoRef.current) videoRef.current.srcObject = null;
-    setCameraOn(false);
+  }
+  if (videoRef.current) {
+    videoRef.current.srcObject = null;
+  }
+  setCameraOn(false);
+}
+
+async function capture() {
+  const video = videoRef.current;
+  const canvas = canvasRef.current;
+
+  if (!video || !canvas) return;
+
+  // Ensure metadata is available
+  if (video.readyState < HTMLMediaElement.HAVE_METADATA) {
+    await new Promise<void>((resolve) => {
+      const onMeta = () => {
+        video.removeEventListener("loadedmetadata", onMeta);
+        resolve();
+      };
+      video.addEventListener("loadedmetadata", onMeta);
+      setTimeout(() => {
+        video.removeEventListener("loadedmetadata", onMeta);
+        resolve();
+      }, 800);
+    });
   }
 
-  async function capture() {
-    if (!videoRef.current) return;
-
-    const canvas = canvasRef.current!;
-    const video = videoRef.current;
-
-    // Ensure the video has data/frames before drawing. Sometimes play() resolves
-    // before the first frame is available and drawing immediately produces a black image.
-    if (video.readyState < HTMLMediaElement.HAVE_CURRENT_DATA) {
-      await new Promise<void>((resolve) => {
-        const onPlaying = () => {
-          video.removeEventListener('playing', onPlaying);
-          resolve();
-        };
-        // also listen for playing as a reliable indicator a frame is available
-        video.addEventListener('playing', onPlaying);
-        // fallback: timeout in case the event doesn't fire
-        setTimeout(() => {
-          video.removeEventListener('playing', onPlaying);
-          resolve();
-        }, 500);
-      });
-    }
-
-    let w = video.videoWidth;
-    let h = video.videoHeight;
-
-    // If video metadata isn't available, fall back to the displayed size (scaled by devicePixelRatio)
-    if (!w || !h) {
-      const rect = video.getBoundingClientRect();
-      const dpr = window.devicePixelRatio || 1;
-      w = Math.max(1, Math.round(rect.width * dpr));
-      h = Math.max(1, Math.round(rect.height * dpr));
-    }
-
-    canvas.width = w;
-    canvas.height = h;
-
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.drawImage(video, 0, 0, w, h);
-
-    const blob = await new Promise<Blob | null>(res =>
-      canvas.toBlob(b => res(b), 'image/jpeg', 0.85)
-    );
-    if (!blob) return;
-
-    if (previewUrl) URL.revokeObjectURL(previewUrl);
-    const url = URL.createObjectURL(blob);
-    setPreviewUrl(url);
-
-    try {
-      await saveBlobToIDB(id, blob);
-      // verify save by reading it back (debugging help)
-      try {
-        const saved = await getBlobFromIDB(id);
-        if (!saved) console.warn('Saved blob not found after save');
-      } catch (readErr) {
-        console.warn('Error reading back saved blob', readErr);
-      }
-    } catch (err) {
-      console.error('Failed to save selfie to IndexedDB', err);
-    }
-
-    stopCamera();
+  // Ensure at least one frame has rendered
+  if (video.readyState < HTMLMediaElement.HAVE_CURRENT_DATA) {
+    await new Promise<void>((resolve) => {
+      const onCanPlay = () => {
+        video.removeEventListener("canplay", onCanPlay);
+        resolve();
+      };
+      video.addEventListener("canplay", onCanPlay);
+      setTimeout(() => {
+        video.removeEventListener("canplay", onCanPlay);
+        resolve();
+      }, 800);
+    });
   }
+
+  // Wait a frame to ensure video is painted
+  await new Promise<void>((r) => requestAnimationFrame(() => r()));
+
+  const w = video.videoWidth || 1280;
+  const h = video.videoHeight || 720;
+
+  canvas.width = w;
+  canvas.height = h;
+
+  const ctx = canvas.getContext("2d");
+  if (!ctx) return;
+
+  ctx.drawImage(video, 0, 0, w, h);
+
+  const blob = await new Promise<Blob | null>((res) =>
+    canvas.toBlob((b) => res(b), "image/jpeg", 0.85)
+  );
+  if (!blob) return;
+
+  // Create preview FIRST and flip UI to preview
+  if (previewUrl) URL.revokeObjectURL(previewUrl);
+  const url = URL.createObjectURL(blob);
+  setPreviewUrl(url);
+  setCameraOn(false); // 
+
+  // Save to IndexedDB
+  try {
+    await saveBlobToIDB(id, blob);
+  } catch (err) {
+    console.error("Failed to save selfie to IndexedDB", err);
+  }
+
+  stopCamera();
+}
 
   if (!compact) return null;
 
