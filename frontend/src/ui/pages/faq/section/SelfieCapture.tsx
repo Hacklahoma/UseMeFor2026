@@ -68,7 +68,7 @@ export default function SelfieCapture({
    
   }, []);
 
-  async function startCamera() {
+  async function startCamera(autoCapture = false) {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
         video: { facingMode: 'user' },
@@ -79,7 +79,13 @@ export default function SelfieCapture({
         videoRef.current.srcObject = stream;
         await videoRef.current.play();
       }
-      setCameraOn(true);
+      // If autoCapture is requested, capture a single frame immediately
+      if (autoCapture) {
+        // give video a moment to produce a frame (capture() also waits)
+        await capture();
+      } else {
+        setCameraOn(true);
+      }
     } catch (err) {
       console.error('getUserMedia error', err);
       alert('Could not access camera. Check permissions and HTTPS.');
@@ -99,8 +105,34 @@ export default function SelfieCapture({
     const canvas = canvasRef.current!;
     const video = videoRef.current;
 
-    const w = video.videoWidth || 1280;
-    const h = video.videoHeight || 720;
+    // Ensure the video has data/frames before drawing. Sometimes play() resolves
+    // before the first frame is available and drawing immediately produces a black image.
+    if (video.readyState < HTMLMediaElement.HAVE_CURRENT_DATA) {
+      await new Promise<void>((resolve) => {
+        const onPlaying = () => {
+          video.removeEventListener('playing', onPlaying);
+          resolve();
+        };
+        // also listen for playing as a reliable indicator a frame is available
+        video.addEventListener('playing', onPlaying);
+        // fallback: timeout in case the event doesn't fire
+        setTimeout(() => {
+          video.removeEventListener('playing', onPlaying);
+          resolve();
+        }, 500);
+      });
+    }
+
+    let w = video.videoWidth;
+    let h = video.videoHeight;
+
+    // If video metadata isn't available, fall back to the displayed size (scaled by devicePixelRatio)
+    if (!w || !h) {
+      const rect = video.getBoundingClientRect();
+      const dpr = window.devicePixelRatio || 1;
+      w = Math.max(1, Math.round(rect.width * dpr));
+      h = Math.max(1, Math.round(rect.height * dpr));
+    }
 
     canvas.width = w;
     canvas.height = h;
@@ -108,6 +140,7 @@ export default function SelfieCapture({
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.drawImage(video, 0, 0, w, h);
 
     const blob = await new Promise<Blob | null>(res =>
@@ -148,7 +181,7 @@ export default function SelfieCapture({
 <div className="absolute inset-0 z-20 flex items-end justify-center  translate-y-[-5%] -translate-x-[0%]">
   {!isCameraOn ? (
     <button
-      onClick={startCamera}
+      onClick={() => startCamera(true)}
       className="
         bg-white/90 shadow rounded
         text-[8px] sm:text-sm
