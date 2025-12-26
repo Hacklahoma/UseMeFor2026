@@ -99,7 +99,7 @@ const LandingView: React.FC = () => {
             >
               sponsors
             </a>
-            <a href="#login" className="hover:text-[#2a3a1f] transition-colors">
+            <a href="https://register.hacklahoma.org/" target="_blank" rel="noopener noreferrer" className="hover:text-[#2a3a1f] transition-colors">
               login
             </a>
           </nav>
@@ -162,8 +162,10 @@ const LandingView: React.FC = () => {
               sponsors
             </a>
             <a
-              href="#login"
-              className="px-0 py-1 text-[#3D472C] hover:bg-[#e8e8c7] transition-colors"
+              href="https://register.hacklahoma.org/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="px-2 py-1 text-[#3D472C] hover:bg-[#e8e8c7] transition-colors"
             >
               login
             </a>
@@ -259,10 +261,12 @@ const LandingView: React.FC = () => {
           </h1>
 
           {/* Register Now button - under title on small screens */}
-          <div className="mt-6 min-[600px]:hidden">
+          <div className="mt-6 min-[600px]:hidden flex justify-center mr-8">
+            <a href="https://register.hacklahoma.org/" target="_blank" rel="noopener noreferrer">
             <button className="px-6 py-3 border-2 border-[#575f49] text-[#575f49] font-medium hover:bg-[#575f49] hover:text-[#F5F5DC] transition-colors duration-300 rounded">
               Register Now
             </button>
+            </a>
           </div>
         </div>
       </div>
@@ -282,13 +286,15 @@ const LandingView: React.FC = () => {
 
       {/* Register Now button - bottom right on larger screens */}
       <div
-        className={`absolute bottom-8 right-8 lg:bottom-12 lg:right-12 hidden min-[600px]:block transition-opacity duration-1000 ease-in-out ${
+        className={`absolute bottom-4 right-8 lg:bottom-8 lg:right-12 hidden min-[600px]:block transition-opacity duration-1000 ease-in-out ${
           showFinalElements ? "opacity-100" : "opacity-0"
         }`}
       >
+        <a href="https://register.hacklahoma.org/" target="_blank" rel="noopener noreferrer">
         <button className="px-6 py-3 border-2 border-[#575f49] text-[#575f49] font-medium hover:bg-[#575f49] hover:text-[#F5F5DC] transition-colors duration-300 rounded">
           Register Now
         </button>
+        </a>
       </div>
     </div>
   );
