@@ -225,8 +225,8 @@ const FAQPage: React.FC = () => {
                     placeholder="print name here"
                     onChange={(e) => setSignature(e.target.value)}
                     className={`
-                      flex-1 ml-2 bg-transparent border-b border-gray-400
-                      focus:outline-none focus:border-gray-600
+                      flex-1 ml-2 bg-transparent border-b border-transparent
+                      focus:outline-none focus:border-transparent
                       text-[7px] sm:text-[12px] lg:text-[14px] xl:text-lg
                       leading-none py-0 placeholder-gray-500
                       ${signature ? "text-black font-bold" : "text-gray-500"}
