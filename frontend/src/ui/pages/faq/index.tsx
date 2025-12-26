@@ -1,7 +1,9 @@
+// FAQPage.tsx
 import React from "react";
 import gridImg from "../../common/assets/faq/grid.png";
 import passportImg from "../../common/assets/faq/passport.png";
 import SelfieCapture from "./section/SelfieCapture";
+
 import stampOne from "../../common/assets/faq/stamps/stamp_one.png";
 import stampTwo from "../../common/assets/faq/stamps/stamp_two.png";
 import stampThree from "../../common/assets/faq/stamps/stamp_three.png";
@@ -13,7 +15,6 @@ import stampEight from "../../common/assets/faq/stamps/stamp_eight.png";
 import stampNine from "../../common/assets/faq/stamps/stamp_nine.png";
 import stampTen from "../../common/assets/faq/stamps/stamp_ten.png";
 import stampEleven from "../../common/assets/faq/stamps/stamp_eleven.png";
-import { s } from "motion/dist/react-client";
 
 // Mapping of stamp keys to images
 const stampImages = {
@@ -28,51 +29,85 @@ const stampImages = {
   stamp_nine: stampNine,
   stamp_ten: stampTen,
   stamp_eleven: stampEleven,
-  
-};
+} as const;
+
 // Stamp position adjustments
 const stampTranslations = {
   stamp_one: "-translate-y-1",
-  stamp_two: " -translate-y-1",
-  stamp_three: " -translate-y-1",
+  stamp_two: "-translate-y-1",
+  stamp_three: "-translate-y-1",
   stamp_four: "translate-x-0.5 translate-y-1",
-  stamp_five: " translate-x-0.5 -translate-y-2",
-  stamp_six: " -translate-y-2",
-  stamp_seven: " translate-x-0.5 -translate-y-2",
-  stamp_eight: " -translate-y-2",
-  stamp_nine: " -translate-y-1",
-  stamp_ten: " -translate-y-1",
-  stamp_eleven: " -translate-y-1",
-  
-};
+  stamp_five: "translate-x-0.5 -translate-y-2",
+  stamp_six: "-translate-y-2",
+  stamp_seven: "translate-x-0.5 -translate-y-2",
+  stamp_eight: "-translate-y-2",
+  stamp_nine: "-translate-y-1",
+  stamp_ten: "-translate-y-1",
+  stamp_eleven: "-translate-y-1",
+} as const;
+
+type StampKey = keyof typeof stampImages;
 
 type Cell = {
   id: string;
   text: string;
-  stamp?: "stamp_one" | "stamp_two" | "stamp_three" | "stamp_four" | "stamp_five" | "stamp_six" | "stamp_seven" | "stamp_eight" | "stamp_nine" | "stamp_ten"| "stamp_eleven" ;
+  stamp?: StampKey;
 };
-
 
 // FAQ cells data
 const cells: Cell[] = [
-  { id: "c1", text: "A hack is something that is jury-rigged inelegantly but effectively, usually as a temporary solution to a problem. Like duct taping a hole in a sinking boat to keep it afloat.", 
-                    stamp: "stamp_one" },
+  {
+    id: "c1",
+    text:
+      "A hack is something that is jury-rigged inelegantly but effectively, usually as a temporary solution to a problem. Like duct taping a hole in a sinking boat to keep it afloat.",
+    stamp: "stamp_one",
+  },
   { id: "c2", text: "Admissions is completely free for all students!", stamp: "stamp_two" },
   { id: "c3", text: "At this time, we will not be providing travel reimbursements.", stamp: "stamp_three" },
-  { id: "c4", text: "We will supply food for Saturday's lunch, dinner, and Sunday's breakfast with plenty of snacks and drinks throughout. All free of charge!",
-                    stamp: "stamp_four"},
-  { id: "c5", text: "No experience is needed. Whether you're a coder, an artist, or a writer, you'll get to work with various mentors, attend workshops, interact with companies, and learn alongside fellow participants."
-                    , stamp: "stamp_five"},
-   { id: "c6", text: "We encourage everyone to work with a team! Teams may contain up to 4 people. We will also be offering a team-building session at the beginning of the hacking period."
-                    , stamp: "stamp_six"},  
- { id: "c7", text: "You should bring a laptop, chargers, toiletries, a change of clothes, sleeping bag, pillow, and anything else you would need for an overnight weekend. Keep in mind that Hacklahoma will last for 24hrs.", stamp: "stamp_seven" },
-{ id: "c8", text: "Hacklahoma welcomes students from all backgrounds and values the importance of a safe and all-inclusive space. Anyone attending must adhere to the MLH Code of Conduct.",
-        stamp: "stamp_eight" },
-  { id: "c9", text: "Any student over the age of 18 can participate, regardless of major, background, or skill level." , stamp: "stamp_nine" },
-  { id: "c10", text: "No, you cannot work or copy past projects. You can brainstorm ideas and collect whatever software and tools you need, as long as the project is completely new.", stamp: "stamp_ten" },
-{ id: "c11", text: "No, you're not confined here. Feel free to go home and get some rest, but be back in time for judging!", stamp: "stamp_eleven" },
-{ id: "c12", text: "If your question wasn't answered, please feel free to contact us via Instagram, Twitter, Facebook or send us an email to hacklahoma@ou.edu" },
-  
+  {
+    id: "c4",
+    text:
+      "We will supply food for Saturday's lunch, dinner, and Sunday's breakfast with plenty of snacks and drinks throughout. All free of charge!",
+    stamp: "stamp_four",
+  },
+  {
+    id: "c5",
+    text:
+      "No experience is needed. Whether you're a coder, an artist, or a writer, you'll get to work with various mentors, attend workshops, interact with companies, and learn alongside fellow participants.",
+    stamp: "stamp_five",
+  },
+  {
+    id: "c6",
+    text:
+      "We encourage everyone to work with a team! Teams may contain up to 4 people. We will also be offering a team-building session at the beginning of the hacking period.",
+    stamp: "stamp_six",
+  },
+  {
+    id: "c7",
+    text:
+      "You should bring a laptop, chargers, toiletries, a change of clothes, sleeping bag, pillow, and anything else you would need for an overnight weekend. Keep in mind that Hacklahoma will last for 24hrs.",
+    stamp: "stamp_seven",
+  },
+  {
+    id: "c8",
+    text:
+      "Hacklahoma welcomes students from all backgrounds and values the importance of a safe and all-inclusive space. Anyone attending must adhere to the MLH Code of Conduct.",
+    stamp: "stamp_eight",
+  },
+  {
+    id: "c9",
+    text:
+      "Any student over the age of 18 can participate, regardless of major, background, or skill level.",
+    stamp: "stamp_nine",
+  },
+  {
+    id: "c10",
+    text:
+      "No, you cannot work or copy past projects. You can brainstorm ideas and collect whatever software and tools you need, as long as the project is completely new.",
+    stamp: "stamp_ten",
+  },
+  { id: "c11", text: "No, you're not confined here. Feel free to go home and get some rest, but be back in time for judging!", stamp: "stamp_eleven" },
+  { id: "c12", text: "If your question wasn't answered, please feel free to contact us via Instagram, Twitter, Facebook or send us an email to hacklahoma@ou.edu" },
 ];
 
 type StampState = "shown" | "hiding" | "hidden";
@@ -98,7 +133,7 @@ const FAQPage: React.FC = () => {
 
     window.setTimeout(() => {
       setStampStates((prev) => ({ ...prev, [id]: "hidden" }));
-    }, 450); // must match transition duration
+    }, 450);
   };
 
   const fields = [
@@ -231,7 +266,7 @@ const FAQPage: React.FC = () => {
                 draggable={false}
               />
 
-              {/* grid  */}
+              {/* grid */}
               <div
                 className="
                   absolute
@@ -251,7 +286,12 @@ const FAQPage: React.FC = () => {
                   return (
                     <div key={cell.id} className="relative">
                       {/* Text underneath */}
-                      <div className={`absolute inset-0 z-10 p-[4%] flex items-center justify-center transition-opacity duration-300 ${hasStamp && state === "shown" ? "opacity-0" : "opacity-100"}`}>
+                      <div
+                        className={[
+                          "absolute inset-0 z-10 p-[4%] flex items-center justify-center transition-opacity duration-300",
+                          hasStamp && state === "shown" ? "opacity-0" : "opacity-100",
+                        ].join(" ")}
+                      >
                         <p
                           className="
                             text-center whitespace-pre-line leading-tight text-gray-900
@@ -276,12 +316,15 @@ const FAQPage: React.FC = () => {
                           ].join(" ")}
                           aria-label="Remove stamp"
                         >
-                            <img
-                              src={stampImage!}
-                              alt=""
-                            className={`w-full h-full object-contain scale-125 select-none ${stampTranslation}`}
-                              draggable={false}
-                            />
+                          <img
+                            src={stampImage!}
+                            alt=""
+                            className={[
+                              "w-full h-full object-contain scale-125 select-none",
+                              stampTranslation,
+                            ].join(" ")}
+                            draggable={false}
+                          />
                         </button>
                       )}
                     </div>
