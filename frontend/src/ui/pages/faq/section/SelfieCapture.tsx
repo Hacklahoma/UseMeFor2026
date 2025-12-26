@@ -81,11 +81,10 @@ export default function SelfieCapture({
     })();
 
     return () => {
-      if (previewUrl) URL.revokeObjectURL(previewUrl);
       stopCamera();
     };
    
-  }, []);
+  }, [id]);
 
   async function startCamera(autoCapture = false) {
     try {
@@ -127,7 +126,10 @@ async function capture() {
   const video = videoRef.current;
   const canvas = canvasRef.current;
 
-  if (!video || !canvas) return;
+  if (!video || !canvas) {
+    console.error("Video or canvas ref is missing");
+    return;
+  }
 
   // Ensure metadata is available
   if (video.readyState < HTMLMediaElement.HAVE_METADATA) {
@@ -165,28 +167,43 @@ async function capture() {
   const w = video.videoWidth || 1280;
   const h = video.videoHeight || 720;
 
+  console.log("Video dimensions:", w, h, "readyState:", video.readyState);
+
   canvas.width = w;
   canvas.height = h;
 
   const ctx = canvas.getContext("2d");
-  if (!ctx) return;
+  if (!ctx) {
+    console.error("Could not get canvas context");
+    return;
+  }
 
   ctx.drawImage(video, 0, 0, w, h);
 
   const blob = await new Promise<Blob | null>((res) =>
     canvas.toBlob((b) => res(b), "image/jpeg", 0.85)
   );
-  if (!blob) return;
+  if (!blob) {
+    console.error("Failed to create blob from canvas");
+    return;
+  }
 
-  // Create preview FIRST and flip UI to preview
-  if (previewUrl) URL.revokeObjectURL(previewUrl);
+  console.log("Blob created:", blob.size, "bytes");
+
+  // Revoke old preview URL if exists
+  if (previewUrl) {
+    URL.revokeObjectURL(previewUrl);
+  }
+
+  // Create preview and update UI
   const url = URL.createObjectURL(blob);
   setPreviewUrl(url);
-  setCameraOn(false); // 
+  setCameraOn(false);
 
   // Save to IndexedDB
   try {
     await saveBlobToIDB(id, blob);
+    console.log("Saved to IndexedDB successfully");
   } catch (err) {
     console.error("Failed to save selfie to IndexedDB", err);
   }
