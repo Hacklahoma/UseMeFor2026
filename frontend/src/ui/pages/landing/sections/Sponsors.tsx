@@ -8,6 +8,7 @@ import WilliamsLogo from "../../../common/assets/sponsors/Williams.png";
 import PaycomLogo from "../../../common/assets/sponsors/Paycom.png";
 import CocaColaLogo from "../../../common/assets/sponsors/CocaCola.png";
 import AmericanFidelityLogo from "../../../common/assets/sponsors/AmericanFidelity.png";
+import PureButtons from "../../../common/assets/sponsors/PureButtons.png";
 
 interface SponsorLogo {
   src: string;
@@ -57,6 +58,11 @@ const sponsorLogos: SponsorLogo[] = [
     alt: "Sponsor 8 American Fidelity",
     href: "https://www.americanfidelity.com/",
   },
+  {
+    src: PureButtons,
+    alt: "Sponsor 9 Pure Buttons",
+    href: "https://www.purebuttons.com/?ajs_uid=01963cf1-6fe7-46e5-8b9b-9f3b45e49a41&utm_campaign=Member+Event+-+Pure+Buttons+Intro&utm_content=Pure+Buttons+Intro&utm_medium=Email&utm_source=Customer.iohttps://purebuttons.com/",
+  }
 ];
 
 const Sponsors: React.FC = () => {

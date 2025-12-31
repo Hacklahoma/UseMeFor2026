@@ -219,6 +219,7 @@ export default function SelfieCapture({
           "absolute inset-0 w-full h-full object-cover",
           isCameraOn ? "opacity-100" : "opacity-0 pointer-events-none",
         ].join(" ")}
+        style={{ transform: "scaleX(-1)" }}
         playsInline
         muted
       />

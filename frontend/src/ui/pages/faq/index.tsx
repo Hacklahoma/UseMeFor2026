@@ -137,9 +137,9 @@ const FAQPage: React.FC = () => {
   };
 
   const fields = [
-    { label: "first name:", placeholder: "write your first name here" },
-    { label: "last name:", placeholder: "write your last name here" },
-    { label: "school:", placeholder: "write your school here" },
+    { label: "first name:", placeholder: "type something..." },
+    { label: "last name:", placeholder: "type something..." },
+    { label: "school:", placeholder: "type something..." },
   ];
 
   return (
