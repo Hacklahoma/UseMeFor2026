@@ -125,8 +125,8 @@ export function executeForwardShuffle(currentCards: Card[]): ShuffleResult {
   // Save where nextCenterCard is coming from (this position will be vacated)
   const vacatedPosition = nextCenterCard.position;
   
-  // Get fly direction based on where CENTER_BACK card is moving to
-  const flyDirection = getPositionConfig(vacatedPosition).flyDirection;
+  // Forward shuffle always flies RIGHT (consistent for mobile swipe left gesture)
+  const flyDirection = 'right';
   
   // Step 4: Update positions (three-way rotation)
   centerCard.position = CardPosition.CENTER_BACK;    // CENTER → CENTER_BACK
@@ -200,7 +200,9 @@ export function executeBackwardShuffle(currentCards: Card[]): ShuffleResult {
   
   // Step 3: THREE cards move (3-way rotation)
   const vacatedPosition = targetCard.position;
-  const flyDirection = getPositionConfig(vacatedPosition).flyDirection;
+  
+  // Backward shuffle always flies LEFT (consistent for mobile swipe right gesture)
+  const flyDirection = 'left';
   
   // Step 4: Update positions (three-way rotation)
   centerCard.position = vacatedPosition;             // CENTER → vacated position
