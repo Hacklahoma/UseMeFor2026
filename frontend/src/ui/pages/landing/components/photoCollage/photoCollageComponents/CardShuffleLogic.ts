@@ -127,7 +127,7 @@ export function executeForwardShuffle(currentCards: Card[], useConsistentFlyDire
   const vacatedPosition = nextCenterCard.position;
   
   // Determine fly direction based on screen size/button visibility
-  // Mobile (no buttons): Always fly RIGHT for consistent swipe left gesture
+  // Mobile (no buttons): Always fly LEFT for consistent swipe left gesture
   // Desktop (with buttons): Use position-based direction for alternating effect
   const flyDirection = useConsistentFlyDirection 
     ? 'right'
@@ -208,7 +208,7 @@ export function executeBackwardShuffle(currentCards: Card[], useConsistentFlyDir
   const vacatedPosition = targetCard.position;
   
   // Determine fly direction based on screen size/button visibility
-  // Mobile (no buttons): Always fly LEFT for consistent swipe right gesture
+  // Mobile (no buttons): Always fly RIGHT for consistent swipe right gesture
   // Desktop (with buttons): Use position-based direction for alternating effect
   const flyDirection = useConsistentFlyDirection
     ? 'left'

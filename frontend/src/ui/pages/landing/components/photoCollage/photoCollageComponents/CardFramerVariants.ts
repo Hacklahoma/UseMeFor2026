@@ -27,6 +27,8 @@ import configSettings from './Config';
 interface VariantCustomProps extends PositionConfig {
   /** Animation delay in seconds (used for staggered entrance animations) */
   delay?: number;
+  /** Fly distance for left/right animations (changes based on screen size) */
+  flyDistance?: string;
 }
 
 /**
@@ -105,7 +107,7 @@ export const photoCollageCardVariants: Variants = {
    * - Maintains opacity for smooth visual effect
    */
   flyLeft: (config: VariantCustomProps) => ({
-    x: [0, `-${configSettings.FLY_DISTANCE}`, 0], // Keyframes: start -> fly left -> return to center
+    x: [0, `-${config.flyDistance || configSettings.DESKTOP_FLY_DISTANCE}`, 0], // Keyframes: start -> fly left -> return to center
     y: 0,
     top: config.top,
     left: config.left,
@@ -141,7 +143,7 @@ export const photoCollageCardVariants: Variants = {
    * - Maintains opacity for smooth visual effect
    */
   flyRight: (config: VariantCustomProps) => ({
-    x: [0, configSettings.FLY_DISTANCE, 0], // Keyframes: start -> fly right -> return to center
+    x: [0, config.flyDistance || configSettings.DESKTOP_FLY_DISTANCE, 0], // Keyframes: start -> fly right -> return to center
     y: 0,
     top: config.top,
     left: config.left,

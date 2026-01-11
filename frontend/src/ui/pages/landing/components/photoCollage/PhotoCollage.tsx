@@ -172,12 +172,26 @@ const PhotoCollage: React.FC = () => {
     // Check if this is primarily a horizontal swipe
     // (horizontal distance must be greater than vertical distance)
     if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > minSwipeDistance) {
-      if (deltaX > 0) {
-        // Swipe right - trigger backward shuffle (same as left button)
-        handleBackwardShuffle();
+      // Mobile (buttons hidden): Swapped shuffle calls for intuitive card movement
+      // Desktop (buttons visible): Standard shuffle mapping
+      if (!areButtonsVisible) {
+        // Mobile mode: swap the shuffle functions
+        if (deltaX > 0) {
+          // Swipe right - trigger forward shuffle (card flies right)
+          handleForwardShuffle();
+        } else {
+          // Swipe left - trigger backward shuffle (card flies left)
+          handleBackwardShuffle();
+        }
       } else {
-        // Swipe left - trigger forward shuffle (same as right button)
-        handleForwardShuffle();
+        // Desktop mode: standard behavior
+        if (deltaX > 0) {
+          // Swipe right - trigger backward shuffle (same as left button)
+          handleBackwardShuffle();
+        } else {
+          // Swipe left - trigger forward shuffle (same as right button)
+          handleForwardShuffle();
+        }
       }
     }
   };
@@ -221,7 +235,7 @@ const PhotoCollage: React.FC = () => {
     // Set ref immediately (synchronous) - this blocks all subsequent clicks/swipes
     isAnimatingRef.current = true;
     
-    const delay = configSettings.SHUFFLE_DELAY;
+    const delay = configSettings.SHUFFLE_DELAY + 100;
     setButtonsDisabled(true);
     setTimeout(() => {
       setButtonsDisabled(false);
@@ -235,7 +249,7 @@ const PhotoCollage: React.FC = () => {
 
     setCards(shuffleResult.cardsWithOldZIndex);
     setAnimationStates(shuffleResult.animationStates);
-    setTimeout(() => setCards(shuffleResult.cardsWithNewZIndex), delay / 2);
+    setTimeout(() => setCards(shuffleResult.cardsWithNewZIndex), configSettings.SHUFFLE_DELAY);
   };
 
   return (
@@ -299,6 +313,11 @@ const PhotoCollage: React.FC = () => {
               const photoIndexToDisplay = card.currentPhotoIndex;
 
               const photoData = getPhotoData(photoIndexToDisplay);
+              
+              // Choose fly distance based on button visibility (screen size)
+              const flyDistance = areButtonsVisible 
+                ? configSettings.DESKTOP_FLY_DISTANCE 
+                : configSettings.MOBILE_FLY_DISTANCE;
 
               return (
                 <motion.div
@@ -316,6 +335,7 @@ const PhotoCollage: React.FC = () => {
                     ...positionConfig,
                     zIndex: card.zIndex, // Pass card's zIndex to variants as well
                     delay: entranceDelay,
+                    flyDistance: flyDistance, // Responsive fly distance based on screen size
                   }}
                   onAnimationComplete={(definition) => {
                     // Track when the initial entrance animation completes

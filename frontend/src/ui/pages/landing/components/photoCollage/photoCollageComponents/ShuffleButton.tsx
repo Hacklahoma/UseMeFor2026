@@ -96,7 +96,7 @@ export const NavigationButton: React.FC<NavigationButtonProps> = ({
     // Execute direction-specific logic
     if (direction === 'left') {
       // Left button: backward shuffle
-      const delay = configSettings.SHUFFLE_DELAY;
+      const delay = configSettings.SHUFFLE_DELAY + 100;
       setButtonsDisabled(true);
       setTimeout(() => {
         setButtonsDisabled(false);
@@ -110,7 +110,7 @@ export const NavigationButton: React.FC<NavigationButtonProps> = ({
 
       setCards(shuffleResult.cardsWithOldZIndex);
       setAnimationStates(shuffleResult.animationStates);
-      setTimeout(() => setCards(shuffleResult.cardsWithNewZIndex), delay / 2);
+      setTimeout(() => setCards(shuffleResult.cardsWithNewZIndex), configSettings.SHUFFLE_DELAY);
     } else {
       // Right button: forward shuffle
       const delay = configSettings.SHUFFLE_DELAY + 100;
