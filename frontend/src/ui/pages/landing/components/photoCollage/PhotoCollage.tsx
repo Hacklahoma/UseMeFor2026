@@ -62,6 +62,16 @@ const PhotoCollage: React.FC = () => {
 
   // Track if navigation buttons are visible (custom600 breakpoint = 600px)
   const [areButtonsVisible, setAreButtonsVisible] = useState(window.innerWidth >= 600);
+  
+  // Track screen size tier for responsive fly distance
+  const [screenSizeTier, setScreenSizeTier] = useState<'mobile' | 'smallTablet' | 'tablet' | 'desktop' | 'desktopLarge'>(() => {
+    const width = window.innerWidth;
+    if (width < 600) return 'mobile';
+    if (width < 768) return 'smallTablet';
+    if (width < 1024) return 'tablet';
+    if (width < 1650) return 'desktop';
+    return 'desktopLarge';
+  });
 
   // Track animation state for each card
   const [animationStates, setAnimationStates] = useState<CardAnimationMap>({
@@ -78,11 +88,25 @@ const PhotoCollage: React.FC = () => {
   const touchStartY = useRef<number>(0);
 
   /**
-   * Track button visibility based on window width
+   * Track button visibility and screen size tier based on window width
    */
   useEffect(() => {
     const handleResize = () => {
-      setAreButtonsVisible(window.innerWidth >= 600);
+      const width = window.innerWidth;
+      setAreButtonsVisible(width >= 600);
+      
+      // Update screen size tier
+      if (width < 600) {
+        setScreenSizeTier('mobile');
+      } else if (width < 768) {
+        setScreenSizeTier('smallTablet');
+      } else if (width < 1024) {
+        setScreenSizeTier('tablet');
+      } else if (width < 1650) {
+        setScreenSizeTier('desktop');
+      } else {
+        setScreenSizeTier('desktopLarge');
+      }
     };
 
     window.addEventListener('resize', handleResize);
@@ -314,10 +338,13 @@ const PhotoCollage: React.FC = () => {
 
               const photoData = getPhotoData(photoIndexToDisplay);
               
-              // Choose fly distance based on button visibility (screen size)
-              const flyDistance = areButtonsVisible 
-                ? configSettings.DESKTOP_FLY_DISTANCE 
-                : configSettings.MOBILE_FLY_DISTANCE;
+              // Choose fly distance based on screen size tier
+              const flyDistance = 
+                screenSizeTier === 'mobile' ? configSettings.MOBILE_FLY_DISTANCE :
+                screenSizeTier === 'smallTablet' ? configSettings.SMALL_TABLET_FLY_DISTANCE :
+                screenSizeTier === 'tablet' ? configSettings.TABLET_FLY_DISTANCE :
+                screenSizeTier === 'desktop' ? configSettings.DESKTOP_FLY_DISTANCE :
+                configSettings.DESKTOP_LARGE_FLY_DISTANCE;
 
               return (
                 <motion.div

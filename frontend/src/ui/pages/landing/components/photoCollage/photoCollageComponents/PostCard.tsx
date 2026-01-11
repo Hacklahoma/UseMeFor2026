@@ -30,9 +30,9 @@ export const VintagePostcard: React.FC<VintagePostcardProps> = ({
   footer,
 }) => {
   return (  
-    <div className="px-6 shadow-2xl" style={{ backgroundColor: configSettings.FRAMED_CARD_BG }}>
+    <div className="px-4 md:px-6 shadow-2xl" style={{ backgroundColor: configSettings.FRAMED_CARD_BG }}>
       {/* Top text */}
-      <div className="text-right pr-6 pt-2">
+      <div className="text-right pr-2 pt-1 md:pt-2">
         <p 
           className="text-gray-700 tracking-wide" 
           style={{ 
@@ -57,7 +57,7 @@ export const VintagePostcard: React.FC<VintagePostcardProps> = ({
       </div>
 
       {/* Bottom text */}
-      <div className="text-right pb-[0.25rem] pr-2">
+      <div className="text-right pb-[0.15rem] md:pb-[0.25rem] pr-2">
         <p 
           className="text-gray-600 text-xs tracking-widest" 
           style={{ 
