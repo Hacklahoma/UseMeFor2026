@@ -60,6 +60,9 @@ const PhotoCollage: React.FC = () => {
   // Ref for immediate synchronous check (prevents race conditions)
   const isAnimatingRef = useRef(false);
 
+  // Track if navigation buttons are visible (custom600 breakpoint = 600px)
+  const [areButtonsVisible, setAreButtonsVisible] = useState(window.innerWidth >= 600);
+
   // Track animation state for each card
   const [animationStates, setAnimationStates] = useState<CardAnimationMap>({
     [CardId.CARD_A]: AnimationState.OFFSCREEN,
@@ -73,6 +76,18 @@ const PhotoCollage: React.FC = () => {
   // Touch swipe detection for mobile
   const touchStartX = useRef<number>(0);
   const touchStartY = useRef<number>(0);
+
+  /**
+   * Track button visibility based on window width
+   */
+  useEffect(() => {
+    const handleResize = () => {
+      setAreButtonsVisible(window.innerWidth >= 600);
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   /**
    * Trigger entrance animation when component comes into view
@@ -184,7 +199,8 @@ const PhotoCollage: React.FC = () => {
       isAnimatingRef.current = false;
     }, delay);
 
-    const shuffleResult = executeForwardShuffle(cards);
+    // Use consistent fly direction when buttons are hidden (mobile)
+    const shuffleResult = executeForwardShuffle(cards, !areButtonsVisible);
 
     setCards(shuffleResult.cardsWithOldZIndex);
     setAnimationStates(shuffleResult.animationStates);
@@ -214,7 +230,8 @@ const PhotoCollage: React.FC = () => {
 
     // Swap photo BEFORE shuffle logic executes
     const cardsWithUpdatedPhoto = swapPhotoBackShuffle(cards);
-    const shuffleResult = executeBackwardShuffle(cardsWithUpdatedPhoto);
+    // Use consistent fly direction when buttons are hidden (mobile)
+    const shuffleResult = executeBackwardShuffle(cardsWithUpdatedPhoto, !areButtonsVisible);
 
     setCards(shuffleResult.cardsWithOldZIndex);
     setAnimationStates(shuffleResult.animationStates);
@@ -250,6 +267,7 @@ const PhotoCollage: React.FC = () => {
             setButtonsDisabled={setButtonsDisabled}
             isAnimatingRef={isAnimatingRef}
             swapPhotoBackShuffle={swapPhotoBackShuffle}
+            areButtonsVisible={areButtonsVisible}
           />
 
           {/* Photo collage container */}
@@ -348,6 +366,7 @@ const PhotoCollage: React.FC = () => {
             setButtonsDisabled={setButtonsDisabled}
             isAnimatingRef={isAnimatingRef}
             swapPhotoOnCardID={swapPhotoOnCardID}
+            areButtonsVisible={areButtonsVisible}
           />
         </div>
       </div>

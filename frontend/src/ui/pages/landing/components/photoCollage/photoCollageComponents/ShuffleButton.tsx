@@ -39,6 +39,8 @@ interface NavigationButtonProps {
   swapPhotoBackShuffle?: (cards: Card[]) => Card[];
   /** Callback to swap a card's photo after flying animation (right only) */
   swapPhotoOnCardID?: (cardId: CardId, cards: Card[]) => Card[];
+  /** Whether navigation buttons are visible (based on breakpoint) */
+  areButtonsVisible: boolean;
 }
 
 const DIRECTION_CONFIG = {
@@ -74,6 +76,7 @@ export const NavigationButton: React.FC<NavigationButtonProps> = ({
   isAnimatingRef,
   swapPhotoBackShuffle,
   swapPhotoOnCardID,
+  areButtonsVisible,
 }) => {
   const config = DIRECTION_CONFIG[direction];
 
@@ -102,7 +105,8 @@ export const NavigationButton: React.FC<NavigationButtonProps> = ({
 
       // Swap photo BEFORE shuffle logic executes
       const cardsWithUpdatedPhoto = swapPhotoBackShuffle ? swapPhotoBackShuffle(cards) : cards;
-      const shuffleResult = executeBackwardShuffle(cardsWithUpdatedPhoto);
+      // Use consistent fly direction when buttons are hidden (mobile)
+      const shuffleResult = executeBackwardShuffle(cardsWithUpdatedPhoto, !areButtonsVisible);
 
       setCards(shuffleResult.cardsWithOldZIndex);
       setAnimationStates(shuffleResult.animationStates);
@@ -116,7 +120,8 @@ export const NavigationButton: React.FC<NavigationButtonProps> = ({
         isAnimatingRef.current = false;
       }, delay);
 
-      const shuffleResult = executeForwardShuffle(cards);
+      // Use consistent fly direction when buttons are hidden (mobile)
+      const shuffleResult = executeForwardShuffle(cards, !areButtonsVisible);
 
       setCards(shuffleResult.cardsWithOldZIndex);
       setAnimationStates(shuffleResult.animationStates);

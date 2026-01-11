@@ -107,9 +107,10 @@ const CARD_SEQUENCE: CardId[] = [
  * - After shuffle: CARD_A at CENTER_BACK, CARD_B at CENTER, CARD_F at TOP_LEFT
  *
  * @param currentCards - Current array of card objects
+ * @param useConsistentFlyDirection - If true, always fly right (for mobile). If false, use position-based direction (for desktop)
  * @returns ShuffleResult with updated cards and animation states
  */
-export function executeForwardShuffle(currentCards: Card[]): ShuffleResult {
+export function executeForwardShuffle(currentCards: Card[], useConsistentFlyDirection: boolean = false): ShuffleResult {
   // Deep clone to avoid mutation
   const newCards = currentCards.map(card => ({ ...card }));
   
@@ -125,8 +126,12 @@ export function executeForwardShuffle(currentCards: Card[]): ShuffleResult {
   // Save where nextCenterCard is coming from (this position will be vacated)
   const vacatedPosition = nextCenterCard.position;
   
-  // Forward shuffle always flies RIGHT (consistent for mobile swipe left gesture)
-  const flyDirection = 'right';
+  // Determine fly direction based on screen size/button visibility
+  // Mobile (no buttons): Always fly RIGHT for consistent swipe left gesture
+  // Desktop (with buttons): Use position-based direction for alternating effect
+  const flyDirection = useConsistentFlyDirection 
+    ? 'right'
+    : getPositionConfig(vacatedPosition).flyDirection;
   
   // Step 4: Update positions (three-way rotation)
   centerCard.position = CardPosition.CENTER_BACK;    // CENTER → CENTER_BACK
@@ -183,9 +188,10 @@ export function executeForwardShuffle(currentCards: Card[]): ShuffleResult {
  * - CARD_F at CENTER, click backward → CARD_F flies to CENTER_BACK, CARD_E smoothly moves to CENTER
  *
  * @param currentCards - Current array of card objects
+ * @param useConsistentFlyDirection - If true, always fly left (for mobile). If false, use position-based direction (for desktop)
  * @returns ShuffleResult with updated cards and animation states
  */
-export function executeBackwardShuffle(currentCards: Card[]): ShuffleResult {
+export function executeBackwardShuffle(currentCards: Card[], useConsistentFlyDirection: boolean = false): ShuffleResult {
   // Deep clone to avoid mutation
   const newCards = currentCards.map(card => ({ ...card }));
   
@@ -201,8 +207,12 @@ export function executeBackwardShuffle(currentCards: Card[]): ShuffleResult {
   // Step 3: THREE cards move (3-way rotation)
   const vacatedPosition = targetCard.position;
   
-  // Backward shuffle always flies LEFT (consistent for mobile swipe right gesture)
-  const flyDirection = 'left';
+  // Determine fly direction based on screen size/button visibility
+  // Mobile (no buttons): Always fly LEFT for consistent swipe right gesture
+  // Desktop (with buttons): Use position-based direction for alternating effect
+  const flyDirection = useConsistentFlyDirection
+    ? 'left'
+    : getPositionConfig(vacatedPosition).flyDirection;
   
   // Step 4: Update positions (three-way rotation)
   centerCard.position = vacatedPosition;             // CENTER → vacated position
