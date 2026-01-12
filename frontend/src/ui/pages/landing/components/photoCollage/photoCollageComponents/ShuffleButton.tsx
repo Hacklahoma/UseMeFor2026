@@ -8,9 +8,9 @@
 import React, { MutableRefObject } from 'react';
 import * as motion from 'motion/react-client';
 import CollageArrow from '../../../../../common/assets/nav-arrow.svg';
-import { Card, CardId, CardAnimationMap } from './photoCollageTypes';
-import { executeForwardShuffle, executeBackwardShuffle } from './cardShuffleLogic';
-import { SHUFFLE_DELAY } from './cardConstants';
+import { Card, CardId, CardAnimationMap } from './Card';
+import { executeForwardShuffle, executeBackwardShuffle } from './CardShuffleLogic';
+import configSettings from './Config';
 
 type Direction = 'left' | 'right';
 
@@ -39,6 +39,8 @@ interface NavigationButtonProps {
   swapPhotoBackShuffle?: (cards: Card[]) => Card[];
   /** Callback to swap a card's photo after flying animation (right only) */
   swapPhotoOnCardID?: (cardId: CardId, cards: Card[]) => Card[];
+  /** Whether navigation buttons are visible (based on breakpoint) */
+  areButtonsVisible: boolean;
 }
 
 const DIRECTION_CONFIG = {
@@ -74,6 +76,7 @@ export const NavigationButton: React.FC<NavigationButtonProps> = ({
   isAnimatingRef,
   swapPhotoBackShuffle,
   swapPhotoOnCardID,
+  areButtonsVisible,
 }) => {
   const config = DIRECTION_CONFIG[direction];
 
@@ -93,7 +96,7 @@ export const NavigationButton: React.FC<NavigationButtonProps> = ({
     // Execute direction-specific logic
     if (direction === 'left') {
       // Left button: backward shuffle
-      const delay = SHUFFLE_DELAY;
+      const delay = configSettings.SHUFFLE_DELAY + 100;
       setButtonsDisabled(true);
       setTimeout(() => {
         setButtonsDisabled(false);
@@ -102,25 +105,27 @@ export const NavigationButton: React.FC<NavigationButtonProps> = ({
 
       // Swap photo BEFORE shuffle logic executes
       const cardsWithUpdatedPhoto = swapPhotoBackShuffle ? swapPhotoBackShuffle(cards) : cards;
-      const shuffleResult = executeBackwardShuffle(cardsWithUpdatedPhoto);
+      // Use consistent fly direction when buttons are hidden (mobile)
+      const shuffleResult = executeBackwardShuffle(cardsWithUpdatedPhoto, !areButtonsVisible);
 
       setCards(shuffleResult.cardsWithOldZIndex);
       setAnimationStates(shuffleResult.animationStates);
-      setTimeout(() => setCards(shuffleResult.cardsWithNewZIndex), delay / 2);
+      setTimeout(() => setCards(shuffleResult.cardsWithNewZIndex), configSettings.SHUFFLE_DELAY);
     } else {
       // Right button: forward shuffle
-      const delay = SHUFFLE_DELAY + 100;
+      const delay = configSettings.SHUFFLE_DELAY + 100;
       setButtonsDisabled(true);
       setTimeout(() => {
         setButtonsDisabled(false);
         isAnimatingRef.current = false;
       }, delay);
 
-      const shuffleResult = executeForwardShuffle(cards);
+      // Use consistent fly direction when buttons are hidden (mobile)
+      const shuffleResult = executeForwardShuffle(cards, !areButtonsVisible);
 
       setCards(shuffleResult.cardsWithOldZIndex);
       setAnimationStates(shuffleResult.animationStates);
-      setTimeout(() => setCards(shuffleResult.cardsWithNewZIndex), SHUFFLE_DELAY);
+      setTimeout(() => setCards(shuffleResult.cardsWithNewZIndex), configSettings.SHUFFLE_DELAY);
       setTimeout(() => {
         if (swapPhotoOnCardID) {
           const updatedCards = swapPhotoOnCardID(shuffleResult.flyingCardId, shuffleResult.cardsWithNewZIndex);
