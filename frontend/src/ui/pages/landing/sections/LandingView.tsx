@@ -100,7 +100,7 @@ const LandingView: React.FC = () => {
               sponsors
             </a>
             <a href="https://register.hacklahoma.org/" target="_blank" rel="noopener noreferrer" className="hover:text-[#2a3a1f] transition-colors">
-              login
+              register
             </a>
           </nav>
 
