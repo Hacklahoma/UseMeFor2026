@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import * as motion from 'motion/react-client';
 import MLHBanner2026 from "../../../common/assets/MLHBanner2026.png";
 import Postcard from "../../../common/assets/Postcard.png";
 import Mountain from "../../../common/assets/mountains.png";
@@ -148,16 +149,19 @@ const LandingView: React.FC = () => {
           </h1>
 
           {/* Register Now button - under title on small screens */}
-          <div className="mt-6 min-[600px]:hidden">
-            <a 
+          <div className="flex justify-center mt-6 min-[700px]:hidden w-screen relative left-0">
+            <motion.a 
               id="register-button-mobile" 
               href="https://register.hacklahoma.org"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-block px-6 py-3 border-2 border-[#575f49] text-[#575f49] font-medium hover:bg-[#575f49] hover:text-[#F5F5DC] transition-colors duration-300 rounded"
+              className="inline-block px-20 py-3 border-2 border-[#575f49] bg-[#575f49] text-[#F5F5DC] font-medium hover:bg-transparent hover:text-[#575f49] transition-colors duration-300 rounded"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              transition={{ type: "spring", stiffness: 400, damping: 17 }}
             >
               Register Now
-            </a>
+            </motion.a>
           </div>
         </div>
       </div>
