@@ -4,6 +4,8 @@ import { AnimatePresence, LayoutGroup, useMotionValue, useSpring } from 'motion/
 import BeeLogo from "../../../common/assets/BeeLogo.png";
 import Patch from "../../../common/assets/header/Patch.png";
 import HeaderRope from "../../../common/assets/header/HeaderRope.png";
+import MobileHeader from "../../../common/assets/header/MobileHeader.png";
+import RegisterButton from "../../../common/assets/header/RegisterButton.png";
 
 interface HeaderProps {
   showFinalElements: boolean;
@@ -28,7 +30,7 @@ const NavLink = React.forwardRef<HTMLAnchorElement, NavLinkProps>(
       <motion.a 
         ref={ref}
         href={href} 
-        className="hover:text-[#2a3a1f] transition-colors h-20 flex items-center px-6"
+        className="hover:text-[#2a3a1f] transition-colors h-20 flex items-center px-3 md:px-4 lg:px-6"
         onMouseEnter={() => onHover(sectionId)}
         onMouseLeave={onLeave}
         data-section={sectionId}
@@ -108,7 +110,7 @@ const Header: React.FC<HeaderProps> = ({ showFinalElements }) => {
     // Delay clearing hover to avoid jumping during brief gaps (like diamonds)
     hoverTimeoutRef.current = window.setTimeout(() => {
       setHoveredSection(null);
-    }, 100); // 100ms delay
+    }, 300); // 300ms delay
   };
   
   // Cleanup timeout on unmount
@@ -229,7 +231,7 @@ const Header: React.FC<HeaderProps> = ({ showFinalElements }) => {
 
   return (
     <header
-      className={`fixed top-5 left-1/2 -translate-x-1/2 h-20 w-full z-50 transition-opacity duration-1000 ease-in-out ${
+      className={`fixed top-0 md:top-5 left-1/2 -translate-x-1/2 h-20 w-full z-[100] transition-opacity duration-1000 ease-in-out ${
         showFinalElements ? "opacity-100" : "opacity-0"
       }`}
     >
@@ -253,11 +255,8 @@ const Header: React.FC<HeaderProps> = ({ showFinalElements }) => {
 
         {/* Background for nav section only */}
         <div
-          className="absolute left-1/2 -translate-x-1/2 h-20 rounded-2xl overflow-hidden hidden md:block"
+          className="absolute left-1/2 -translate-x-1/2 h-20 rounded-2xl overflow-hidden hidden md:block transition-all duration-300 w-[70%] max-w-[600px] min-w-[550px] lg:max-w-[750px] lg:min-w-[750px] xl:max-w-[800px]"
           style={{
-            width: '50%',
-            maxWidth: '720px',
-            minWidth: '650px',
             backgroundImage: `url(${Patch})`,
             backgroundSize: 'auto 100%',
             backgroundPosition: 'center',
@@ -284,7 +283,7 @@ const Header: React.FC<HeaderProps> = ({ showFinalElements }) => {
         {/* Desktop Navigation - centered links */}
         <nav 
           ref={navRef}
-          className="hidden text-xl md:flex items-center text-[#3D472C] font-serif absolute left-1/2 -translate-x-1/2 top-0 h-20 select-none z-10"
+          className="hidden md:flex md:text-lg lg:text-xl items-center text-[#3D472C] font-serif absolute left-1/2 -translate-x-1/2 top-0 h-20 select-none z-10"
         >
           <LayoutGroup>
             <NavLink 
@@ -444,47 +443,140 @@ const Header: React.FC<HeaderProps> = ({ showFinalElements }) => {
         transition={{ opacity: { duration: 0.2 } }}
       />
 
-      {/* Mobile Menu Dropdown */}
-      <div
-        className={`md:hidden absolute top-20 left-0 w-full bg-[#FFFCF5] transition-all duration-300 ${
-          isMobileMenuOpen
-            ? "opacity-100 translate-y-0"
-            : "opacity-0 -translate-y-4 pointer-events-none"
-        }`}
-      >
-        <nav className="flex flex-col py-4 items-start pl-6 space-y-1">
-          <a
-            href="#top"
-            className="px-0 py-1 text-[#3D472C] hover:bg-[#e8e8c7] transition-colors"
+      {/* Mobile Menu Modal */}
+      <AnimatePresence>
+        {isMobileMenuOpen && (
+          <motion.div
+            className="md:hidden fixed top-4 right-4 z-[75]"
+            style={{
+              filter: 'drop-shadow(0 10px 25px rgba(0, 0, 0, 0.3))'
+            }}
+            initial={{ opacity: 0, x: 300, scale: 0.9 }}
+            animate={{ opacity: 1, x: 0, scale: 1 }}
+            exit={{ opacity: 0, x: 300, scale: 0.9 }}
+            transition={{
+              duration: 0.6,
+              ease: [0.22, 1, 0.36, 1]
+            }}
           >
-            home
-          </a>
-          <a
-            href="#about"
-            className="px-0 py-1 text-[#3D472C] hover:bg-[#e8e8c7] transition-colors"
+        <img 
+          src={MobileHeader} 
+          alt="Mobile menu background" 
+          className="w-[260px] h-auto"
+          style={{ pointerEvents: 'none', filter: 'saturate(0.80)' }}
+        />
+
+        {/* Blur overlay on left edge */}
+        <div 
+          className="absolute left-0 top-0 h-full w-10"
+          style={{ 
+            pointerEvents: 'none',
+            background: 'linear-gradient(to right, rgba(0,0,0,0.01), transparent)',
+            backdropFilter: 'blur(0.5px)',
+            WebkitBackdropFilter: 'blur(0.5px)'
+          }}
+        />
+
+        {/* Blur overlay on bottom edge */}
+        <div 
+          className="absolute bottom-0 left-0 w-full h-8"
+          style={{ 
+            pointerEvents: 'none',
+            background: 'linear-gradient(to top, rgba(0,0,0,0.01), transparent)',
+            backdropFilter: 'blur(0.5px)',
+            WebkitBackdropFilter: 'blur(0.5px)'
+          }}
+        />
+        
+        <nav 
+          className="absolute inset-0 flex flex-col py-6 pl-10 pr-2 items-start font-serif text-lg"
+        >
+          <motion.button
+            onClick={() => setIsMobileMenuOpen(false)}
+            className="px-4 py-1 text-[#3D472C] hover:text-[#2a3a1f] transition-colors rounded flex items-center gap-2 mb-2 self-end pr-4"
+            aria-label="Close menu"
+            whileTap={{ scale: 0.85, opacity: 0.7 }}
+            transition={{ type: "spring", stiffness: 400, damping: 17 }}
           >
-            about
-          </a>
-          <a
-            href="#faq"
-            className="px-0 py-1 text-[#3D472C] hover:bg-[#e8e8c7] transition-colors"
+            <span className="text-xl">←</span>
+            <span>BACK</span>
+          </motion.button>
+          <div className="flex flex-col w-[90%]">
+            <motion.a
+              href="#top"
+              className="w-full px-2 py-3 text-[#3D472C] hover:text-[#2a3a1f] transition-colors flex items-center gap-2"
+              onClick={() => setIsMobileMenuOpen(false)}
+              whileTap={{ scale: 0.92, x: 5 }}
+              transition={{ type: "spring", stiffness: 400, damping: 17 }}
+              style={{ originX: 0 }}
+            >
+              <span className="w-1.5 h-1.5 rounded-full bg-[#947b53]"></span>
+              HOME
+            </motion.a>
+            <div 
+              className="w-[95%] h-0 border-b-2 border-dashed border-[#9e8f7b] ml-auto"
+              style={{ filter: 'blur(0.4px)' }}
+            />
+            <motion.a
+              href="#about"
+              className="w-full px-2 py-3 text-[#3D472C] hover:text-[#2a3a1f] transition-colors flex items-center gap-2"
+              onClick={() => setIsMobileMenuOpen(false)}
+              whileTap={{ scale: 0.92, x: 5 }}
+              transition={{ type: "spring", stiffness: 400, damping: 17 }}
+              style={{ originX: 0 }}
+            >
+              <span className="w-1.5 h-1.5 rounded-full bg-[#947b53]"></span>
+              ABOUT
+            </motion.a>
+            <div 
+              className="w-[95%] h-0 border-b-2 border-dashed border-[#9e8f7b] ml-auto"
+              style={{ filter: 'blur(0.4px)' }}
+            />
+            <motion.a
+              href="#faq"
+              className="w-full px-2 py-3 text-[#3D472C] hover:text-[#2a3a1f] transition-colors flex items-center gap-2"
+              onClick={() => setIsMobileMenuOpen(false)}
+              whileTap={{ scale: 0.92, x: 5 }}
+              transition={{ type: "spring", stiffness: 400, damping: 17 }}
+              style={{ originX: 0 }}
+            >
+              <span className="w-1.5 h-1.5 rounded-full bg-[#947b53]"></span>
+              FAQ
+            </motion.a>
+            <div 
+              className="w-[95%] h-0 border-b-2 border-dashed border-[#9e8f7b] ml-auto"
+              style={{ filter: 'blur(0.4px)' }}
+            />
+            <motion.a
+              href="#sponsors"
+              className="w-full px-2 py-3 text-[#3D472C] hover:text-[#2a3a1f] transition-colors flex items-center gap-2"
+              onClick={() => setIsMobileMenuOpen(false)}
+              whileTap={{ scale: 0.92, x: 5 }}
+              transition={{ type: "spring", stiffness: 400, damping: 17 }}
+              style={{ originX: 0 }}
+            >
+              <span className="w-1.5 h-1.5 rounded-full bg-[#947b53]"></span>
+              SPONSORS
+            </motion.a>
+          </div>
+          <motion.a
+            href="https://register.hacklahoma.org"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-auto self-center"
+            whileTap={{ scale: 0.88, rotate: -2 }}
+            transition={{ type: "spring", stiffness: 400, damping: 17 }}
           >
-            faq
-          </a>
-          <a
-            href="#sponsors"
-            className="px-0 py-1 text-[#3D472C] hover:bg-[#e8e8c7] transition-colors"
-          >
-            sponsors
-          </a>
-          <a
-            href="#register"
-            className="px-0 py-1 text-[#3D472C] hover:bg-[#e8e8c7] transition-colors"
-          >
-            register
-          </a>
+            <img 
+              src={RegisterButton} 
+              alt="Register" 
+              className="w-48 h-auto hover:opacity-80 transition-opacity px-2 py-4"
+            />
+          </motion.a>
         </nav>
-      </div>
+      </motion.div>
+        )}
+      </AnimatePresence>
     </header>
   );
 };
