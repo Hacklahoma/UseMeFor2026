@@ -6,6 +6,8 @@ import Patch from "../../../common/assets/header/Patch.png";
 import HeaderRope from "../../../common/assets/header/HeaderRope.png";
 import MobileHeader from "../../../common/assets/header/MobileHeader.png";
 import RegisterButton from "../../../common/assets/header/RegisterButton.png";
+import { ReactComponent as TreeIcon } from "../../../common/assets/header/basicTree.svg";
+import { ReactComponent as LineIcon } from "../../../common/assets/header/line.svg";
 
 interface HeaderProps {
   showFinalElements: boolean;
@@ -295,13 +297,13 @@ const Header: React.FC<HeaderProps> = ({ showFinalElements }) => {
               onLeave={handleNavLeave}
             />
             
-            <motion.span 
+            <motion.div 
               layout 
               transition={{ layout: { type: "spring", stiffness: 300, damping: 20 } }}
-              className="text-[#3D472C] text-xs cursor-default"
+              className="flex items-center cursor-default"
             >
-              ◆
-            </motion.span>
+              <TreeIcon className="h-5 w-auto fill-[#3D472C]" />
+            </motion.div>
             
             <NavLink 
               href="#about" 
@@ -312,13 +314,13 @@ const Header: React.FC<HeaderProps> = ({ showFinalElements }) => {
               onLeave={handleNavLeave}
             />
             
-            <motion.span 
+            <motion.div 
               layout 
               transition={{ layout: { type: "spring", stiffness: 300, damping: 20 } }}
-              className="text-[#3D472C] text-xs cursor-default"
+              className="flex items-center cursor-default"
             >
-              ◆
-            </motion.span>
+              <TreeIcon className="h-5 w-auto fill-[#3D472C]" />
+            </motion.div>
             
             <NavLink 
               href="#faq" 
@@ -329,13 +331,13 @@ const Header: React.FC<HeaderProps> = ({ showFinalElements }) => {
               onLeave={handleNavLeave}
             />
             
-            <motion.span 
+            <motion.div 
               layout 
               transition={{ layout: { type: "spring", stiffness: 300, damping: 20 } }}
-              className="text-[#3D472C] text-xs cursor-default"
+              className="flex items-center cursor-default"
             >
-              ◆
-            </motion.span>
+              <TreeIcon className="h-5 w-auto fill-[#3D472C]" />
+            </motion.div>
             
             <NavLink 
               href="#sponsors" 
@@ -361,12 +363,12 @@ const Header: React.FC<HeaderProps> = ({ showFinalElements }) => {
                     damping: 20
                   }}
                 >
-                  <motion.span
+                  <motion.div
                     layout
-                    className="text-[#3D472C] text-xs cursor-default"
+                    className="flex items-center cursor-default"
                   >
-                    ◆
-                  </motion.span>
+                    <TreeIcon className="h-5 w-auto fill-[#3D472C]" />
+                  </motion.div>
                   
                   <motion.a
                     href="https://register.hacklahoma.org"
@@ -403,25 +405,15 @@ const Header: React.FC<HeaderProps> = ({ showFinalElements }) => {
 
         {/* Mobile Menu Button - centered on small screens */}
         <button
-          className="md:hidden flex flex-col space-y-1 absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
-          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-          aria-label="Toggle mobile menu"
+          className={`md:hidden flex flex-col space-y-1 absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 transition-opacity duration-300 ${
+            isMobileMenuOpen ? "opacity-0 pointer-events-none" : "opacity-100"
+          }`}
+          onClick={() => setIsMobileMenuOpen(true)}
+          aria-label="Open mobile menu"
         >
-          <span
-            className={`w-6 h-0.5 bg-[#3D472C] transition-all duration-300 ${
-              isMobileMenuOpen ? "rotate-45 translate-y-1.5" : ""
-            }`}
-          ></span>
-          <span
-            className={`w-6 h-0.5 bg-[#3D472C] transition-all duration-300 ${
-              isMobileMenuOpen ? "opacity-0" : ""
-            }`}
-          ></span>
-          <span
-            className={`w-6 h-0.5 bg-[#3D472C] transition-all duration-300 ${
-              isMobileMenuOpen ? "-rotate-45 -translate-y-1.5" : ""
-            }`}
-          ></span>
+          <span className="w-6 h-0.5 bg-[#3D472C]"></span>
+          <span className="w-6 h-0.5 bg-[#3D472C]"></span>
+          <span className="w-6 h-0.5 bg-[#3D472C]"></span>
         </button>
       </div>
 
@@ -463,37 +455,15 @@ const Header: React.FC<HeaderProps> = ({ showFinalElements }) => {
           src={MobileHeader} 
           alt="Mobile menu background" 
           className="w-[260px] h-auto"
-          style={{ pointerEvents: 'none', filter: 'saturate(0.80)' }}
-        />
-
-        {/* Blur overlay on left edge */}
-        <div 
-          className="absolute left-0 top-0 h-full w-10"
-          style={{ 
-            pointerEvents: 'none',
-            background: 'linear-gradient(to right, rgba(0,0,0,0.01), transparent)',
-            backdropFilter: 'blur(0.5px)',
-            WebkitBackdropFilter: 'blur(0.5px)'
-          }}
-        />
-
-        {/* Blur overlay on bottom edge */}
-        <div 
-          className="absolute bottom-0 left-0 w-full h-8"
-          style={{ 
-            pointerEvents: 'none',
-            background: 'linear-gradient(to top, rgba(0,0,0,0.01), transparent)',
-            backdropFilter: 'blur(0.5px)',
-            WebkitBackdropFilter: 'blur(0.5px)'
-          }}
+          style={{ pointerEvents: 'none', filter: 'brightness(1.01)' }}
         />
         
         <nav 
-          className="absolute inset-0 flex flex-col py-6 pl-10 pr-2 items-start font-serif text-lg"
+          className="absolute inset-0 flex flex-col py-2 px-2 items-center font-serif text-lg"
         >
           <motion.button
             onClick={() => setIsMobileMenuOpen(false)}
-            className="px-4 py-1 text-[#3D472C] hover:text-[#2a3a1f] transition-colors rounded flex items-center gap-2 mb-2 self-end pr-4"
+            className="px-4 py-3 text-[#3D472C] hover:text-[#2a3a1f] transition-colors rounded flex items-center gap-2 mb-4 self-end pr-6"
             aria-label="Close menu"
             whileTap={{ scale: 0.85, opacity: 0.7 }}
             transition={{ type: "spring", stiffness: 400, damping: 17 }}
@@ -504,58 +474,70 @@ const Header: React.FC<HeaderProps> = ({ showFinalElements }) => {
           <div className="flex flex-col w-[90%]">
             <motion.a
               href="#top"
-              className="w-full px-2 py-3 text-[#3D472C] hover:text-[#2a3a1f] transition-colors flex items-center gap-2"
+              className="w-full px-2 py-3 text-[#3D472C] hover:text-[#2a3a1f] transition-colors flex items-center justify-center"
               onClick={() => setIsMobileMenuOpen(false)}
               whileTap={{ scale: 0.92, x: 5 }}
               transition={{ type: "spring", stiffness: 400, damping: 17 }}
               style={{ originX: 0 }}
             >
-              <span className="w-1.5 h-1.5 rounded-full bg-[#947b53]"></span>
               HOME
             </motion.a>
             <div 
-              className="w-[95%] h-0 border-b-2 border-dashed border-[#9e8f7b] ml-auto"
-              style={{ filter: 'blur(0.4px)' }}
-            />
+              className="w-full h-[2px]"
+              style={{
+                WebkitMaskImage: 'linear-gradient(to right, transparent, black 15%, black 85%, transparent)',
+                maskImage: 'linear-gradient(to right, transparent, black 15%, black 85%, transparent)'
+              }}
+            >
+              <LineIcon className="w-full h-full fill-[#3D472C]" preserveAspectRatio="none" />
+            </div>
             <motion.a
               href="#about"
-              className="w-full px-2 py-3 text-[#3D472C] hover:text-[#2a3a1f] transition-colors flex items-center gap-2"
+              className="w-full px-2 py-3 text-[#3D472C] hover:text-[#2a3a1f] transition-colors flex items-center justify-center"
               onClick={() => setIsMobileMenuOpen(false)}
               whileTap={{ scale: 0.92, x: 5 }}
               transition={{ type: "spring", stiffness: 400, damping: 17 }}
               style={{ originX: 0 }}
             >
-              <span className="w-1.5 h-1.5 rounded-full bg-[#947b53]"></span>
               ABOUT
             </motion.a>
             <div 
-              className="w-[95%] h-0 border-b-2 border-dashed border-[#9e8f7b] ml-auto"
-              style={{ filter: 'blur(0.4px)' }}
-            />
+              className="w-full h-[2px]"
+              style={{
+                WebkitMaskImage: 'linear-gradient(to right, transparent, black 15%, black 85%, transparent)',
+                maskImage: 'linear-gradient(to right, transparent, black 15%, black 85%, transparent)',
+                transform: 'rotate(180deg)'
+              }}
+            >
+              <LineIcon className="w-full h-full fill-[#3D472C]" preserveAspectRatio="none" />
+            </div>
             <motion.a
               href="#faq"
-              className="w-full px-2 py-3 text-[#3D472C] hover:text-[#2a3a1f] transition-colors flex items-center gap-2"
+              className="w-full px-2 py-3 text-[#3D472C] hover:text-[#2a3a1f] transition-colors flex items-center justify-center"
               onClick={() => setIsMobileMenuOpen(false)}
               whileTap={{ scale: 0.92, x: 5 }}
               transition={{ type: "spring", stiffness: 400, damping: 17 }}
               style={{ originX: 0 }}
             >
-              <span className="w-1.5 h-1.5 rounded-full bg-[#947b53]"></span>
               FAQ
             </motion.a>
             <div 
-              className="w-[95%] h-0 border-b-2 border-dashed border-[#9e8f7b] ml-auto"
-              style={{ filter: 'blur(0.4px)' }}
-            />
+              className="w-full h-[2px]"
+              style={{
+                WebkitMaskImage: 'linear-gradient(to right, transparent, black 15%, black 85%, transparent)',
+                maskImage: 'linear-gradient(to right, transparent, black 15%, black 85%, transparent)'
+              }}
+            >
+              <LineIcon className="w-full h-full fill-[#3D472C]" preserveAspectRatio="none" />
+            </div>
             <motion.a
               href="#sponsors"
-              className="w-full px-2 py-3 text-[#3D472C] hover:text-[#2a3a1f] transition-colors flex items-center gap-2"
+              className="w-full px-2 py-3 text-[#3D472C] hover:text-[#2a3a1f] transition-colors flex items-center justify-center"
               onClick={() => setIsMobileMenuOpen(false)}
               whileTap={{ scale: 0.92, x: 5 }}
               transition={{ type: "spring", stiffness: 400, damping: 17 }}
               style={{ originX: 0 }}
             >
-              <span className="w-1.5 h-1.5 rounded-full bg-[#947b53]"></span>
               SPONSORS
             </motion.a>
           </div>
@@ -571,6 +553,7 @@ const Header: React.FC<HeaderProps> = ({ showFinalElements }) => {
               src={RegisterButton} 
               alt="Register" 
               className="w-48 h-auto hover:opacity-80 transition-opacity px-2 py-4"
+              style={{ pointerEvents: 'none', filter: 'saturate(0.5)'}}
             />
           </motion.a>
         </nav>
