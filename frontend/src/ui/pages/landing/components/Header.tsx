@@ -553,7 +553,6 @@ const Header: React.FC<HeaderProps> = ({ showFinalElements }) => {
               src={RegisterButton} 
               alt="Register" 
               className="w-48 h-auto hover:opacity-80 transition-opacity px-2 py-4"
-              style={{ pointerEvents: 'none', filter: 'saturate(0.5)'}}
             />
           </motion.a>
         </nav>
