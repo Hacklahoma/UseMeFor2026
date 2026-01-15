@@ -25,6 +25,18 @@ const LandingPage: React.FC = () => {
       <About />
       <FAQPages />
       <Sponsors />
+      
+      {/* Footer with MLH Code of Conduct */}
+      <footer className="relative py-8 text-center">
+        <a 
+          href="https://github.com/MLH/mlh-policies/blob/main/code-of-conduct.md"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-[#575f49] hover:text-[#2a3a1f] transition-colors underline"
+        >
+          MLH Code of Conduct
+        </a>
+      </footer>
     </div>
   );
 };
