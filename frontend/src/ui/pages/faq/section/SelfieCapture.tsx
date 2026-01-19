@@ -71,8 +71,8 @@ async function waitForVideoReady(video: HTMLVideoElement, timeoutMs = 2500) {
   // Wait for at least one painted frame
   if ("requestVideoFrameCallback" in video) {
     await new Promise<void>((resolve) => {
-      // @ts-ignore
-      video.requestVideoFrameCallback(() => resolve());
+      // requestVideoFrameCallback is not yet in TypeScript's default DOM types
+      (video as any).requestVideoFrameCallback(() => resolve());
     });
   } else {
     await new Promise<void>((r) => requestAnimationFrame(() => r()));
@@ -95,17 +95,18 @@ export default function SelfieCapture({
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const streamRef = useRef<MediaStream | null>(null);
+  const isMountedRef = useRef(true);
 
   const [isCameraOn, setCameraOn] = useState(false);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
   useEffect(() => {
-    let mounted = true;
+    isMountedRef.current = true;
 
     (async () => {
       try {
         const blob = await getBlobFromIDB(id);
-        if (!mounted) return;
+        if (!isMountedRef.current) return;
         if (blob) setPreviewUrl(URL.createObjectURL(blob));
       } catch (e) {
         console.warn("Failed to load selfie from IDB", e);
@@ -113,7 +114,7 @@ export default function SelfieCapture({
     })();
 
     return () => {
-      mounted = false;
+      isMountedRef.current = false;
       stopCamera();
       setPreviewUrl((prev) => {
         if (prev) URL.revokeObjectURL(prev);
@@ -126,12 +127,19 @@ export default function SelfieCapture({
   async function startCamera(autoCapture = false) {
     try {
       // IMPORTANT: ensures <video> is mounted/visible before attaching stream
+      if (!isMountedRef.current) return;
       setCameraOn(true);
 
       const stream = await navigator.mediaDevices.getUserMedia({
         video: { facingMode: "user" },
         audio: false,
       });
+
+      if (!isMountedRef.current) {
+        // Component unmounted during async operation - clean up stream
+        stream.getTracks().forEach((t) => t.stop());
+        return;
+      }
 
       streamRef.current = stream;
 
@@ -145,13 +153,13 @@ export default function SelfieCapture({
         await waitForVideoReady(video);
       }
 
-      if (autoCapture) {
+      if (autoCapture && isMountedRef.current) {
         await capture();
       }
     } catch (err) {
       console.error("getUserMedia error", err);
       alert("Could not access camera. Check permissions and HTTPS.");
-      setCameraOn(false);
+      if (isMountedRef.current) setCameraOn(false);
     }
   }
 
@@ -163,7 +171,7 @@ export default function SelfieCapture({
     }
     const video = videoRef.current;
     if (video) video.srcObject = null;
-    setCameraOn(false);
+    if (isMountedRef.current) setCameraOn(false);
   }
 
   async function capture() {

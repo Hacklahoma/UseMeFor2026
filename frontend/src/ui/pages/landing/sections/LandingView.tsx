@@ -99,7 +99,7 @@ const LandingView: React.FC = () => {
             >
               sponsors
             </a>
-            <a href="https://register.hacklahoma.org/" target="_blank" rel="noopener noreferrer" className="hover:text-[#2a3a1f] transition-colors">
+            <a href="https://register.hacklahoma.org/" target="_blank" rel="noopener noreferrer" className="hover:text-[#2a3a1f] transition-colors" aria-label="Register (opens in a new tab)">
               register
             </a>
           </nav>
@@ -262,10 +262,13 @@ const LandingView: React.FC = () => {
 
           {/* Register Now button - under title on small screens */}
           <div className="mt-6 min-[600px]:hidden">
-            <a href="https://register.hacklahoma.org/" target="_blank" rel="noopener noreferrer">
-            <button className="px-6 py-3 border-2 border-[#575f49] text-[#575f49] font-medium hover:bg-[#575f49] hover:text-[#F5F5DC] transition-colors duration-300 rounded">
+            <a 
+              href="https://register.hacklahoma.org/" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="inline-block px-6 py-3 border-2 border-[#575f49] text-[#575f49] font-medium hover:bg-[#575f49] hover:text-[#F5F5DC] transition-colors duration-300 rounded"
+            >
               Register Now
-            </button>
             </a>
           </div>
         </div>
@@ -290,10 +293,13 @@ const LandingView: React.FC = () => {
           showFinalElements ? "opacity-100" : "opacity-0"
         }`}
       >
-        <a href="https://register.hacklahoma.org/" target="_blank" rel="noopener noreferrer">
-        <button className="px-6 py-3 border-2 border-[#575f49] text-[#575f49] font-medium hover:bg-[#575f49] hover:text-[#F5F5DC] transition-colors duration-300 rounded">
+        <a 
+          href="https://register.hacklahoma.org/" 
+          target="_blank" 
+          rel="noopener noreferrer"
+          className="inline-block px-6 py-3 border-2 border-[#575f49] text-[#575f49] font-medium hover:bg-[#575f49] hover:text-[#F5F5DC] transition-colors duration-300 rounded"
+        >
           Register Now
-        </button>
         </a>
       </div>
     </div>
