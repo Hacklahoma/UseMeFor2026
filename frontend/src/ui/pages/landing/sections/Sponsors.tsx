@@ -64,7 +64,7 @@ const sponsorLogos: SponsorLogo[] = [
     src: PureButtons,
     alt: "Sponsor 9 Pure Buttons",
     href: "https://www.purebuttons.com/?ajs_uid=01963cf1-6fe7-46e5-8b9b-9f3b45e49a41&utm_campaign=Member+Event+-+Pure+Buttons+Intro&utm_content=Pure+Buttons+Intro&utm_medium=Email&utm_source=Customer.iohttps://purebuttons.com/",
-  }
+  },
   {
     src: RedBullLogo,
     alt: "Sponsor 10 Red Bull",
