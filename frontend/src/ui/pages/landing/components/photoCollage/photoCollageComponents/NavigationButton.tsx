@@ -133,7 +133,11 @@ export const NavigationButton: React.FC<NavigationButtonProps> = ({
   return (
     <motion.button
       className={`${config.className} relative opacity-20 cursor-pointer bg-transparent border-none p-0 hidden custom600:flex items-center justify-center select-none`}
-      style={{ zIndex: animationComplete ? 10 : 0 }}
+      style={{ 
+        zIndex: animationComplete ? 10 : 0,
+        willChange: 'transform, opacity',
+        transform: 'translateZ(0)',
+      }}
       aria-label={config.ariaLabel}
       onClick={handleShuffle}
       initial={{
@@ -183,6 +187,10 @@ export const NavigationButton: React.FC<NavigationButtonProps> = ({
         src={CollageArrow}
         alt={`${direction === 'left' ? 'Left' : 'Right'} arrow`}
         className="w-16 h-16 md:w-20 md:h-20 pointer-events-none aspect-square object-contain"
+        style={{
+          willChange: 'transform',
+          transform: 'translateZ(0)',
+        }}
         initial={{ rotate: config.rotate }}
         animate={{ rotate: config.rotate }}
       />
