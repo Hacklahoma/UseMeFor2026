@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from "react";
-import BeeLogo from "../../../common/assets/BeeLogo.png";
+import * as motion from 'motion/react-client';
 import MLHBanner2026 from "../../../common/assets/MLHBanner2026.png";
 import Postcard from "../../../common/assets/Postcard.png";
 import Mountain from "../../../common/assets/mountains.png";
+import Header from "../components/Header";
+import BeeLogo from "../../../common/assets/BeeLogo.png";
+
 const LandingView: React.FC = () => {
   const [displayedText, setDisplayedText] = useState("");
   const [showElements, setShowElements] = useState(false);
   const [moveToFinal, setMoveToFinal] = useState(false);
   const [showFinalElements, setShowFinalElements] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const fullText = "WE KINDLY INVITE YOU TO";
 
   useEffect(() => {
@@ -57,121 +59,7 @@ const LandingView: React.FC = () => {
       />
 
       {/* Header - appears when final elements show */}
-      <header
-        className={`fixed top-0 left-0 h-20 w-full bg-gradient-to-b from-[#FFFCF5] via-[#FFFCF5] to-transparent z-50 transition-opacity duration-1000 ease-in-out ${
-          showFinalElements ? "opacity-100" : "opacity-0"
-        } ${
-          isMobileMenuOpen
-            ? "bg-[#FFFCF5]"
-            : "bg-gradient-to-b from-[#FFFCF5] via-[#FFFCF5] to-transparent"
-        }`}
-      >
-        <div className="h-full flex items-center px-6 md:px-12 relative">
-          {/* Bee icon on the left */}
-          <a
-            href="https://hacklahoma.org"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center"
-            aria-label="Hacklahoma home"
-          >
-            <img
-              src={BeeLogo}
-              alt="Hacklahoma Bee Logo"
-              className="w-11 h-11 object-contain"
-            />
-          </a>
-
-          {/* Desktop Navigation - centered links */}
-          <nav className="hidden md:flex items-center space-x-12 text-[#3D472C] absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
-            <a href="#top" className="hover:text-[#2a3a1f] transition-colors">
-              home
-            </a>
-            <a href="#about" className="hover:text-[#2a3a1f] transition-colors">
-              about
-            </a>
-            <a href="#faq" className="hover:text-[#2a3a1f] transition-colors">
-              faq
-            </a>
-            <a
-              href="#sponsors"
-              className="hover:text-[#2a3a1f] transition-colors"
-            >
-              sponsors
-            </a>
-            <a href="https://register.hacklahoma.org/" target="_blank" rel="noopener noreferrer" className="hover:text-[#2a3a1f] transition-colors" aria-label="Register (opens in a new tab)">
-              register
-            </a>
-          </nav>
-
-          {/* Mobile Menu Button - centered on small screens */}
-          <button
-            className="md:hidden flex flex-col space-y-1 absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            aria-label="Toggle mobile menu"
-          >
-            <span
-              className={`w-6 h-0.5 bg-[#3D472C] transition-all duration-300 ${
-                isMobileMenuOpen ? "rotate-45 translate-y-1.5" : ""
-              }`}
-            ></span>
-            <span
-              className={`w-6 h-0.5 bg-[#3D472C] transition-all duration-300 ${
-                isMobileMenuOpen ? "opacity-0" : ""
-              }`}
-            ></span>
-            <span
-              className={`w-6 h-0.5 bg-[#3D472C] transition-all duration-300 ${
-                isMobileMenuOpen ? "-rotate-45 -translate-y-1.5" : ""
-              }`}
-            ></span>
-          </button>
-        </div>
-
-        {/* Mobile Menu Dropdown */}
-        <div
-          className={`md:hidden absolute top-20 left-0 w-full bg-[#FFFCF5] transition-all duration-300 ${
-            isMobileMenuOpen
-              ? "opacity-100 translate-y-0"
-              : "opacity-0 -translate-y-4 pointer-events-none"
-          }`}
-        >
-          <nav className="flex flex-col py-4 items-start pl-6 space-y-1">
-            <a
-              href="#top"
-              className="px-0 py-1 text-[#3D472C] hover:bg-[#e8e8c7] transition-colors"
-            >
-              home
-            </a>
-            <a
-              href="#about"
-              className="px-0 py-1 text-[#3D472C] hover:bg-[#e8e8c7] transition-colors"
-            >
-              about
-            </a>
-            <a
-              href="#faq"
-              className="px-0 py-1 text-[#3D472C] hover:bg-[#e8e8c7] transition-colors"
-            >
-              faq
-            </a>
-            <a
-              href="#sponsors"
-              className="px-0 py-1 text-[#3D472C] hover:bg-[#e8e8c7] transition-colors"
-            >
-              sponsors
-            </a>
-            <a
-              href="https://register.hacklahoma.org/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="px-2 py-1 text-[#3D472C] hover:bg-[#e8e8c7] transition-colors"
-            >
-              login
-            </a>
-          </nav>
-        </div>
-      </header>
+      <Header showFinalElements={showFinalElements} />
 
       {/* Centered content - fades out */}
       <div
@@ -261,29 +149,33 @@ const LandingView: React.FC = () => {
           </h1>
 
           {/* Register Now button - under title on small screens */}
-          <div className="mt-6 min-[600px]:hidden">
-            <a 
-              href="https://register.hacklahoma.org/" 
-              target="_blank" 
+          <div className="flex justify-center mt-6 min-[700px]:hidden w-screen relative left-0">
+            <motion.a 
+              id="register-button-mobile" 
+              href="https://register.hacklahoma.org"
+              target="_blank"
               rel="noopener noreferrer"
-              className="inline-block px-6 py-3 border-2 border-[#575f49] text-[#575f49] font-medium hover:bg-[#575f49] hover:text-[#F5F5DC] transition-colors duration-300 rounded"
+              className="inline-block px-20 py-3 border-2 border-[#575f49] bg-[#575f49] text-[#F5F5DC] font-medium hover:bg-transparent hover:text-[#575f49] transition-colors duration-300 rounded"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              transition={{ type: "spring", stiffness: 400, damping: 17 }}
             >
               Register Now
-            </a>
+            </motion.a>
           </div>
         </div>
       </div>
 
       {/* Large postcard on the right side - fades in */}
       <div
-        className={`absolute top-1/2 right-8 lg:right-12 -translate-y-1/2 transition-opacity duration-1000 ease-in-out ${
+        className={`absolute top-1/2 md:top-2/5 right-8 lg:right-12 -translate-y-1/2 transition-opacity duration-1000 ease-in-out ${
           showFinalElements ? "opacity-100" : "opacity-0"
         }`}
       >
         <img
           src={Postcard}
           alt="Vintage postcard"
-          className="w-[32.5rem] md:w-[38rem] lg:w-[43rem] xl:w-[49rem] rotate-[-1deg] drop-shadow-2xl select-none pointer-events-none"
+          className="w-[22 rem] sm:w-[25rem] md:w-[32rem] lg:w-[40rem] xl:w-[49rem] rotate-[-1deg] drop-shadow-2xl select-none pointer-events-none"
         />
       </div>
 
@@ -294,8 +186,9 @@ const LandingView: React.FC = () => {
         }`}
       >
         <a 
-          href="https://register.hacklahoma.org/" 
-          target="_blank" 
+          id="register-button-desktop" 
+          href="https://register.hacklahoma.org"
+          target="_blank"
           rel="noopener noreferrer"
           className="inline-block px-6 py-3 border-2 border-[#575f49] text-[#575f49] font-medium hover:bg-[#575f49] hover:text-[#F5F5DC] transition-colors duration-300 rounded"
         >
