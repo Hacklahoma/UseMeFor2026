@@ -13,6 +13,40 @@ const LandingView: React.FC = () => {
   const [showFinalElements, setShowFinalElements] = useState(false);
   const fullText = "WE KINDLY INVITE YOU TO";
 
+  // Countdown timer state
+  const [countdown, setCountdown] = useState({
+    days: 0,
+    hours: 0,
+    minutes: 0,
+    seconds: 0
+  });
+
+  // Calculate countdown
+  useEffect(() => {
+    const targetDate = new Date('February 7, 2026 00:00:00').getTime();
+
+    const updateCountdown = () => {
+      const now = new Date().getTime();
+      const distance = targetDate - now;
+
+      if (distance > 0) {
+        setCountdown({
+          days: Math.floor(distance / (1000 * 60 * 60 * 24)),
+          hours: Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)),
+          minutes: Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)),
+          seconds: Math.floor((distance % (1000 * 60)) / 1000)
+        });
+      } else {
+        setCountdown({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+      }
+    };
+
+    updateCountdown();
+    const timer = setInterval(updateCountdown, 1000);
+
+    return () => clearInterval(timer);
+  }, []);
+
   useEffect(() => {
     let currentIndex = 0;
     const interval = setInterval(() => {
@@ -82,7 +116,7 @@ const LandingView: React.FC = () => {
           </div>
 
           {/* Invitation text */}
-          <div className="mb-8">
+          <div className="mb-2">
             <h2 className="text-xl font-semibold text-[#575f49] mb-2">
               {displayedText}
             </h2>
@@ -92,13 +126,13 @@ const LandingView: React.FC = () => {
           <div>
             {showElements ? (
               <h1
-                className="text-6xl lg:text-8xl font-semibold text-[#575f49] font-serif animate-fade-in mt-2"
+                className="text-6xl sm:text-4xl lg:text-8xl font-semibold text-[#575f49] font-serif animate-fade-in mt-2"
                 style={{ transform: "scaleX(0.97)" }}
               >
                 Hacklahoma
               </h1>
             ) : (
-              <div className="text-5xl lg:text-7xl font-bold text-transparent">
+              <div className="text-5xl sm:text-4xl lg:text-7xl font-bold text-transparent">
                 Hacklahoma
               </div>
             )}
@@ -135,18 +169,54 @@ const LandingView: React.FC = () => {
         <div className="text-left">
           {/* Invitation text */}
           <div className="mb-2 ml-5">
-            <h2 className="text-2xl font-semibold text-[#575f49]">
+            <h2 className="text-xl sm:text-2xl font-semibold text-[#575f49]">
               WE KINDLY INVITE YOU TO
             </h2>
           </div>
 
           {/* Hacklahoma title */}
           <h1
-            className="text-5xl lg:text-8xl font-semibold text-[#575f49] font-serif"
+            className="text-4xl sm:text-5xl lg:text-8xl font-semibold text-[#575f49] font-serif"
             style={{ transform: "scaleX(0.95)" }}
           >
             Hacklahoma
           </h1>
+
+          {/* Date and Countdown */}
+          <div className="mt-2 ml-5 max-w-[90vw] sm:max-w-none">
+            {/* Date label */}
+            <p className="text-[#575f49] text-[10px] sm:text-xs md:text-sm font-medium mb-1.5">
+              February 7, 2026 | University of Oklahoma
+            </p>
+            
+            {/* Countdown timer */}
+            <div className="flex gap-1.5 sm:gap-2 md:gap-3 text-[#575f49] flex-wrap">
+              <div className="flex items-center gap-0.5 sm:gap-1">
+                <span className="bg-[#575f49] text-[#F5F5DC] px-1 sm:px-1.5 md:px-2 py-0.5 sm:py-1 rounded font-mono font-semibold min-w-[1.5rem] sm:min-w-[2rem] md:min-w-[2.5rem] text-center text-[10px] sm:text-xs md:text-sm">
+                  {String(countdown.days).padStart(2, '0')}
+                </span>
+                <span className="font-medium text-[10px] sm:text-xs md:text-sm">Days</span>
+              </div>
+              <div className="flex items-center gap-0.5 sm:gap-1">
+                <span className="bg-[#575f49] text-[#F5F5DC] px-1 sm:px-1.5 md:px-2 py-0.5 sm:py-1 rounded font-mono font-semibold min-w-[1.5rem] sm:min-w-[2rem] md:min-w-[2.5rem] text-center text-[10px] sm:text-xs md:text-sm">
+                  {String(countdown.hours).padStart(2, '0')}
+                </span>
+                <span className="font-medium text-[10px] sm:text-xs md:text-sm">Hours</span>
+              </div>
+              <div className="flex items-center gap-0.5 sm:gap-1">
+                <span className="bg-[#575f49] text-[#F5F5DC] px-1 sm:px-1.5 md:px-2 py-0.5 sm:py-1 rounded font-mono font-semibold min-w-[1.5rem] sm:min-w-[2rem] md:min-w-[2.5rem] text-center text-[10px] sm:text-xs md:text-sm">
+                  {String(countdown.minutes).padStart(2, '0')}
+                </span>
+                <span className="font-medium text-[10px] sm:text-xs md:text-sm">Minutes</span>
+              </div>
+              <div className="flex items-center gap-0.5 sm:gap-1">
+                <span className="bg-[#575f49] text-[#F5F5DC] px-1 sm:px-1.5 md:px-2 py-0.5 sm:py-1 rounded font-mono font-semibold min-w-[1.5rem] sm:min-w-[2rem] md:min-w-[2.5rem] text-center text-[10px] sm:text-xs md:text-sm">
+                  {String(countdown.seconds).padStart(2, '0')}
+                </span>
+                <span className="font-medium text-[10px] sm:text-xs md:text-sm">Seconds</span>
+              </div>
+            </div>
+          </div>
 
           {/* Register Now button - under title on small screens */}
           <div className="flex justify-center mt-6 min-[700px]:hidden w-screen relative left-0">
@@ -168,14 +238,14 @@ const LandingView: React.FC = () => {
 
       {/* Large postcard on the right side - fades in */}
       <div
-        className={`absolute top-1/2 md:top-2/5 right-8 lg:right-12 -translate-y-1/2 transition-opacity duration-1000 ease-in-out ${
+        className={`absolute top-[40%] sm:top-[35%] md:top-[45%] lg:top-[45%] right-4 sm:right-6 md:right-8 lg:right-8 -translate-y-1/2 transition-opacity duration-1000 ease-in-out ${
           showFinalElements ? "opacity-100" : "opacity-0"
         }`}
       >
         <img
           src={Postcard}
           alt="Vintage postcard"
-          className="w-[22 rem] sm:w-[25rem] md:w-[32rem] lg:w-[40rem] xl:w-[49rem] rotate-[-1deg] drop-shadow-2xl select-none pointer-events-none"
+          className="w-[22 rem] sm:w-[18rem] md:w-[30rem] lg:w-[38rem] xl:w-[49rem] rotate-[-1deg] drop-shadow-2xl select-none pointer-events-none"
         />
       </div>
 
