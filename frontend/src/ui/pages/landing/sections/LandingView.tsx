@@ -87,8 +87,8 @@ const LandingView: React.FC = () => {
         alt="" // decorative
         aria-hidden
         className="pointer-events-none select-none
-               absolute -bottom-12 -right-4
-               w-[18rem] sm:w-[24rem] md:w-[30rem]
+               absolute -bottom-12 -right-4 landscape:max-md:-bottom-6
+               w-[18rem] sm:w-[24rem] md:w-[30rem] landscape:max-md:w-[12rem]
                opacity-85"
       />
 
@@ -155,77 +155,77 @@ const LandingView: React.FC = () => {
           <img
             src={MLHBanner2026}
             alt="MLH Banner 2026"
-            className="h-32 w-auto object-contain hover:scale-105 transition-transform duration-300 origin-top"
+            className="h-32 landscape:max-md:h-20 w-auto object-contain hover:scale-105 transition-transform duration-300 origin-top"
           />
         </a>
       </div>
 
       {/* Bottom left content - fades in */}
       <div
-        className={`absolute bottom-8 left-0 lg:bottom-12 lg:left-12 transition-opacity duration-1000 ease-in-out ${
+        className={`absolute bottom-8 left-0 lg:bottom-12 lg:left-12 landscape:max-md:bottom-4 landscape:max-md:left-4 transition-opacity duration-1000 ease-in-out ${
           showFinalElements ? "opacity-100" : "opacity-0"
         }`}
       >
         <div className="text-left">
           {/* Invitation text */}
-          <div className="mb-2 ml-5">
-            <h2 className="text-xl sm:text-2xl font-semibold text-[#575f49]">
+          <div className="mb-2 ml-5 landscape:max-md:mb-1 landscape:max-md:ml-2">
+            <h2 className="text-xl sm:text-2xl landscape:max-md:text-sm font-semibold text-[#575f49]">
               WE KINDLY INVITE YOU TO
             </h2>
           </div>
 
           {/* Hacklahoma title */}
           <h1
-            className="text-4xl sm:text-5xl lg:text-8xl font-semibold text-[#575f49] font-serif"
+            className="text-4xl sm:text-5xl lg:text-8xl landscape:max-md:text-2xl font-semibold text-[#575f49] font-serif"
             style={{ transform: "scaleX(0.95)" }}
           >
             Hacklahoma
           </h1>
 
           {/* Date and Countdown */}
-          <div className="mt-2 ml-5 max-w-[90vw] sm:max-w-none">
+          <div className="mt-2 ml-5 landscape:max-md:mt-1 landscape:max-md:ml-2 max-w-[90vw] sm:max-w-none">
             {/* Date label */}
-            <p className="text-[#575f49] text-[10px] sm:text-xs md:text-sm font-medium mb-1.5">
+            <p className="text-[#575f49] text-[10px] sm:text-xs md:text-sm landscape:max-md:text-[8px] font-medium mb-1.5 landscape:max-md:mb-0.5">
               February 7, 2026 | University of Oklahoma
             </p>
             
             {/* Countdown timer */}
-            <div className="flex gap-1.5 sm:gap-2 md:gap-3 text-[#575f49] flex-wrap">
+            <div className="flex gap-1.5 sm:gap-2 md:gap-3 landscape:max-md:gap-1 text-[#575f49] flex-wrap">
               <div className="flex items-center gap-0.5 sm:gap-1">
-                <span className="bg-[#575f49] text-[#F5F5DC] px-1 sm:px-1.5 md:px-2 py-0.5 sm:py-1 rounded font-mono font-semibold min-w-[1.5rem] sm:min-w-[2rem] md:min-w-[2.5rem] text-center text-[10px] sm:text-xs md:text-sm">
+                <span className="bg-[#575f49] text-[#F5F5DC] px-1 sm:px-1.5 md:px-2 py-0.5 sm:py-1 landscape:max-md:px-0.5 landscape:max-md:py-0.5 rounded font-mono font-semibold min-w-[1.5rem] sm:min-w-[2rem] md:min-w-[2.5rem] landscape:max-md:min-w-[1.25rem] text-center text-[10px] sm:text-xs md:text-sm landscape:max-md:text-[8px]">
                   {String(countdown.days).padStart(2, '0')}
                 </span>
-                <span className="font-medium text-[10px] sm:text-xs md:text-sm">Days</span>
+                <span className="font-medium text-[10px] sm:text-xs md:text-sm landscape:max-md:text-[8px]">Days</span>
               </div>
               <div className="flex items-center gap-0.5 sm:gap-1">
-                <span className="bg-[#575f49] text-[#F5F5DC] px-1 sm:px-1.5 md:px-2 py-0.5 sm:py-1 rounded font-mono font-semibold min-w-[1.5rem] sm:min-w-[2rem] md:min-w-[2.5rem] text-center text-[10px] sm:text-xs md:text-sm">
+                <span className="bg-[#575f49] text-[#F5F5DC] px-1 sm:px-1.5 md:px-2 py-0.5 sm:py-1 landscape:max-md:px-0.5 landscape:max-md:py-0.5 rounded font-mono font-semibold min-w-[1.5rem] sm:min-w-[2rem] md:min-w-[2.5rem] landscape:max-md:min-w-[1.25rem] text-center text-[10px] sm:text-xs md:text-sm landscape:max-md:text-[8px]">
                   {String(countdown.hours).padStart(2, '0')}
                 </span>
-                <span className="font-medium text-[10px] sm:text-xs md:text-sm">Hours</span>
+                <span className="font-medium text-[10px] sm:text-xs md:text-sm landscape:max-md:text-[8px]">Hours</span>
               </div>
               <div className="flex items-center gap-0.5 sm:gap-1">
-                <span className="bg-[#575f49] text-[#F5F5DC] px-1 sm:px-1.5 md:px-2 py-0.5 sm:py-1 rounded font-mono font-semibold min-w-[1.5rem] sm:min-w-[2rem] md:min-w-[2.5rem] text-center text-[10px] sm:text-xs md:text-sm">
+                <span className="bg-[#575f49] text-[#F5F5DC] px-1 sm:px-1.5 md:px-2 py-0.5 sm:py-1 landscape:max-md:px-0.5 landscape:max-md:py-0.5 rounded font-mono font-semibold min-w-[1.5rem] sm:min-w-[2rem] md:min-w-[2.5rem] landscape:max-md:min-w-[1.25rem] text-center text-[10px] sm:text-xs md:text-sm landscape:max-md:text-[8px]">
                   {String(countdown.minutes).padStart(2, '0')}
                 </span>
-                <span className="font-medium text-[10px] sm:text-xs md:text-sm">Minutes</span>
+                <span className="font-medium text-[10px] sm:text-xs md:text-sm landscape:max-md:text-[8px]">Minutes</span>
               </div>
               <div className="flex items-center gap-0.5 sm:gap-1">
-                <span className="bg-[#575f49] text-[#F5F5DC] px-1 sm:px-1.5 md:px-2 py-0.5 sm:py-1 rounded font-mono font-semibold min-w-[1.5rem] sm:min-w-[2rem] md:min-w-[2.5rem] text-center text-[10px] sm:text-xs md:text-sm">
+                <span className="bg-[#575f49] text-[#F5F5DC] px-1 sm:px-1.5 md:px-2 py-0.5 sm:py-1 landscape:max-md:px-0.5 landscape:max-md:py-0.5 rounded font-mono font-semibold min-w-[1.5rem] sm:min-w-[2rem] md:min-w-[2.5rem] landscape:max-md:min-w-[1.25rem] text-center text-[10px] sm:text-xs md:text-sm landscape:max-md:text-[8px]">
                   {String(countdown.seconds).padStart(2, '0')}
                 </span>
-                <span className="font-medium text-[10px] sm:text-xs md:text-sm">Seconds</span>
+                <span className="font-medium text-[10px] sm:text-xs md:text-sm landscape:max-md:text-[8px]">Seconds</span>
               </div>
             </div>
           </div>
 
           {/* Register Now button - under title on small screens */}
-          <div className="flex justify-center mt-6 min-[700px]:hidden w-screen relative left-0">
+          <div className="flex justify-center mt-6 landscape:max-md:mt-2 min-[700px]:hidden w-screen relative left-0">
             <motion.a 
               id="register-button-mobile" 
               href="https://register.hacklahoma.org"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-block px-20 py-3 border-2 border-[#575f49] bg-[#575f49] text-[#F5F5DC] font-medium hover:bg-transparent hover:text-[#575f49] transition-colors duration-300 rounded"
+              className="inline-block px-20 py-3 landscape:max-md:px-12 landscape:max-md:py-1.5 landscape:max-md:text-sm border-2 border-[#575f49] bg-[#575f49] text-[#F5F5DC] font-medium hover:bg-transparent hover:text-[#575f49] transition-colors duration-300 rounded"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               transition={{ type: "spring", stiffness: 400, damping: 17 }}
@@ -238,14 +238,14 @@ const LandingView: React.FC = () => {
 
       {/* Large postcard on the right side - fades in */}
       <div
-        className={`absolute top-[40%] sm:top-[35%] md:top-[45%] lg:top-[45%] right-4 sm:right-6 md:right-8 lg:right-8 -translate-y-1/2 transition-opacity duration-1000 ease-in-out ${
+        className={`absolute top-[40%] sm:top-[35%] md:top-[45%] lg:top-[45%] landscape:max-md:top-1/2 right-4 sm:right-6 md:right-8 lg:right-8 landscape:max-md:right-2 -translate-y-1/2 transition-opacity duration-1000 ease-in-out ${
           showFinalElements ? "opacity-100" : "opacity-0"
         }`}
       >
         <img
           src={Postcard}
           alt="Vintage postcard"
-          className="w-[22 rem] sm:w-[18rem] md:w-[30rem] lg:w-[38rem] xl:w-[49rem] rotate-[-1deg] drop-shadow-2xl select-none pointer-events-none"
+          className="w-[22 rem] sm:w-[18rem] md:w-[30rem] lg:w-[38rem] xl:w-[49rem] landscape:max-md:w-[12rem] rotate-[-1deg] drop-shadow-2xl select-none pointer-events-none"
         />
       </div>
 
