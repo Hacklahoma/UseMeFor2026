@@ -168,7 +168,7 @@ const LandingView: React.FC = () => {
       >
         <div className="text-left">
           {/* Invitation text */}
-          <div className="mb-2 ml-5 landscape:max-md:mb-1 landscape:max-md:ml-2">
+          <div className="mb-2 ml-5 max-sm:ml-3 landscape:max-md:mb-1 landscape:max-md:ml-2">
             <h2 className="text-xl sm:text-2xl landscape:max-md:text-sm font-semibold text-[#575f49]">
               WE KINDLY INVITE YOU TO
             </h2>
