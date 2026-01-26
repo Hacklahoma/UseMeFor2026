@@ -17,8 +17,8 @@
 */
 
 import type { Variants } from 'motion/react';
-import { PositionConfig } from './photoCollageTypes';
-import { SCALE_VALUE, OFF_SCREEN_DISTANCE, FLY_DISTANCE } from './cardConstants';
+import { PositionConfig } from './Card';
+import configSettings from './Config';
 
 /**
  * Custom properties passed to variants for dynamic animation calculations.
@@ -27,6 +27,8 @@ import { SCALE_VALUE, OFF_SCREEN_DISTANCE, FLY_DISTANCE } from './cardConstants'
 interface VariantCustomProps extends PositionConfig {
   /** Animation delay in seconds (used for staggered entrance animations) */
   delay?: number;
+  /** Fly distance for left/right animations (changes based on screen size) */
+  flyDistance?: string;
 }
 
 /**
@@ -76,7 +78,7 @@ export const photoCollageCardVariants: Variants = {
     translateX: '-50%',
     translateY: '-50%',
     opacity: 1,
-    scale: SCALE_VALUE,
+    scale: configSettings.SCALE_VALUE,
     transition: {
       type: 'spring',
       bounce: 0.2,
@@ -105,7 +107,7 @@ export const photoCollageCardVariants: Variants = {
    * - Maintains opacity for smooth visual effect
    */
   flyLeft: (config: VariantCustomProps) => ({
-    x: [0, `-${FLY_DISTANCE}`, 0], // Keyframes: start -> fly left -> return to center
+    x: [0, `-${config.flyDistance || configSettings.DESKTOP_FLY_DISTANCE}`, 0], // Keyframes: start -> fly left -> return to center
     y: 0,
     top: config.top,
     left: config.left,
@@ -113,7 +115,7 @@ export const photoCollageCardVariants: Variants = {
     translateX: '-50%',
     translateY: '-50%',
     opacity: 1,
-    scale: SCALE_VALUE,
+    scale: configSettings.SCALE_VALUE,
     transition: {
       type: 'tween',
       duration: 0.6, // Total duration for both movements (there and back)
@@ -141,7 +143,7 @@ export const photoCollageCardVariants: Variants = {
    * - Maintains opacity for smooth visual effect
    */
   flyRight: (config: VariantCustomProps) => ({
-    x: [0, FLY_DISTANCE, 0], // Keyframes: start -> fly right -> return to center
+    x: [0, config.flyDistance || configSettings.DESKTOP_FLY_DISTANCE, 0], // Keyframes: start -> fly right -> return to center
     y: 0,
     top: config.top,
     left: config.left,
@@ -149,7 +151,7 @@ export const photoCollageCardVariants: Variants = {
     translateX: '-50%',
     translateY: '-50%',
     opacity: 1,
-    scale: SCALE_VALUE,
+    scale: configSettings.SCALE_VALUE,
     transition: {
       type: 'tween',
       duration: 0.6, // Total duration for both movements (there and back)
@@ -186,7 +188,7 @@ export const photoCollageCardVariants: Variants = {
     translateX: '-50%',
     translateY: '-50%',
     opacity: 0,
-    scale: SCALE_VALUE,
+    scale: configSettings.SCALE_VALUE,
   }),
 
   /**
@@ -214,7 +216,7 @@ export const photoCollageCardVariants: Variants = {
     translateX: '-50%',
     translateY: '-50%',
     opacity: 1,
-    scale: SCALE_VALUE,
+    scale: configSettings.SCALE_VALUE,
     transition: {
       type: 'spring',
       bounce: 0.3,
@@ -222,7 +224,8 @@ export const photoCollageCardVariants: Variants = {
       delay: config.delay || 0,
       damping: 20,
       stiffness: 300,
-    },
+    }, 
+    willChange: 'transform',
   }),
 };
 

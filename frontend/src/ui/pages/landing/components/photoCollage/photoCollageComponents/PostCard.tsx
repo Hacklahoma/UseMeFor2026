@@ -9,6 +9,7 @@
  */
 
 import React from 'react';
+import configSettings from './Config';
 
 interface VintagePostcardProps {
   /** URL/path to the image */
@@ -17,9 +18,7 @@ interface VintagePostcardProps {
   title: string;
   /** Footer text displayed below the image (bottom right) */
   footer: string;
-  /** Optional className for additional styling */
-  className?: string;
-}
+  }
 
 /**
  * Vintage Postcard Component
@@ -29,12 +28,11 @@ export const VintagePostcard: React.FC<VintagePostcardProps> = ({
   imageUrl,
   title,
   footer,
-  className = '',
 }) => {
   return (  
-    <div className={`bg-[#f4ece1] px-6 shadow-2xl ${className}`}>
+    <div className="px-4 md:px-6 shadow-2xl" style={{ backgroundColor: configSettings.FRAMED_CARD_BG }}>
       {/* Top text */}
-      <div className="text-right pr-6 pt-2">
+      <div className="text-right pr-2 pt-1 md:pt-2">
         <p 
           className="text-gray-700 tracking-wide" 
           style={{ 
@@ -59,7 +57,7 @@ export const VintagePostcard: React.FC<VintagePostcardProps> = ({
       </div>
 
       {/* Bottom text */}
-      <div className="text-right pb-[0.25rem] pr-2">
+      <div className="text-right pb-[0.15rem] md:pb-[0.25rem] pr-2">
         <p 
           className="text-gray-600 text-xs tracking-widest" 
           style={{ 
