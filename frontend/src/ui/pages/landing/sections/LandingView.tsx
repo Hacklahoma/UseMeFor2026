@@ -168,7 +168,7 @@ const LandingView: React.FC = () => {
       >
         <div className="text-left">
           {/* Invitation text */}
-          <div className="mb-2 ml-5">
+          <div className="mb-2 ml-3">
             <h2 className="text-xl sm:text-2xl font-semibold text-[#575f49]">
               WE KINDLY INVITE YOU TO
             </h2>
@@ -218,8 +218,8 @@ const LandingView: React.FC = () => {
             </div>
           </div>
 
-          {/* Register Now button - under title on small screens */}
-          <div className="flex justify-center mt-6 min-[700px]:hidden w-screen relative left-0">
+          {/* Register Now button - under title on small screens (hide from md up) */}
+          <div className="flex justify-center mt-6 md:hidden w-full px-4 relative left-0">
             <motion.a 
               id="register-button-mobile" 
               href="https://register.hacklahoma.org"
@@ -238,20 +238,21 @@ const LandingView: React.FC = () => {
 
       {/* Large postcard on the right side - fades in */}
       <div
-        className={`absolute top-[40%] sm:top-[35%] md:top-[45%] lg:top-[45%] right-4 sm:right-6 md:right-8 lg:right-8 -translate-y-1/2 transition-opacity duration-1000 ease-in-out ${
+        className={`absolute top-[36%] sm:top-[34%] md:top-[45%] lg:top-1/2 right-2 sm:right-6 md:right-8 -translate-y-1/2 transition-all duration-500 ease-out pointer-events-none ${
           showFinalElements ? "opacity-100" : "opacity-0"
         }`}
+        style={{ willChange: 'transform, opacity' }}
       >
         <img
           src={Postcard}
           alt="Vintage postcard"
-          className="w-[22 rem] sm:w-[18rem] md:w-[30rem] lg:w-[38rem] xl:w-[49rem] rotate-[-1deg] drop-shadow-2xl select-none pointer-events-none"
+          className="w-[22 rem] sm:w-[26rem] md:w-[30rem] lg:w-[40rem] xl:w-[49rem] rotate-[-1deg] drop-shadow-2xl select-none pointer-events-none"
         />
       </div>
 
-      {/* Register Now button - bottom right on larger screens */}
+      {/* Register Now button - bottom right on tablets/desktop only */}
       <div
-        className={`absolute bottom-4 right-8 lg:bottom-8 lg:right-12 hidden min-[600px]:block transition-opacity duration-1000 ease-in-out ${
+        className={`absolute bottom-4 right-4 md:bottom-8 md:right-12 hidden md:block transition-opacity duration-1000 ease-in-out ${
           showFinalElements ? "opacity-100" : "opacity-0"
         }`}
       >
