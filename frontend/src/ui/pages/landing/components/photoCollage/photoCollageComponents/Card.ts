@@ -48,10 +48,9 @@ export enum CardId {
  * Card object representing a single card with its identity, position, z-index, and photos.
  * 
  * This is the core data structure for the collage system:
- * - id: Never changes (CARD_1, CARD_2, etc.)
+ * - id: Never changes (CARD_A, CARD_B, etc.)
  * - position: Changes during shuffles (CENTER, TOP_LEFT, etc.)
  * - zIndex: Changes during every shuffle (rotates: 5→4→3→2→1→0, CENTER always gets 5)
- * - photoIndex: Original photo assignment (immutable, kept for reference)
  * - currentPhotoIndex: The photo currently being displayed (mutable, changes when card reaches CENTER)
  * 
  * Photo Management Strategy:
@@ -73,9 +72,6 @@ export interface Card {
   
   /** Current z-index stacking order (0=back, 5=front, CENTER always has 5) */
   zIndex: number;
-  
-  /** Original photo index assigned at initialization (immutable, for reference) */
-  photoIndex: number;
   
   /** Photo currently being displayed by this card (mutable, updated when card reaches CENTER) */
   currentPhotoIndex: number;
@@ -123,6 +119,74 @@ export interface PositionConfig {
 }
 
 /**
+ * Hardcoded position configurations for all six card positions.
+ * 
+ * These values define the exact visual appearance of each position slot:
+ * - top/left: CSS percentage coordinates
+ * - rotate: Rotation angle in degrees
+ * - zIndex: Stacking order (higher = closer to viewer)
+ * - flyDirection: Which direction the card should exit when shuffling
+ * 
+ * These values are based on the original design and should not be
+ * modified without careful consideration of the overall visual balance.
+ */
+export const POSITION_CONFIGS: PositionConfigMap = {
+  [CardPosition.CENTER]: 
+  {
+    top: '50%',
+    left: '50%',
+    rotate: 0,
+    zIndex: 5,
+    flyDirection: 'right', // Default; actual direction determined by target position
+  },
+  
+  [CardPosition.CENTER_BACK]: 
+  {
+    top: '50%',
+    left: '50%',
+    rotate: 0,
+    zIndex: 0,
+    flyDirection: 'left',
+  },
+  
+  [CardPosition.TOP_LEFT]: 
+  {
+    top: '40%',
+    left: '42%',
+    rotate: -8,
+    zIndex: 4,
+    flyDirection: 'left',
+  },
+  
+  [CardPosition.TOP_RIGHT]: 
+  {
+    top: '39%',
+    left: '60%',
+    rotate: 14,
+    zIndex: 3,
+    flyDirection: 'right',
+  },
+  
+  [CardPosition.BOTTOM_LEFT]: 
+  {
+    top: '60%',
+    left: '40%',
+    rotate: -8,
+    zIndex: 2,
+    flyDirection: 'left',
+  },
+  
+  [CardPosition.BOTTOM_RIGHT]: 
+  {
+    top: '62%',
+    left: '60%',
+    rotate: 12,
+    zIndex: 1,
+    flyDirection: 'right',
+  },
+};
+
+/**
  * Maps each card ID to its current animation state.
  * Used to control which Framer Motion variant each card should use.
  * 
@@ -137,21 +201,15 @@ export type CardAnimationMap = Record<CardId, AnimationState>;
 export type PositionConfigMap = Record<CardPosition, PositionConfig>;
 
 /**
- * Get the display letter (A-F) for a card ID.
- * This letter is shown in the footer and never changes.
+ * Get the configuration for a specific position.
  * 
- * @param cardId - The card ID enum value
- * @returns Single letter string (A, B, C, D, E, or F)
+ * @param position - The position to look up
+ * @returns The complete configuration object for that position
+ * 
+ * @example
+ * const centerConfig = getPositionConfig(CardPosition.CENTER);
+ * // Returns: { top: '50%', left: '50%', rotate: 0, zIndex: 5, flyDirection: 'right' }
  */
-export function getCardLetter(cardId: CardId): string {
-  const letterMap: Record<CardId, string> = {
-    [CardId.CARD_A]: 'A',
-    [CardId.CARD_B]: 'B',
-    [CardId.CARD_C]: 'C',
-    [CardId.CARD_D]: 'D',
-    [CardId.CARD_E]: 'E',
-    [CardId.CARD_F]: 'F',
-  };
-  return letterMap[cardId];
+export function getPositionConfig(position: CardPosition): PositionConfig {
+  return POSITION_CONFIGS[position];
 }
-

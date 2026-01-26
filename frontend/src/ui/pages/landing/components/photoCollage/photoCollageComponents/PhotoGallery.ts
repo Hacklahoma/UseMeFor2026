@@ -7,7 +7,6 @@
  */
 
 import React from 'react';
-import { VintagePostcard } from './VintagePostcard';
 
 import IMG_1249 from '../../../../../common/assets/photoCollageImages/IMG_1249.webp';
 import IMG_1302 from '../../../../../common/assets/photoCollageImages/IMG_1302.webp';
@@ -122,31 +121,4 @@ export const getPhotoData = (index: number): PhotoData => {
     title: 'Hacklahoma, Norman, Okla.',
     footer: `HK2024-${String(index + 1).padStart(3, '0')}`,
   };
-};
-
-/**
- * Get photo path for a specific card by index
- * @param index - Card index (0-5+)
- * @returns Image path for the specified card, or fallback if out of bounds
- */
-export const getPhotoPath = (index: number): string => {
-  return getPhotoData(index).path;
-};
-
-/**
- * Create a vintage postcard element for a specific card
- * Applies vintage styling with border, title, and footer text
- * 
- * @param index - Card index (0-5+)
- * @param className - Optional additional CSS classes
- * @returns React element with vintage postcard styling
- */
-export const createVintagePostcard = (index: number, className?: string): React.ReactElement => {
-  const data = getPhotoData(index);
-  return React.createElement(VintagePostcard, {
-    imageUrl: data.path,
-    title: data.title,
-    footer: data.footer,
-    className,
-  });
 };

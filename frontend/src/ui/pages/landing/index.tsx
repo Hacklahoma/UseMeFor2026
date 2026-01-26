@@ -5,6 +5,7 @@ import SplashQuote from "./sections/SplashQuote";
 import PhotoCollage from "./components/photoCollage/PhotoCollage";
 import About from "../about/sections/About";
 import Sponsors from "./sections/Sponsors";
+import FAQPages from "../faq";
 const LandingPage: React.FC = () => {
 
   return (
@@ -22,6 +23,7 @@ const LandingPage: React.FC = () => {
       <SplashQuote />
       <PhotoCollage />
       <About />
+      <FAQPages />
       <Sponsors />
       
       {/* Footer with MLH Code of Conduct */}
