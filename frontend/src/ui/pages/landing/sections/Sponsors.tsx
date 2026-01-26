@@ -61,7 +61,7 @@ const sponsorLogos: SponsorLogo[] = [
   {
     src: TomLoveLogo,
     alt: "Sponsor 9 Tom Love",
-    href: "https://www.ou.edu/innovationhub",
+    href: "http://www.ou.edu/innovationhub/fab-lab.html",
   },
 ];
 
