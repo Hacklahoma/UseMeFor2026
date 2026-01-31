@@ -219,7 +219,7 @@ export default function SelfieCapture({
   if (!compact) return null;
 
   return (
-    <div className="relative w-full h-full overflow-hidden bg-transparent">
+    <div id={`selfie-capture-${id}`} className="selfie-capture relative w-full h-full overflow-hidden bg-transparent">
       {/* ALWAYS mounted video so ref is never null */}
       <video
         ref={videoRef}

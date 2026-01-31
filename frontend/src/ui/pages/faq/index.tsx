@@ -143,11 +143,11 @@ const FAQPage: React.FC = () => {
   ];
 
   return (
-    <main className="min-h-screen bg-transparent py-4 sm:py-6 px-2 sm:px-4 flex items-center justify-center">
+    <section data-section="faq-page-section" className="min-h-screen bg-transparent py-4 sm:py-6 px-2 sm:px-4 flex items-center justify-center">
       <div className="w-full max-w-7xl">
         <div className="flex flex-col lg:flex-row items-center justify-center gap-5 sm:gap-6 lg:gap-2">
           {/* LEFT PAGE */}
-          <article className="relative flex items-center justify-center w-full lg:w-auto">
+          <article id="faq-selfie-page" className="relative flex items-center justify-center w-full lg:w-auto">
             <div
               className="
                 relative
@@ -236,7 +236,7 @@ const FAQPage: React.FC = () => {
               </div>
 
               {/* SELFIE */}
-              <div className="absolute left-[11.5%] top-[26.9%] w-[38%] h-[29.5%] z-30 overflow-hidden">
+              <div id="faq-selfie-container" className="absolute left-[11.5%] top-[26.9%] w-[38%] h-[29.5%] z-30 overflow-hidden">
                 <SelfieCapture id="faq-selfie" compact />
               </div>
             </div>
@@ -248,7 +248,7 @@ const FAQPage: React.FC = () => {
           </div>
 
           {/* RIGHT PAGE */}
-          <article className="relative flex items-center justify-center w-full lg:w-auto">
+          <article id="faq" data-section="faq-questions-page" className="relative flex items-center justify-center w-full lg:w-auto" style={{ scrollMarginTop: '10vh' }}>
             <div
               className="
                 relative
@@ -268,6 +268,7 @@ const FAQPage: React.FC = () => {
 
               {/* grid */}
               <div
+                id="faq-questions-grid"
                 className="
                   absolute
                   left-[10%] top-[15%]
@@ -335,7 +336,7 @@ const FAQPage: React.FC = () => {
           </article>
         </div>
       </div>
-    </main>
+    </section>
   );
 };
 
