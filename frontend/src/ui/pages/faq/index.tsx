@@ -2,7 +2,6 @@
 import React from "react";
 import gridImg from "../../common/assets/faq/grid.png";
 import passportImg from "../../common/assets/faq/passport.png";
-import SelfieCapture from "./section/SelfieCapture";
 
 import stampOne from "../../common/assets/faq/stamps/stamp_one.png";
 import stampTwo from "../../common/assets/faq/stamps/stamp_two.png";
@@ -113,11 +112,6 @@ const cells: Cell[] = [
 type StampState = "shown" | "hiding" | "hidden";
 
 const FAQPage: React.FC = () => {
-  const [firstName, setFirstName] = React.useState("");
-  const [lastName, setLastName] = React.useState("");
-  const [school, setSchool] = React.useState("");
-  const [signature, setSignature] = React.useState("");
-
   // Stamp state per cell (only cells with stamp start as "shown")
   const [stampStates, setStampStates] = React.useState<Record<string, StampState>>(() => {
     const init: Record<string, StampState> = {};
@@ -135,12 +129,6 @@ const FAQPage: React.FC = () => {
       setStampStates((prev) => ({ ...prev, [id]: "hidden" }));
     }, 450);
   };
-
-  const fields = [
-    { label: "first name:", placeholder: "type something..." },
-    { label: "last name:", placeholder: "type something..." },
-    { label: "school:", placeholder: "type something..." },
-  ];
 
   return (
     <section data-section="faq-page-section" className="min-h-screen bg-transparent py-4 sm:py-6 px-2 sm:px-4 flex items-center justify-center">
@@ -165,79 +153,52 @@ const FAQPage: React.FC = () => {
                 draggable={false}
               />
 
-              {/* NAME FIELDS */}
-              <div className="absolute left-[10%] top-[9%] w-[60%] z-20 space-y-3 sm:space-y-4">
-                <div className="flex items-baseline font-bold text-gray-900 text-[8px] sm:text-[12px] lg:text-[14px] xl:text-lg">
-                  <span>{fields[0].label}</span>
-                  <input
-                    value={firstName}
-                    placeholder={fields[0].placeholder}
-                    onChange={(e) => setFirstName(e.target.value)}
-                    className={`
-                      flex-1 ml-2 bg-transparent border-b border-gray-400
-                      focus:outline-none focus:border-gray-600
-                      text-[7px] sm:text-[10px] lg:text-[9px] xl:text-xs
-                      leading-none py-0 placeholder-gray-500
-                      ${firstName ? "text-black font-bold" : "text-gray-500"}
-                    `}
-                  />
-                </div>
+              {/* SCHEDULE */}
+              <div className="absolute left-[8%] top-[12%] w-[84%] h-[76%] z-20 overflow-y-auto px-2 sm:px-4 font-mono font-normal">
+                <div className="text-[#3D472C] space-y-1.5 mobile-m:space-y-2 mobile-l:space-y-2.5 sm:space-y-3 lg:space-y-1 xl:space-y-3 text-center">
+                  {/* Title */}
+                  <h2 className="font-extrabold text-[clamp(0.55rem,4vw,1.25rem)] mb-1 sm:mb-2 lg:mb-1">
+                    Live Schedule
+                  </h2>
 
-                <div className="flex items-baseline font-bold text-gray-900 text-[8px] sm:text-[12px] lg:text-[14px] xl:text-lg">
-                  <span>{fields[1].label}</span>
-                  <input
-                    value={lastName}
-                    placeholder={fields[1].placeholder}
-                    onChange={(e) => setLastName(e.target.value)}
-                    className={`
-                      flex-1 ml-2 bg-transparent border-b border-gray-400
-                      focus:outline-none focus:border-gray-600
-                      text-[7px] sm:text-[10px] lg:text-[9px] xl:text-xs
-                      leading-none py-0 placeholder-gray-500
-                      ${lastName ? "text-black font-bold" : "text-gray-500"}
-                    `}
-                  />
-                </div>
+                  {/* Saturday */}
+                  <div>
+                    <h3 className="font-bold text-[clamp(0.4rem,2.5vw,0.8rem)] mb-1 sm:mb-1">
+                      Saturday, February 7th
+                    </h3>
+                    <div className="space-y-0.5 mobile-m:space-y-1 mobile-l:space-y-1.5 sm:space-y-2 lg:space-y-1 xl:space-y-2 text-[clamp(0.35rem,1.8vw,0.7rem)]">
+                      <p><span className="font-bold">9:30 AM (CST)</span> - Doors Open & Hacker Check-In</p>
+                      <p><span className="font-bold">11:30 AM (CST)</span> - Opening Ceremony</p>
+                      <p><span className="font-bold">12:00 PM (CST)</span> - Hacking Begins!</p>
+                      <p><span className="font-bold">1:30 PM (CST)</span> - Lunch</p>
+                      <p><span className="font-bold">2:30 PM (CST)</span> - American Fidelity Workshop: AI Voice Incorporation</p>
+                      <p><span className="font-bold">3:00 PM (CST)</span> - Snack Time</p>
+                      <p><span className="font-bold">3:30 PM (CST)</span> - AI Agents & Vibe Engineering Workshop with Fazil Raja</p>
+                      <p><span className="font-bold">4:30 PM (CST)</span> - Innovation Hub Workshop</p>
+                      <p><span className="font-bold">5:30 PM (CST)</span> - Workshop</p>
+                      <p><span className="font-bold">7:00 PM (CST)</span> - Dinner</p>
+                      <p><span className="font-bold">8:00 PM (CST)</span> - MLH Event Workshop</p>
+                      <p><span className="font-bold">10:00 PM (CST)</span> - Chess & Smash Tournament</p>
+                      <p><span className="font-bold">12:00 AM (CST)</span> - Midnight Snack</p>
+                      <p><span className="font-bold">12:30 AM (CST)</span> - Karaoke Activity</p>
+                    </div>
+                  </div>
 
-                <div className="flex items-baseline font-bold text-gray-900 text-[8px] sm:text-[12px] lg:text-[14px] xl:text-lg">
-                  <span>{fields[2].label}</span>
-                  <input
-                    value={school}
-                    placeholder={fields[2].placeholder}
-                    onChange={(e) => setSchool(e.target.value)}
-                    className={`
-                      flex-1 ml-2 bg-transparent border-b border-gray-400
-                      focus:outline-none focus:border-gray-600
-                      text-[7px] sm:text-[10px] lg:text-[9px] xl:text-xs
-                      leading-none py-0 placeholder-gray-500
-                      ${school ? "text-black font-bold" : "text-gray-500"}
-                    `}
-                  />
+                  {/* Sunday */}
+                  <div>
+                    <h3 className="font-bold text-[clamp(0.4rem,2.5vw,0.8rem)] mb-1 sm:mb-2">
+                      Sunday, February 8th
+                    </h3>
+                    <div className="space-y-0.5 mobile-m:space-y-1 mobile-l:space-y-1.5 sm:space-y-2 lg:space-y-1 xl:space-y-2 text-[clamp(0.35rem,1.8vw,0.7rem)]">
+                      <p><span className="font-bold">9:30 AM (CST)</span> - Levity Activity</p>
+                      <p><span className="font-bold">10:00 AM (CST)</span> - Google Developer Group Workshop</p>
+                      <p><span className="font-bold">11:00 AM (CST)</span> - Soft Submission Deadline</p>
+                      <p><span className="font-bold">12:00 PM (CST)</span> - Hacking Ends / Submissions Due</p>
+                      <p><span className="font-bold">12:00–1:30 PM (CST)</span> - Judging & Expo</p>
+                      <p><span className="font-bold">2:30 PM (CST)</span> - Closing Ceremony</p>
+                    </div>
+                  </div>
                 </div>
-              </div>
-
-              {/* SIGNATURE */}
-              <div className="absolute left-[9%] top-[87%] w-[60%] z-20">
-                <div className="flex items-baseline font-bold text-gray-900 text-[8px] sm:text-[12px] lg:text-[14px] xl:text-lg">
-                  <span>X:</span>
-                  <input
-                    value={signature}
-                    placeholder="print name here"
-                    onChange={(e) => setSignature(e.target.value)}
-                    className={`
-                      flex-1 ml-2 bg-transparent border-b border-transparent
-                      focus:outline-none focus:border-transparent
-                      text-[7px] sm:text-[12px] lg:text-[14px] xl:text-lg
-                      leading-none py-0 placeholder-gray-500
-                      ${signature ? "text-black font-bold" : "text-gray-500"}
-                    `}
-                  />
-                </div>
-              </div>
-
-              {/* SELFIE */}
-              <div id="faq-selfie-container" className="absolute left-[11.5%] top-[26.9%] w-[38%] h-[29.5%] z-30 overflow-hidden">
-                <SelfieCapture id="faq-selfie" compact />
               </div>
             </div>
           </article>
