@@ -168,15 +168,15 @@ const LandingView: React.FC = () => {
       >
         <div className="text-left">
           {/* Invitation text */}
-          <div className="mb-2 ml-3">
-            <h2 className="text-xl sm:text-2xl font-semibold text-[#575f49]">
+          <div className="mb-2 ml-3 max-sm:ml-3 landscape:max-md:mb-1 landscape:max-md:ml-2">
+            <h2 className="text-xl sm:text-2xl  font-semibold text-[#575f49]">
               WE KINDLY INVITE YOU TO
             </h2>
           </div>
 
           {/* Hacklahoma title */}
           <h1
-            className="text-4xl sm:text-5xl lg:text-8xl landscape:max-md:text-2xl font-semibold text-[#575f49] font-serif"
+            className="text-4xl sm:text-5xl lg:text-8xl landscape:max-md:text-3xl font-semibold text-[#575f49] font-serif"
             style={{ transform: "scaleX(0.95)" }}
           >
             Hacklahoma
@@ -238,7 +238,7 @@ const LandingView: React.FC = () => {
 
       {/* Large postcard on the right side - fades in */}
       <div
-        className={`absolute top-[36%] sm:top-[34%] md:top-[45%] lg:top-1/2 right-2 sm:right-6 md:right-8 -translate-y-1/2 transition-all duration-500 ease-out pointer-events-none ${
+        className={`absolute top-[36%] sm:top-[34%] md:top-[45%] lg:top-1/2 landscape:max-md:top-1/2 right-2 sm:right-6 md:right-8 landscape:max-md:right-2 -translate-y-1/2 transition-all duration-500 ease-out pointer-events-none ${
           showFinalElements ? "opacity-100" : "opacity-0"
         }`}
         style={{ willChange: 'transform, opacity' }}
@@ -246,7 +246,7 @@ const LandingView: React.FC = () => {
         <img
           src={Postcard}
           alt="Vintage postcard"
-          className="w-[22 rem] sm:w-[26rem] md:w-[30rem] lg:w-[40rem] xl:w-[49rem] rotate-[-1deg] drop-shadow-2xl select-none pointer-events-none"
+          className="w-[22rem] sm:w-[28rem] md:w-[30rem] lg:w-[40rem] xl:w-[49rem] landscape:max-sm:w-[18rem] rotate-[-1deg] drop-shadow-2xl select-none pointer-events-none"
         />
       </div>
 
