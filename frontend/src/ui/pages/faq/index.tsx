@@ -170,15 +170,16 @@ const FAQPage: React.FC = () => {
                       <p><span className="font-bold">9:30 AM (CST)</span> - Doors Open & Hacker Check-In</p>
                       <p><span className="font-bold">11:30 AM (CST)</span> - Opening Ceremony</p>
                       <p><span className="font-bold">12:00 PM (CST)</span> - Hacking Begins!</p>
-                      <p><span className="font-bold">1:30 PM (CST)</span> - Lunch</p>
+                      <p><span className="font-bold">1:30 PM (CST)</span> - Lunch - Abu Omar</p>
                       <p><span className="font-bold">2:30 PM (CST)</span> - American Fidelity Workshop: AI Voice Incorporation</p>
-                      <p><span className="font-bold">3:00 PM (CST)</span> - Snack Time</p>
                       <p><span className="font-bold">3:30 PM (CST)</span> - AI Agents & Vibe Engineering Workshop with Fazil Raja</p>
-                      <p><span className="font-bold">4:30 PM (CST)</span> - Innovation Hub Workshop</p>
-                      <p><span className="font-bold">5:30 PM (CST)</span> - Workshop</p>
-                      <p><span className="font-bold">7:00 PM (CST)</span> - Dinner</p>
+                      <p><span className="font-bold">4:00 PM (CST)</span> - Snack Time</p>
+                      <p><span className="font-bold">4:30 PM (CST)</span> - Innovation Hub Workshop: Turn your project into startup</p>
+                      <p><span className="font-bold">5:30 PM (CST)</span> - OU AI: Integrating LLM in Your Project </p>
+                      <p><span className="font-bold">7:00 PM (CST)</span> - Dinner - Chick-fil-A</p>
                       <p><span className="font-bold">8:00 PM (CST)</span> - MLH Event Workshop</p>
-                      <p><span className="font-bold">10:00 PM (CST)</span> - Chess & Smash Tournament</p>
+                      <p><span className="font-bold">9:00 PM (CST)</span> - Chess Tournament</p>
+                      <p><span className="font-bold">10:00 PM (CST)</span> - Super Mario Smash Tournament</p>
                       <p><span className="font-bold">12:00 AM (CST)</span> - Midnight Snack</p>
                       <p><span className="font-bold">12:30 AM (CST)</span> - Karaoke Activity</p>
                     </div>
@@ -190,8 +191,8 @@ const FAQPage: React.FC = () => {
                       Sunday, February 8th
                     </h3>
                     <div className="space-y-0.5 mobile-m:space-y-1 mobile-l:space-y-1.5 sm:space-y-2 lg:space-y-1 xl:space-y-2 text-[clamp(0.35rem,1.8vw,0.7rem)]">
-                      <p><span className="font-bold">9:30 AM (CST)</span> - Levity Activity</p>
-                      <p><span className="font-bold">10:00 AM (CST)</span> - Google Developer Group Workshop</p>
+                      <p><span className="font-bold">9:30 AM (CST)</span> - Breakfast - Levity Coffee Bar</p>
+                      <p><span className="font-bold">10:00 AM (CST)</span> - OU Google Developer Group Workshop</p>
                       <p><span className="font-bold">11:00 AM (CST)</span> - Soft Submission Deadline</p>
                       <p><span className="font-bold">12:00 PM (CST)</span> - Hacking Ends / Submissions Due</p>
                       <p><span className="font-bold">12:00–1:30 PM (CST)</span> - Judging & Expo</p>
