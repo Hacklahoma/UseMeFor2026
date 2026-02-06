@@ -179,7 +179,7 @@ const FAQPage: React.FC = () => {
                       <p><span className="font-bold">7:00 PM (CST)</span> - Dinner - Chick-fil-A</p>
                       <p><span className="font-bold">8:00 PM (CST)</span> - MLH Event Workshop</p>
                       <p><span className="font-bold">9:00 PM (CST)</span> - Chess Tournament</p>
-                      <p><span className="font-bold">10:00 PM (CST)</span> - Super Mario Smash Tournament</p>
+                      <p><span className="font-bold">10:00 PM (CST)</span> - Super Smash Bros Tournament</p>
                       <p><span className="font-bold">12:00 AM (CST)</span> - Midnight Snack</p>
                       <p><span className="font-bold">12:30 AM (CST)</span> - Karaoke Activity</p>
                     </div>
