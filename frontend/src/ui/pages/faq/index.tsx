@@ -172,7 +172,7 @@ const FAQPage: React.FC = () => {
                       <p><span className="font-bold">12:00 PM (CST)</span> - Hacking Begins!</p>
                       <p><span className="font-bold">1:30 PM (CST)</span> - Lunch - Abu Omar</p>
                       <p><span className="font-bold">2:30 PM (CST)</span> - American Fidelity Workshop: Open Source Agents</p>
-                      <p><span className="font-bold">3:30 PM (CST)</span> - AI Agents & Vibe Engineering Workshop with Fazil Raja</p>
+                      <p><span className="font-bold">3:30 PM (CST)</span> - Fazil Raja: How to Vibe Engineer</p>
                       <p><span className="font-bold">4:00 PM (CST)</span> - Snack Time</p>
                       <p><span className="font-bold">4:30 PM (CST)</span> - Innovation Hub Workshop: Turn your project into startup</p>
                       <p><span className="font-bold">5:30 PM (CST)</span> - OU AI: Integrating LLM in Your Project </p>
