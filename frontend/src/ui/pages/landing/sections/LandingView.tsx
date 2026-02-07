@@ -23,7 +23,7 @@ const LandingView: React.FC = () => {
 
   // Calculate countdown
   useEffect(() => {
-    const targetDate = new Date('February 7, 2026 00:00:00').getTime();
+    const targetDate = new Date('February 7, 2026 09:30:00').getTime();
 
     const updateCountdown = () => {
       const now = new Date().getTime();
