@@ -13,6 +13,28 @@ html {
   font-weight: 600;
 }
 
+/* Slim scrollbar */
+* {
+  scrollbar-width: thin; /* Firefox */
+  scrollbar-color: #575f49 transparent;
+}
+
+*::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: #575f49;
+  border-radius: 999px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+
 /* Ensure smooth scrolling to sections */
 section[id] {
   scroll-margin-top: 0;

@@ -181,7 +181,6 @@ const FAQPage: React.FC = () => {
                       <p><span className="font-bold">9:00 PM (CST)</span> - Chess Tournament</p>
                       <p><span className="font-bold">10:00 PM (CST)</span> - Super Smash Bros Tournament</p>
                       <p><span className="font-bold">12:00 AM (CST)</span> - Midnight Snack</p>
-                      <p><span className="font-bold">12:30 AM (CST)</span> - Karaoke Activity</p>
                     </div>
                   </div>
 
@@ -191,6 +190,7 @@ const FAQPage: React.FC = () => {
                       Sunday, February 8th
                     </h3>
                     <div className="space-y-0.5 mobile-m:space-y-1 mobile-l:space-y-1.5 sm:space-y-2 lg:space-y-1 xl:space-y-2 text-[clamp(0.35rem,1.8vw,0.7rem)]">
+                      <p><span className="font-bold">12:30 AM (CST)</span> - Karaoke Activity</p>
                       <p><span className="font-bold">9:30 AM (CST)</span> - Breakfast - Levity Coffee Bar</p>
                       <p><span className="font-bold">10:00 AM (CST)</span> - OU Google Developer Group Workshop</p>
                       <p><span className="font-bold">11:00 AM (CST)</span> - Soft Submission Deadline</p>
