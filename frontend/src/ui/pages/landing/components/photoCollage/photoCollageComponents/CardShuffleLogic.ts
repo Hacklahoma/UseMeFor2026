@@ -24,11 +24,8 @@ import {
   CardPosition,
   CardAnimationMap,
   AnimationState,
-} from './photoCollageTypes';
-import {
   getPositionConfig,
-  POSITION_JOURNEY_ORDER,
-} from './cardPositions';
+} from './Card';
 
 /**
  * Result object returned by shuffle operations.
@@ -56,26 +53,25 @@ export interface ShuffleResult {
  * Sets up the 6 cards with their initial positions, z-indexes, and photo assignments.
  *
  * Initial State:
- * - CARD_A: CENTER (z:5, original photo:0, displaying photo:0)
- * - CARD_B: TOP_LEFT (z:4, original photo:1, displaying photo:1)
- * - CARD_C: TOP_RIGHT (z:3, original photo:2, displaying photo:2)
- * - CARD_D: BOTTOM_LEFT (z:2, original photo:3, displaying photo:3)
- * - CARD_E: BOTTOM_RIGHT (z:1, original photo:4, displaying photo:4)
- * - CARD_F: CENTER_BACK (z:0, original photo:5, displaying photo:5)
+ * - CARD_A: CENTER (z:5, displaying photo:0)
+ * - CARD_B: TOP_LEFT (z:4, displaying photo:1)
+ * - CARD_C: TOP_RIGHT (z:3, displaying photo:2)
+ * - CARD_D: BOTTOM_LEFT (z:2, displaying photo:3)
+ * - CARD_E: BOTTOM_RIGHT (z:1, displaying photo:4)
+ * - CARD_F: CENTER_BACK (z:0, displaying photo:5)
  *
  * Each card gets:
  * - id: Permanent letter identity (A-F) shown in footer
- * - photoIndex: Original photo assignment (immutable, for reference)
  * - currentPhotoIndex: Currently displayed photo (mutable, changes when card reaches CENTER)
  */
 export function initializeCards(): Card[] {
   return [
-    { id: CardId.CARD_A, position: CardPosition.CENTER, zIndex: 5, photoIndex: 0, currentPhotoIndex: 0 },
-    { id: CardId.CARD_B, position: CardPosition.TOP_LEFT, zIndex: 4, photoIndex: 1, currentPhotoIndex: 1 },
-    { id: CardId.CARD_C, position: CardPosition.TOP_RIGHT, zIndex: 3, photoIndex: 2, currentPhotoIndex: 2 },
-    { id: CardId.CARD_D, position: CardPosition.BOTTOM_LEFT, zIndex: 2, photoIndex: 3, currentPhotoIndex: 3 },
-    { id: CardId.CARD_E, position: CardPosition.BOTTOM_RIGHT, zIndex: 1, photoIndex: 4, currentPhotoIndex: 4 },
-    { id: CardId.CARD_F, position: CardPosition.CENTER_BACK, zIndex: 0, photoIndex: 5, currentPhotoIndex: 5 },
+    { id: CardId.CARD_A, position: CardPosition.CENTER, zIndex: 5, currentPhotoIndex: 0 },
+    { id: CardId.CARD_B, position: CardPosition.TOP_LEFT, zIndex: 4, currentPhotoIndex: 1 },
+    { id: CardId.CARD_C, position: CardPosition.TOP_RIGHT, zIndex: 3, currentPhotoIndex: 2 },
+    { id: CardId.CARD_D, position: CardPosition.BOTTOM_LEFT, zIndex: 2, currentPhotoIndex: 3 },
+    { id: CardId.CARD_E, position: CardPosition.BOTTOM_RIGHT, zIndex: 1, currentPhotoIndex: 4 },
+    { id: CardId.CARD_F, position: CardPosition.CENTER_BACK, zIndex: 0, currentPhotoIndex: 5 },
   ];
 }
 
@@ -111,9 +107,10 @@ const CARD_SEQUENCE: CardId[] = [
  * - After shuffle: CARD_A at CENTER_BACK, CARD_B at CENTER, CARD_F at TOP_LEFT
  *
  * @param currentCards - Current array of card objects
+ * @param useConsistentFlyDirection - If true, always fly right (for mobile). If false, use position-based direction (for desktop)
  * @returns ShuffleResult with updated cards and animation states
  */
-export function executeForwardShuffle(currentCards: Card[]): ShuffleResult {
+export function executeForwardShuffle(currentCards: Card[], useConsistentFlyDirection: boolean = false): ShuffleResult {
   // Deep clone to avoid mutation
   const newCards = currentCards.map(card => ({ ...card }));
   
@@ -129,8 +126,12 @@ export function executeForwardShuffle(currentCards: Card[]): ShuffleResult {
   // Save where nextCenterCard is coming from (this position will be vacated)
   const vacatedPosition = nextCenterCard.position;
   
-  // Get fly direction based on where CENTER_BACK card is moving to
-  const flyDirection = getPositionConfig(vacatedPosition).flyDirection;
+  // Determine fly direction based on screen size/button visibility
+  // Mobile (no buttons): Always fly LEFT for consistent swipe left gesture
+  // Desktop (with buttons): Use position-based direction for alternating effect
+  const flyDirection = useConsistentFlyDirection 
+    ? 'right'
+    : getPositionConfig(vacatedPosition).flyDirection;
   
   // Step 4: Update positions (three-way rotation)
   centerCard.position = CardPosition.CENTER_BACK;    // CENTER → CENTER_BACK
@@ -187,9 +188,10 @@ export function executeForwardShuffle(currentCards: Card[]): ShuffleResult {
  * - CARD_F at CENTER, click backward → CARD_F flies to CENTER_BACK, CARD_E smoothly moves to CENTER
  *
  * @param currentCards - Current array of card objects
+ * @param useConsistentFlyDirection - If true, always fly left (for mobile). If false, use position-based direction (for desktop)
  * @returns ShuffleResult with updated cards and animation states
  */
-export function executeBackwardShuffle(currentCards: Card[]): ShuffleResult {
+export function executeBackwardShuffle(currentCards: Card[], useConsistentFlyDirection: boolean = false): ShuffleResult {
   // Deep clone to avoid mutation
   const newCards = currentCards.map(card => ({ ...card }));
   
@@ -204,7 +206,13 @@ export function executeBackwardShuffle(currentCards: Card[]): ShuffleResult {
   
   // Step 3: THREE cards move (3-way rotation)
   const vacatedPosition = targetCard.position;
-  const flyDirection = getPositionConfig(vacatedPosition).flyDirection;
+  
+  // Determine fly direction based on screen size/button visibility
+  // Mobile (no buttons): Always fly RIGHT for consistent swipe right gesture
+  // Desktop (with buttons): Use position-based direction for alternating effect
+  const flyDirection = useConsistentFlyDirection
+    ? 'left'
+    : getPositionConfig(vacatedPosition).flyDirection;
   
   // Step 4: Update positions (three-way rotation)
   centerCard.position = vacatedPosition;             // CENTER → vacated position

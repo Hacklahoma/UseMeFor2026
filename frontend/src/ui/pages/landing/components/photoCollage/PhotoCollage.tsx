@@ -26,21 +26,18 @@ import {
   CardId,
   CardAnimationMap,
   AnimationState,
-} from './photoCollageComponents/photoCollageTypes';
+  getPositionConfig,
+} from './photoCollageComponents/Card';
 
 // Logic and data imports
-import {
-  getPositionConfig,
-} from './photoCollageComponents/cardPositions';
-import { photoCollageCardVariants } from './photoCollageComponents/photoCollageFramerVariants';
-import {
-  initializeCards,
-} from './photoCollageComponents/cardShuffleLogic';
-import { getPhotoData, photoImages } from './photoCollageComponents/photoData';
+import { photoCollageCardVariants } from './photoCollageComponents/CardFramerVariants';
+import { initializeCards, executeForwardShuffle, executeBackwardShuffle } from './photoCollageComponents/CardShuffleLogic';
+import { getPhotoData, photoImages } from './photoCollageComponents/PhotoGallery';
+import configSettings from './photoCollageComponents/Config';
 
 // Component imports
-import { NavigationButton } from './photoCollageComponents/NavigationButton';
-import { VintagePostcard } from './photoCollageComponents/VintagePostcard';
+import { NavigationButton } from './photoCollageComponents/ShuffleButton';
+import { VintagePostcard } from './photoCollageComponents/PostCard';
 
 /**
  * Main Photo Collage Component
@@ -55,15 +52,26 @@ const PhotoCollage: React.FC = () => {
   // Track whether the initial entrance animation has completed
   const [hasCompletedEntrance, setHasCompletedEntrance] = useState(false);
   
-  // Track whether button animations have completed
+  // Button animation states
   const [leftButtonAnimationComplete, setLeftButtonAnimationComplete] = useState(false);
   const [rightButtonAnimationComplete, setRightButtonAnimationComplete] = useState(false);
-  
-  // Track whether buttons are disabled (for click throttling)
   const [buttonsDisabled, setButtonsDisabled] = useState(false);
   
-  // Use ref for immediate synchronous check (prevents race conditions)
+  // Ref for immediate synchronous check (prevents race conditions)
   const isAnimatingRef = useRef(false);
+
+  // Track if navigation buttons are visible (custom600 breakpoint = 600px)
+  const [areButtonsVisible, setAreButtonsVisible] = useState(window.innerWidth >= 600);
+  
+  // Track screen size tier for responsive fly distance
+  const [screenSizeTier, setScreenSizeTier] = useState<'mobile' | 'smallTablet' | 'tablet' | 'desktop' | 'desktopLarge'>(() => {
+    const width = window.innerWidth;
+    if (width < 600) return 'mobile';
+    if (width < 768) return 'smallTablet';
+    if (width < 1024) return 'tablet';
+    if (width < 1650) return 'desktop';
+    return 'desktopLarge';
+  });
 
   // Track animation state for each card
   const [animationStates, setAnimationStates] = useState<CardAnimationMap>({
@@ -74,9 +82,36 @@ const PhotoCollage: React.FC = () => {
     [CardId.CARD_E]: AnimationState.OFFSCREEN,
     [CardId.CARD_F]: AnimationState.OFFSCREEN,
   });
-  
-  // Debug: Toggle fixed image visibility
-  const [showDebugImage, setShowDebugImage] = useState(false);
+
+  // Touch swipe detection for mobile
+  const touchStartX = useRef<number>(0);
+  const touchStartY = useRef<number>(0);
+
+  /**
+   * Track button visibility and screen size tier based on window width
+   */
+  useEffect(() => {
+    const handleResize = () => {
+      const width = window.innerWidth;
+      setAreButtonsVisible(width >= 600);
+      
+      // Update screen size tier
+      if (width < 600) {
+        setScreenSizeTier('mobile');
+      } else if (width < 768) {
+        setScreenSizeTier('smallTablet');
+      } else if (width < 1024) {
+        setScreenSizeTier('tablet');
+      } else if (width < 1650) {
+        setScreenSizeTier('desktop');
+      } else {
+        setScreenSizeTier('desktopLarge');
+      }
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   /**
    * Trigger entrance animation when component comes into view
@@ -121,7 +156,7 @@ const PhotoCollage: React.FC = () => {
     const updatedCards = currentCards.map(c => ({ ...c }));
     const centerBackCard = updatedCards.find(c => c.position === 'centerBack');
     const centerCard = updatedCards.find(c => c.position === 'center');
-    
+
     if (centerCard && centerBackCard) {
       if (centerCard.currentPhotoIndex === 0) {
         centerBackCard.currentPhotoIndex = photoImages.length - 1; // Wrap to last photo
@@ -129,8 +164,116 @@ const PhotoCollage: React.FC = () => {
         centerBackCard.currentPhotoIndex = centerCard.currentPhotoIndex - 1; // Move to previous photo
       }
     }
-    
+
     return updatedCards;
+  };
+
+  /**
+   * Handle touch start event for swipe detection
+   */
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX;
+    touchStartY.current = e.touches[0].clientY;
+  };
+
+  /**
+   * Handle touch end event for swipe detection
+   * Detects horizontal swipe direction and triggers appropriate shuffle
+   */
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    // Skip if entrance animation hasn't completed or already animating
+    if (!hasCompletedEntrance || isAnimatingRef.current || buttonsDisabled) return;
+
+    const touchEndX = e.changedTouches[0].clientX;
+    const touchEndY = e.changedTouches[0].clientY;
+
+    const deltaX = touchEndX - touchStartX.current;
+    const deltaY = touchEndY - touchStartY.current;
+
+    // Minimum swipe distance threshold (in pixels)
+    const minSwipeDistance = 50;
+
+    // Check if this is primarily a horizontal swipe
+    // (horizontal distance must be greater than vertical distance)
+    if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > minSwipeDistance) {
+      // Mobile (buttons hidden): Swapped shuffle calls for intuitive card movement
+      // Desktop (buttons visible): Standard shuffle mapping
+      if (!areButtonsVisible) {
+        // Mobile mode: swap the shuffle functions
+        if (deltaX > 0) {
+          // Swipe right - trigger forward shuffle (card flies right)
+          handleForwardShuffle();
+        } else {
+          // Swipe left - trigger backward shuffle (card flies left)
+          handleBackwardShuffle();
+        }
+      } else {
+        // Desktop mode: standard behavior
+        if (deltaX > 0) {
+          // Swipe right - trigger backward shuffle (same as left button)
+          handleBackwardShuffle();
+        } else {
+          // Swipe left - trigger forward shuffle (same as right button)
+          handleForwardShuffle();
+        }
+      }
+    }
+  };
+
+  /**
+   * Execute forward shuffle (swipe left or right button click)
+   */
+  const handleForwardShuffle = () => {
+    // Synchronous check using ref (prevents race conditions)
+    if (isAnimatingRef.current || buttonsDisabled) return;
+
+    // Set ref immediately (synchronous) - this blocks all subsequent clicks/swipes
+    isAnimatingRef.current = true;
+
+    const delay = configSettings.SHUFFLE_DELAY + 100;
+    setButtonsDisabled(true);
+    setTimeout(() => {
+      setButtonsDisabled(false);
+      isAnimatingRef.current = false;
+    }, delay);
+
+    // Use consistent fly direction when buttons are hidden (mobile)
+    const shuffleResult = executeForwardShuffle(cards, !areButtonsVisible);
+
+    setCards(shuffleResult.cardsWithOldZIndex);
+    setAnimationStates(shuffleResult.animationStates);
+    setTimeout(() => setCards(shuffleResult.cardsWithNewZIndex), configSettings.SHUFFLE_DELAY);
+    setTimeout(() => {
+      const updatedCards = swapPhotoOnCardID(shuffleResult.flyingCardId, shuffleResult.cardsWithNewZIndex);
+      setCards(updatedCards);
+    }, delay);
+  };
+
+  /**
+   * Execute backward shuffle (swipe right or left button click)
+   */
+  const handleBackwardShuffle = () => {
+    // Synchronous check using ref (prevents race conditions)
+    if (isAnimatingRef.current || buttonsDisabled) return;
+
+    // Set ref immediately (synchronous) - this blocks all subsequent clicks/swipes
+    isAnimatingRef.current = true;
+    
+    const delay = configSettings.SHUFFLE_DELAY + 100;
+    setButtonsDisabled(true);
+    setTimeout(() => {
+      setButtonsDisabled(false);
+      isAnimatingRef.current = false;
+    }, delay);
+
+    // Swap photo BEFORE shuffle logic executes
+    const cardsWithUpdatedPhoto = swapPhotoBackShuffle(cards);
+    // Use consistent fly direction when buttons are hidden (mobile)
+    const shuffleResult = executeBackwardShuffle(cardsWithUpdatedPhoto, !areButtonsVisible);
+
+    setCards(shuffleResult.cardsWithOldZIndex);
+    setAnimationStates(shuffleResult.animationStates);
+    setTimeout(() => setCards(shuffleResult.cardsWithNewZIndex), configSettings.SHUFFLE_DELAY);
   };
 
   return (
@@ -147,7 +290,7 @@ const PhotoCollage: React.FC = () => {
         </div>
 
         {/* Photo collage with navigation arrows */}
-        <div className="photo-collage-parent-container relative w-full z-10 flex items-center justify-center">
+        <div className="photo-collage-parent-container relative w-full z-10 flex items-center justify-center pt-[10rem] md:pt-[5rem]">
           
           {/* Left arrow button - triggers backward shuffle */}
           <NavigationButton
@@ -162,14 +305,17 @@ const PhotoCollage: React.FC = () => {
             setButtonsDisabled={setButtonsDisabled}
             isAnimatingRef={isAnimatingRef}
             swapPhotoBackShuffle={swapPhotoBackShuffle}
+            areButtonsVisible={areButtonsVisible}
           />
 
           {/* Photo collage container */}
-          <motion.div 
+          <motion.div
             className="photo-collage-container relative w-1/2 flex-shrink-0 h-[16rem] md:h-[32rem] lg:h-[40rem] xl:h-[48rem] overflow-visible"
             onViewportEnter={() => setIsInView(true)}
             onViewportLeave={() => setIsInView(false)}
             viewport={{ amount: 0.8 }}
+            onTouchStart={handleTouchStart}
+            onTouchEnd={handleTouchEnd}
           >
             {/* Render all 6 cards based on their current positions */}
             {cards.map((card) => {
@@ -181,13 +327,24 @@ const PhotoCollage: React.FC = () => {
               
               // Calculate stagger delay for initial entrance animation
               // Use max(0, ...) to ensure delay is never negative (for z-index 0)
-              const entranceDelay = Math.max(0, (card.zIndex - 1) * 0.15);
+              let entranceDelay = 0;
+              if (!hasCompletedEntrance) {
+                entranceDelay = Math.max(0, (card.zIndex - 1) * 0.15);
+              }
               
               // Determine which photo to display for this card
               // For now, all cards display their currentPhotoIndex (static photos)
               const photoIndexToDisplay = card.currentPhotoIndex;
 
               const photoData = getPhotoData(photoIndexToDisplay);
+              
+              // Choose fly distance based on screen size tier
+              const flyDistance = 
+                screenSizeTier === 'mobile' ? configSettings.MOBILE_FLY_DISTANCE :
+                screenSizeTier === 'smallTablet' ? configSettings.SMALL_TABLET_FLY_DISTANCE :
+                screenSizeTier === 'tablet' ? configSettings.TABLET_FLY_DISTANCE :
+                screenSizeTier === 'desktop' ? configSettings.DESKTOP_FLY_DISTANCE :
+                configSettings.DESKTOP_LARGE_FLY_DISTANCE;
 
               return (
                 <motion.div
@@ -205,6 +362,7 @@ const PhotoCollage: React.FC = () => {
                     ...positionConfig,
                     zIndex: card.zIndex, // Pass card's zIndex to variants as well
                     delay: entranceDelay,
+                    flyDistance: flyDistance, // Responsive fly distance based on screen size
                   }}
                   onAnimationComplete={(definition) => {
                     // Track when the initial entrance animation completes
@@ -255,6 +413,7 @@ const PhotoCollage: React.FC = () => {
             setButtonsDisabled={setButtonsDisabled}
             isAnimatingRef={isAnimatingRef}
             swapPhotoOnCardID={swapPhotoOnCardID}
+            areButtonsVisible={areButtonsVisible}
           />
         </div>
       </div>

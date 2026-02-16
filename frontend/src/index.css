@@ -13,6 +13,28 @@ html {
   font-weight: 600;
 }
 
+/* Slim scrollbar */
+* {
+  scrollbar-width: thin; /* Firefox */
+  scrollbar-color: #575f49 transparent;
+}
+
+*::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: #575f49;
+  border-radius: 999px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+
 /* Ensure smooth scrolling to sections */
 section[id] {
   scroll-margin-top: 0;
@@ -31,4 +53,60 @@ section[id] {
 
 .animate-fade-in {
   animation: fadeIn 1s ease-out forwards;
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes floatAndSpin {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-10px) rotate(180deg);
+  }
+}
+
+@keyframes floatAndSpinReverse {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-8px) rotate(-180deg);
+  }
+}
+
+.animate-spin-slow {
+  animation: spin 8s linear infinite;
+}
+
+.animate-spin-reverse {
+  animation: spin 10s linear infinite reverse;
+}
+
+.animate-float-spin {
+  animation: floatAndSpin 6s ease-in-out infinite;
+}
+
+.animate-float-spin-reverse {
+  animation: floatAndSpinReverse 7s ease-in-out infinite;
 }

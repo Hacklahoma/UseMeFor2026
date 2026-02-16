@@ -10,7 +10,10 @@ module.exports = {
         serif: ['"Source Serif 4"', "ui-serif", "serif"],
       },
       screens: {
+        'mobile-m': '375px',
+        'mobile-l': '425px',
         'custom600': '600px',
+        'custom755': '755px',
       },
     },
   },
